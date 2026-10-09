@@ -28,7 +28,7 @@ test.describe('ficha de negocio', () => {
   test('sin relacionados muestra slot publicitario (modo gran apertura)', async ({ page }) => {
     await page.goto('/comercio/ficha-gratis-muestra/');
     await expect(page.locator('[data-slot-publicitario]')).toBeVisible();
-    await expect(page.locator('[data-slot-publicitario]')).toContainText(/Publicar gratis/);
+    await expect(page.locator('[data-slot-publicitario]')).toContainText(/Quiero mi Vidriera/);
   });
 
   test('volver al directorio navega', async ({ page }) => {

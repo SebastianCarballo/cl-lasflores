@@ -6,7 +6,7 @@ import { spawn } from 'node:child_process';
 
 const PORT = 4333;
 const BASE = `http://127.0.0.1:${PORT}`;
-const BUDGETS = { homeHtmlBytes: 88_000, cssBytes: 70_000 };
+const BUDGETS = { homeHtmlBytes: 90_000, cssBytes: 70_000 };
 const packageManager = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 let failures = 0;
@@ -76,6 +76,7 @@ try {
   check('home microcopy anti-riesgo', home.text.includes('Sin tarjeta'));
   check('home copy honesto', home.text.includes('Comercios destacados') && !home.text.includes('de la semana'));
   check('home socios + carrusel', home.text.includes('Socios estrat') && home.text.includes('MembyStudio') && home.text.includes('marquee-track'));
+  check('home historia con arco narrativo', home.text.includes('Nuestra historia') && home.text.includes('De un chat desbordado') && home.text.includes('Sumar mi comercio'));
   check('home cómo funciona rediseñado', home.text.includes('De la búsqueda al WhatsApp') && home.text.includes('steps-line'));
   check('home Organization NAP', home.text.includes('"Organization"') && home.text.includes('areaServed'));
   check('home geo-metas', home.text.includes('geo.region') && home.text.includes('AR-B'));
@@ -96,9 +97,10 @@ try {
   check('directorio 200', dir.status === 200);
   check('directorio índice búsqueda', dir.text.includes('id="businesses-index"'));
   check('directorio 1 ficha real + slots', (dir.text.match(/data-business-card/g) ?? []).length >= 1 && dir.text.includes('Tu negocio acá'));
-  check('directorio modelos por plan (4)', (dir.text.match(/data-modelo-plan/g) ?? []).length === 4);
+  check('directorio modelos por plan (lanzamiento: 2)', (dir.text.match(/data-modelo-plan/g) ?? []).length === 2);
   check('directorio leyenda de insignias (HMW1)', dir.text.includes('Qué significan las insignias'));
   check('directorio anuncia resultados (aria-live)', dir.text.includes('aria-live="polite"'));
+  check('directorio conteo singular honesto', dir.text.includes('>resultado<'));
 
   const ficha = await get('/comercio/ficha-gratis-muestra/');
   check('ficha 200', ficha.status === 200);
@@ -111,10 +113,18 @@ try {
 
   const salud = await get('/categoria/salud/');
   check('categoría vacía invita a publicar', salud.status === 200 && salud.text.includes('Sé el primero en'));
-  check('ficha info antes que imagen (h1 → img)', ficha.text.indexOf('<h1') !== -1 && ficha.text.indexOf('<h1') < ficha.text.indexOf('<img'));
+  // El logo del header es un <img> antes del <main>: el orden se verifica dentro del contenido.
+  const mainIdx = ficha.text.indexOf('<main');
+  const h1Idx = ficha.text.indexOf('<h1', mainIdx);
+  const imgIdx = ficha.text.indexOf('<img', mainIdx);
+  check('ficha info antes que imagen (h1 → img)', mainIdx !== -1 && h1Idx !== -1 && imgIdx !== -1 && h1Idx < imgIdx);
 
   const alta = await get('/publicar');
   check('publicar expectativas + confirmación (HMW3)', alta.status === 200 && alta.text.includes('Qué pasa después de enviar') && alta.text.includes('form-exito'));
+  check('publicar cross-sell impulso + ref guia', alta.text.includes('id="impulso"') && alta.text.includes('data-ref-banner'));
+
+  const guia = await get('/guia-whatsapp/');
+  check('embudo captación: guía con imán y CTA', guia.status === 200 && guia.text.includes('Tu WhatsApp listo para vender') && guia.text.includes('guia_descarga'));
   const altaOro = await get('/publicar?plan=oro');
   check('funnel plan preseleccionado (hook cliente)', altaOro.status === 200 && altaOro.text.includes('planes-map') && altaOro.text.includes('data-plan-banner-cliente'));
 

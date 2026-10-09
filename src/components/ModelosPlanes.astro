@@ -1,10 +1,12 @@
 ---
 import Icon from '@/components/Icon.astro';
 import { listPlans } from '@/data/plans';
+import { planesVisibles } from '@/utils/site';
 
 // Vidriera de planes: un modelo de muestra por tier, con las features REALES
 // de cada plan (misma fuente que /planes). No finge negocios: todo rotulado MUESTRA.
-const planes = await listPlans();
+// En lanzamiento solo Gratis + Vidriera Digital (ver PROMO_LANZAMIENTO en site.ts).
+const planes = planesVisibles(await listPlans());
 
 const ESTILO: Record<string, { header: string; pill: string; inicial: string }> = {
   gratis: { header: 'from-brand-600 to-indigo-600', pill: 'bg-white/20 text-white', inicial: 'G' },
@@ -18,10 +20,10 @@ const ESTILO: Record<string, { header: string; pill: string; inicial: string }> 
   <div class="max-w-2xl">
     <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-600 mb-2">Modelos de muestra</p>
     <h2 class="font-display font-bold text-2xl sm:text-3xl tracking-tight text-balance">Así se ve cada plan</h2>
-    <p class="mt-2 text-slate-600">Una card modelo por tier, tal cual lo vende el plan. Ni más ni menos.</p>
+    <p class="mt-2 text-slate-600">Un ejemplo tal cual es cada plan, sin letra chica.</p>
   </div>
 
-  <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-5" data-reveal-group>
+  <div class:list={['mt-6 grid gap-5 sm:grid-cols-2', planes.length > 2 ? 'lg:grid-cols-4' : 'max-w-3xl mx-auto']} data-reveal-group>
     {
       planes.map((p) => {
         const e = ESTILO[p.tier] ?? ESTILO.gratis;

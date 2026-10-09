@@ -13,12 +13,14 @@ interface Props {
 const {
   variante = 'default',
   titulo = 'Tu negocio acá',
-  texto = 'Sé el primero de tu rubro en el directorio.',
+  texto = 'Mostrá tu negocio en el directorio.',
   plan = '',
 } = Astro.props;
 
 const href = plan ? `/publicar?plan=${plan}` : '/publicar';
-const cta = plan === 'oro' ? 'Quiero ser Oro' : plan ? `Elegir ${plan}` : 'Publicar gratis';
+// Nombres comerciales (los slugs bronce/plata/oro son internos y no se muestran).
+const NOMBRES: Record<string, string> = { bronce: 'Contacto Directo', plata: 'Comercio Verificado', oro: 'Vidriera Digital' };
+const cta = plan === 'oro' ? 'Quiero mi Vidriera' : plan ? `Elegir ${NOMBRES[plan] ?? plan}` : 'Publicar gratis';
 const esOro = variante === 'oro';
 ---
 
@@ -32,7 +34,7 @@ const esOro = variante === 'oro';
   ]}>
   {esOro && (
     <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-ink-950 mb-3">
-      ESPACIO ORO
+      VIDRIERA DIGITAL
     </span>
   )}
   <span
@@ -55,5 +57,5 @@ const esOro = variante === 'oro';
     ]}>
     {cta}
   </a>
-  <p class="mt-2 text-xs text-slate-500">Sin tarjeta · 2 minutos</p>
+  <p class="mt-2 text-xs text-slate-500">Sin tarjeta · En pocos pasos</p>
 </article>

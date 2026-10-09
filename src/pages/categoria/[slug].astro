@@ -34,7 +34,7 @@ const schema = {
 
 <BaseLayout
   title={`${category.name} en Las Flores`}
-  description={`${category.description} Encontrá los mejores ${category.name.toLowerCase()} de Las Flores con contacto directo por WhatsApp.`}
+  description={`${category.description} Encontrá ${category.name.toLowerCase()} en Las Flores con contacto directo por WhatsApp.`}
   schema={schema}
 >
   <section class={`bg-gradient-to-br ${category.color} text-white`}>
@@ -51,13 +51,13 @@ const schema = {
   <section class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
     {results.length === 0 ? (
       <div class="text-center py-14 bg-white rounded-3xl border border-ink-100">
-        <p class="font-display font-bold text-xl">Pronto habrá novedades en {category.name}</p>
-        <a href="/publicar" class="mt-4 inline-flex px-5 py-3 rounded-xl bg-brand-600 text-white text-sm font-bold">Sé el primero en publicar</a>
+        <p class="font-display font-bold text-xl">Todavía no hay publicaciones en {category.name}</p>
+        <a href="/publicar" class="mt-4 inline-flex px-5 py-3 rounded-xl bg-brand-600 text-white text-sm font-bold">Sé el primero en publicar gratis</a>
       </div>
     ) : (
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {results.map((b) => <BusinessCard business={b} />)}
-        <SlotPublicitario titulo={`Sé el primero en ${category.name}`} texto="Tu competencia todavía no está acá. Aprovechá." />
+        <SlotPublicitario titulo={`Sé el primero en ${category.name}`} texto="Mostrá tu negocio acá antes que otros del rubro." />
       </div>
     )}
   </section>

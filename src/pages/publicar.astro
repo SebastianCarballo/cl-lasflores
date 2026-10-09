@@ -3,13 +3,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/Icon.astro';
 import { listCategories } from '@/data/categories';
 import { listPlans } from '@/data/plans';
+import { planesVisibles, PROMO_LANZAMIENTO } from '@/utils/site';
 
 const categories = await listCategories();
-const plans = await listPlans();
+const plans = planesVisibles(await listPlans());
 
 // El funnel de planes trae ?plan=bronce|plata|oro para preseleccionar (CRO).
+// En lanzamiento el alta cae por defecto en Vidriera Digital (gratis 30 días).
 const planParam = Astro.url.searchParams.get('plan') ?? '';
-const planInicial = plans.some((p) => p.tier === planParam) ? planParam : 'gratis';
+const planInicial = plans.some((p) => p.tier === planParam) ? planParam : (PROMO_LANZAMIENTO.activa ? 'oro' : 'gratis');
 const planElegido = plans.find((p) => p.tier === planInicial);
 ---
 
@@ -20,7 +22,16 @@ const planElegido = plans.find((p) => p.tier === planInicial);
   <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
     <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">Alta en 2 minutos</p>
     <h1 class="mt-2 font-display font-extrabold text-4xl tracking-tight">Publicá tu negocio</h1>
-    <p class="mt-3 text-slate-600">Completá el formulario y se abre WhatsApp con tu solicitud lista para enviar. Sin tarjeta, sin compromiso.</p>
+    <p class="mt-3 text-slate-600">Completá el formulario, revisás tu mensaje en WhatsApp y tocás enviar. Sin tarjeta, sin compromiso. ¿No estás seguro? <a href="/guia-whatsapp" class="text-brand-700 font-bold underline">Mirá la guía gratis primero</a>.</p>
+    {PROMO_LANZAMIENTO.activa && (
+      <p role="status" class="mt-4 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800">
+        <span aria-hidden="true">🚀</span> <span><strong>Lanzamiento:</strong> Vidriera Digital completa gratis por 30 días.</span>
+      </p>
+    )}
+    {/* NUTRICIÓN: continuidad del viaje guía → alta */}
+    <p data-ref-banner hidden class="mt-4 items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800" role="status">
+      <span aria-hidden="true">👍</span> <span data-ref-texto>Buena decisión: ya tenés la guía, ahora publicá.</span>
+    </p>
     {planParam && planElegido && (
       <p data-plan-banner class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-sm font-semibold text-brand-800" role="status">
         <span aria-hidden="true">🎯</span> Elegiste el plan {planElegido.name} ({planElegido.priceLabel}) — ya viene seleccionado abajo.
@@ -30,8 +41,20 @@ const planElegido = plans.find((p) => p.tier === planInicial);
     <p data-plan-banner-cliente hidden class="mt-4 items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-sm font-semibold text-brand-800" role="status">
       <span aria-hidden="true">🎯</span> <span>Elegiste el plan <strong data-plan-nombre></strong> — ya viene seleccionado abajo.</span>
     </p>
-    <script type="application/json" id="planes-map" set:html={JSON.stringify(plans.map(p => ({ tier: p.tier, name: `${p.name} (${p.priceLabel})`, label: p.name })))} />
+    <script type="application/json" id="planes-map" set:html={JSON.stringify(plans.map(p => ({ tier: p.tier, name: `${p.name} (${p.priceLabel})`, label: p.name }))).replace(/</g, '\\u003c')} />
     <script>
+      // NUTRICIÓN: si viene de la guía, mostrar continuidad (?ref=guia)
+      const ref = new URLSearchParams(location.search).get('ref') ?? '';
+      const refLabels: Record<string, string> = { guia: 'Venís de la guía de WhatsApp 👍 Ahora publicá y aplicala desde el día 1.' };
+      if (refLabels[ref]) {
+        const rb = document.querySelector('[data-ref-banner]') as HTMLElement | null;
+        const rt = rb?.querySelector('[data-ref-texto]');
+        if (rb && rt) {
+          rt.textContent = refLabels[ref];
+          rb.hidden = false;
+          rb.classList.add('flex');
+        }
+      }
       const qp = new URLSearchParams(location.search).get('plan') ?? '';
       if (qp && !document.querySelector('[data-plan-banner]')) {
         const map = JSON.parse(document.getElementById('planes-map')?.textContent ?? '[]') as { tier: string; name: string; label: string }[];
@@ -53,9 +76,9 @@ const planElegido = plans.find((p) => p.tier === planInicial);
 
     {/* HMW3: qué pasa después — expectativas explícitas calman la ansiedad */}
     <ol class="mt-8 grid sm:grid-cols-3 gap-3" aria-label="Qué pasa después de enviar">
-      <li class="bg-white rounded-2xl border border-ink-100 p-4 text-sm"><strong class="block font-display">1. Enviás</strong><span class="text-slate-600">Tu solicitud llega a nuestro WhatsApp con todo listo.</span></li>
-      <li class="bg-white rounded-2xl border border-ink-100 p-4 text-sm"><strong class="block font-display">2. Te contactamos</strong><span class="text-slate-600">En menos de 24 hs confirmamos tus datos.</span></li>
-      <li class="bg-white rounded-2xl border border-ink-100 p-4 text-sm"><strong class="block font-display">3. Salís publicado</strong><span class="text-slate-600">Tu ficha aparece en el directorio y Google.</span></li>
+      <li class="bg-white rounded-2xl border border-ink-100 p-4 text-sm"><strong class="block font-display">1. Enviás</strong><span class="text-slate-600">Tu mensaje nos llega al WhatsApp.</span></li>
+      <li class="bg-white rounded-2xl border border-ink-100 p-4 text-sm"><strong class="block font-display">2. Te escribimos</strong><span class="text-slate-600">En menos de 24 hs te confirmamos los datos.</span></li>
+      <li class="bg-white rounded-2xl border border-ink-100 p-4 text-sm"><strong class="block font-display">3. Salís en el directorio</strong><span class="text-slate-600">Tu ficha queda visible y empieza a posicionar en Google.</span></li>
     </ol>
 
     <form
@@ -66,12 +89,12 @@ const planElegido = plans.find((p) => p.tier === planInicial);
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
           <label for="nombre" class="block text-sm font-semibold mb-1.5">Nombre del negocio *</label>
-          <input id="nombre" name="nombre" required minlength="3" placeholder="Ej: Rotisería El Buen Sabor" autocomplete="organization" class="w-full px-4 py-3 rounded-xl border border-ink-200 outline-none focus:ring-2 focus:ring-brand-500" />
+          <input id="nombre" name="nombre" required minlength="3" maxlength="100" placeholder="Ej: Rotisería El Buen Sabor" autocomplete="organization" class="w-full px-4 py-3 rounded-xl border border-ink-200 outline-none focus:ring-2 focus:ring-brand-500" />
         </div>
         <div>
           <label for="categoria" class="block text-sm font-semibold mb-1.5">Categoría *</label>
           <select id="categoria" name="categoria" required class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-white">
-            <option value="">Seleccionar…</option>
+            <option value="">Elegí tu rubro…</option>
             {categories.map((c) => <option value={c.name}>{c.name}</option>)}
           </select>
         </div>
@@ -79,15 +102,24 @@ const planElegido = plans.find((p) => p.tier === planInicial);
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
           <label for="whatsapp" class="block text-sm font-semibold mb-1.5">Tu WhatsApp *</label>
-          <input id="whatsapp" name="whatsapp" type="tel" required inputmode="tel" placeholder="2224 00-0000" autocomplete="tel" aria-describedby="whatsapp-hint" class="w-full px-4 py-3 rounded-xl border border-ink-200 outline-none focus:ring-2 focus:ring-brand-500" />
+          <input id="whatsapp" name="whatsapp" type="tel" required inputmode="tel" maxlength="20" placeholder="Ej: 2224 51-2345" autocomplete="tel" aria-describedby="whatsapp-hint" class="w-full px-4 py-3 rounded-xl border border-ink-200 outline-none focus:ring-2 focus:ring-brand-500" />
           <p id="whatsapp-hint" class="mt-1.5 text-xs text-slate-500">Solo números, con código de área. Ej: 2224 12-3456.</p>
         </div>
         <div>
-          <label for="plan" class="block text-sm font-semibold mb-1.5">Plan deseado</label>
+          <label for="plan" class="block text-sm font-semibold mb-1.5">Elegí tu plan</label>
           <select id="plan" name="plan" class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-white">
             {plans.map((p) => <option value={p.name} selected={p.tier === planInicial}>{p.name} — {p.priceLabel}</option>)}
           </select>
         </div>
+      </div>
+      {/* CROSS-SELL en checkout: impulso opcional sumado al mismo envío */}
+      <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <label for="impulso" class="block text-sm font-semibold mb-1.5">🚀 Impulso extra <span class="font-normal text-slate-500">(opcional)</span></label>
+        <select id="impulso" name="impulso" class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-white">
+          <option value="">Sin impulso extra</option>
+          <option value="Impulso 7 días">Impulso 7 días — cima de tu categoría</option>
+          <option value="Impulso 15 días">Impulso 15 días + difusión en redes</option>
+        </select>
       </div>
       <div>
         <div class="flex items-baseline justify-between gap-2 mb-1.5">
@@ -97,15 +129,20 @@ const planElegido = plans.find((p) => p.tier === planInicial);
         <textarea id="desc" name="descripcion" rows="4" required minlength="20" maxlength="600" aria-describedby="desc-count" placeholder="Qué ofrecés, horarios, zona de atención…" class="w-full px-4 py-3 rounded-xl border border-ink-200 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
       </div>
       {/* HMW3: confirmación post-envío — el usuario sabe que funcionó */}
+      <div class="absolute -left-[9999px]" aria-hidden="true">
+        <label for="publicar-website">Website</label>
+        <input id="publicar-website" name="website" tabindex="-1" autocomplete="off" />
+      </div>
       <div id="form-exito" hidden role="status" class="rounded-2xl bg-emerald-50 border border-emerald-200 p-5 text-sm">
-        <p class="font-bold text-emerald-800">✓ ¡Solicitud lista! Completá el envío en la ventana de WhatsApp.</p>
+        <p class="font-bold text-emerald-800">✓ ¡Lista tu solicitud! Ahora tocá enviar en la ventana de WhatsApp que se abrió.</p>
         <p class="mt-1 text-emerald-700">Te contactamos en menos de 24 hs para activar tu ficha. Podés cerrar esta página cuando quieras.</p>
+        <p class="mt-3 pt-3 border-t border-emerald-200 text-emerald-800">¿Querés liderar tu rubro? <a href="/planes" class="font-bold underline">La Vidriera Digital sale gratis por 30 días</a> por lanzamiento.</p>
       </div>
       <p id="form-error" role="alert" tabindex="-1" hidden class="text-sm font-semibold text-red-600 rounded-xl"></p>
       <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#25D366] text-white font-bold hover:brightness-95 active:scale-[0.99] transition btn-sheen">
-        <Icon name="whatsapp" size={20} /> Enviar por WhatsApp y activar mi ficha
+        <Icon name="whatsapp" size={20} /> Quiero activar mi ficha por WhatsApp
       </button>
-      <p class="text-xs text-slate-500 text-center">Al enviar aceptás ser contactado por el equipo de Clasificados Las Flores.</p>
+      <p class="text-xs text-slate-500 text-center">Al enviar aceptás que te escribamos desde Clasificados Las Flores.</p>
     </form>
 
     <script>
@@ -115,16 +152,31 @@ const planElegido = plans.find((p) => p.tier === planInicial);
       form?.addEventListener('submit', (e: Event) => {
         e.preventDefault();
         const data = new FormData(form);
+        // Honeypot: los bots la completan, las personas no la ven
+        if (String(data.get('website') ?? '').trim()) return;
+        // Throttle cliente (el sitio es estático): un envío cada 10 s por pestaña
+        const ahora = Date.now();
+        const ultimo = Number(sessionStorage.getItem('publicar-ultimo') ?? 0);
+        if (ahora - ultimo < 10_000) {
+          if (error) {
+            error.textContent = 'Ya enviaste una solicitud hace segundos. Esperá un momento antes de reintentar.';
+            error.hidden = false;
+            error.focus();
+          }
+          return;
+        }
         const nombre = String(data.get('nombre') ?? '').trim();
         const categoria = String(data.get('categoria') ?? '').trim();
         const whatsapp = String(data.get('whatsapp') ?? '').trim();
         const plan = String(data.get('plan') ?? '').trim();
         const desc = String(data.get('descripcion') ?? '').trim();
+        const impulso = String(data.get('impulso') ?? '').trim();
         const faltantes = [];
-        if (nombre.length < 3) faltantes.push('nombre (mín. 3 caracteres)');
+        if (nombre.length < 3 || nombre.length > 100) faltantes.push('nombre (3 a 100 caracteres)');
         if (!categoria) faltantes.push('categoría');
-        if (whatsapp.replace(/\D/g, '').length < 6) faltantes.push('WhatsApp válido');
-        if (desc.length < 20) faltantes.push('descripción (mín. 20 caracteres)');
+        const digitos = whatsapp.replace(/\D/g, '');
+        if (digitos.length < 8 || digitos.length > 15) faltantes.push('WhatsApp válido (8 a 15 dígitos)');
+        if (desc.length < 20 || desc.length > 600) faltantes.push('descripción (20 a 600 caracteres)');
         if (faltantes.length) {
           if (error) {
             error.textContent = `Revisá: ${faltantes.join(', ')}.`;
@@ -134,6 +186,7 @@ const planElegido = plans.find((p) => p.tier === planInicial);
           return;
         }
         if (error) error.hidden = true;
+        sessionStorage.setItem('publicar-ultimo', String(ahora));
         const exito = document.getElementById('form-exito');
         if (exito) exito.hidden = false;
         exito?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -143,6 +196,7 @@ const planElegido = plans.find((p) => p.tier === planInicial);
           `• Categoría: ${encodeURIComponent(categoria)}%0A` +
           `• Mi WhatsApp: ${encodeURIComponent(whatsapp)}%0A` +
           `• Plan: ${encodeURIComponent(plan)}%0A` +
+          (impulso ? `• Impulso extra: ${encodeURIComponent(impulso)}%0A` : '') +
           `• Descripción: ${encodeURIComponent(desc)}`;
         // wa.me espera el texto ya codificado; los %0A son saltos de línea
         window.open(`https://wa.me/${DESTINO}?text=${texto}`, '_blank', 'noopener,noreferrer');

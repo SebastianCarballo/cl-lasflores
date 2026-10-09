@@ -8,7 +8,7 @@ test.describe('móvil 390px', () => {
     await page.goto('/');
     const overflowHome = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflowHome).toBeLessThanOrEqual(1);
-    await expect(page.getByRole('heading', { name: /Todo Las Flores/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Lo que necesitás/ })).toBeVisible();
 
     await page.goto('/comercio/ficha-gratis-muestra/');
     await expect(page.getByRole('link', { name: /Empezar gratis con la mía/ }).last()).toBeVisible();

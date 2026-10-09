@@ -1,0 +1,77 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/Icon.astro';
+
+// EMBUDO DE CAPTACIÓN: imán de leads para comerciantes indecisos.
+// La "descarga" es un click a WhatsApp con texto pre-redactado: el lead
+// (nombre + rubro) llega directo a la bandeja del equipo. Sin backend.
+const WA_GUIA = `https://wa.me/5492224000000?text=${encodeURIComponent('Hola, quiero la guía "Checklist WhatsApp" para mi negocio. Mi rubro es: ')}`;
+
+const CHECKLIST = [
+  { t: 'Poné una foto que se entienda', d: 'Tu logo o el frente del local, nítido y sin texto chico.' },
+  { t: 'Mantené tus horarios al día', d: 'Nada espanta más que un "¿abren hoy?" sin respuesta.' },
+  { t: 'Respondé en menos de 1 hora', d: 'El que responde primero, vende primero.' },
+  { t: 'Activá tu mensaje de bienvenida', d: 'Presentá tu negocio aunque estés ocupado.' },
+  { t: 'Tené tu lista de precios a mano', d: 'La mayoría te pregunta el precio de una: tenela lista para pegar.' },
+  { t: 'Dirección + cómo llegar', d: 'Ubicación con punto de referencia de Las Flores.' },
+  { t: 'Pedí reseñas a clientes contentos', d: 'Un "¿me dejás tu opinión?" multiplica la confianza.' },
+  { t: 'Estados con ofertas cada semana', d: 'Una promo por semana te mantiene presente.' },
+  { t: 'Un solo número para todo', d: 'El mismo de la ficha, el cartel y las redes.' },
+  { t: 'Preguntá cómo llegaron', d: 'Si no medís, no sabés qué funciona.' },
+];
+---
+
+<BaseLayout
+  title="Guía gratis: checklist WhatsApp para tu negocio"
+  description="Checklist gratuito de 10 puntos para recibir clientes por WhatsApp en Las Flores. Recibila por WhatsApp y aplícala hoy."
+>
+  <section class="bg-ink-950 text-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-14 text-center">
+      <p class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold bg-[#25D366] text-white mb-4">🎁 GUÍA GRATIS</p>
+      <h1 class="font-display font-extrabold text-4xl sm:text-5xl tracking-tight text-balance">
+        Tu WhatsApp listo para vender en 10 pasos
+      </h1>
+      <p class="mt-4 text-slate-300 max-w-xl mx-auto">
+        El checklist que les pasamos a los primeros comercios del directorio. Te lo enviamos
+        por WhatsApp para que lo apliques hoy mismo.
+      </p>
+      <a
+        href={WA_GUIA}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-event="guia_descarga"
+        class="mt-6 inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-[#25D366] text-white font-bold text-lg hover:brightness-95 active:scale-[0.98] transition btn-sheen">
+        <Icon name="whatsapp" size={22} /> Quiero mi checklist por WhatsApp
+      </a>
+      <p class="mt-3 text-xs text-slate-400">Gratis · Sin spam · Te la manda una persona</p>
+    </div>
+  </section>
+
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <h2 class="font-display font-bold text-2xl">Lo que vas a dejar listo hoy</h2>
+    <ol class="mt-6 space-y-3">
+      {
+        CHECKLIST.map((item, i) => (
+          <li class="flex gap-4 bg-white rounded-2xl border border-ink-100 p-4 sm:p-5 shadow-sm">
+            <span class="w-9 h-9 shrink-0 rounded-xl bg-brand-600/10 text-brand-700 grid place-items-center font-display font-extrabold" aria-hidden="true">
+              {i + 1}
+            </span>
+            <div>
+              <h3 class="font-bold">{item.t}</h3>
+              <p class="text-sm text-slate-600 mt-0.5">{item.d}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-10 rounded-3xl bg-ink-950 text-white p-8 text-center">
+      <h2 class="font-display font-extrabold text-2xl text-balance">¿Y después de la guía?</h2>
+      <p class="mt-2 text-slate-300 text-sm">El paso 11 es aparecer en el directorio, donde los vecinos van a buscar cuando necesiten tu rubro.</p>
+      <div class="mt-5 flex flex-col sm:flex-row justify-center gap-3">
+        <a href="/publicar?ref=guia" data-event="guia_a_publicar" class="inline-flex justify-center px-6 py-3.5 rounded-xl bg-white text-ink-900 font-bold hover:bg-brand-50 active:scale-[0.98] transition">Publicar mi negocio gratis</a>
+        <a href="/planes?ref=guia" class="inline-flex justify-center px-6 py-3.5 rounded-xl border border-white/30 font-bold hover:bg-white/10 transition">Ver la Vidriera gratis 30 días</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

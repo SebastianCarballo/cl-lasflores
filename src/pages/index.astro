@@ -7,15 +7,18 @@ import SlotPublicitario from '@/components/SlotPublicitario.astro';
 import Socios from '@/components/Socios.astro';
 import InformacionUtil from '@/components/InformacionUtil.astro';
 import PlanCard from '@/components/PlanCard.astro';
+import VentasCard from '@/components/VentasCard.astro';
+import CountUp from '@astroanimate/core/CountUp';
 import Icon from '@/components/Icon.astro';
 import { listBusinesses } from '@/data/businesses';
 import { listCategories } from '@/data/categories';
 import { listPlans } from '@/data/plans';
+import { planesVisibles, PROMO_LANZAMIENTO } from '@/utils/site';
 import { organizationSchema } from '@/utils/site';
 
 const businesses = await listBusinesses();
 const categories = await listCategories();
-const plans = await listPlans();
+const plans = planesVisibles(await listPlans());
 
 const destacados = businesses.filter((b) => b.plan === 'oro' || b.featured).slice(0, 3);
 const recientes = [...businesses].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6);
@@ -49,13 +52,16 @@ const schema = [
   {/* HERO */}
   <section class="relative overflow-hidden bg-ink-950 text-white">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(51,143,250,0.28),transparent_32%),linear-gradient(120deg,#020617_0%,#0b2355_54%,#155ddc_140%)]" aria-hidden="true" />
+    <div class="absolute inset-0 aurora-layer" aria-hidden="true" />
     <div class="absolute inset-0 dot-grid dot-grid-animated opacity-70" aria-hidden="true" />
+    <div class="absolute -left-1/3 top-1/4 h-[28rem] w-[28rem] beam-conic" aria-hidden="true" />
+    <div class="absolute bottom-0 left-1/4 h-40 w-[42rem] hero-horizon" aria-hidden="true" />
     <div class="absolute -right-40 top-20 h-[34rem] w-[34rem] rounded-full border border-white/10 rotate-12" aria-hidden="true" />
     <div class="absolute -right-24 top-44 h-[26rem] w-[26rem] rounded-full border border-amber-300/20 -rotate-12" aria-hidden="true" />
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 lg:py-24">
-      <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(25rem,0.82fr)] lg:gap-16">
-        <div data-reveal>
+      <div class="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(25rem,0.82fr)] lg:gap-16" data-reveal-group>
+        <div>
           <p class="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-emerald-200">
             <span class="relative flex h-2 w-2" aria-hidden="true">
               <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75"></span>
@@ -65,10 +71,10 @@ const schema = [
           </p>
           <h1 class="mt-5 max-w-3xl font-display text-4xl font-extrabold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-[4.5rem]">
             Lo que necesitás,
-            <span class="mt-1 block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-100 to-orange-400">más cerca.</span>
+            <span class="mt-1 block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-100 to-orange-400 shine-text">más cerca.</span>
           </h1>
           <p class="mt-6 max-w-xl text-lg leading-relaxed text-slate-300 sm:text-xl">
-            Comercios, oficios y servicios de tu ciudad. Encontrá a quién llamar, compará opciones y resolvé en minutos.
+            Comercios, oficios y servicios de tu ciudad. Encontrá a quién llamar, compará opciones y resolvé más rápido.
           </p>
 
           {/* Buscador (progresivo: funciona sin JS vía GET) */}
@@ -79,7 +85,7 @@ const schema = [
               <input id="q" name="q" type="search" inputmode="search" enterkeyhint="search" placeholder="Buscá un rubro, comercio o servicio…" autocomplete="off" class="min-w-0 flex-1 py-3 text-ink-900 outline-none placeholder:text-slate-400" />
             </div>
             <button type="submit" class="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3.5 font-bold text-white transition hover:bg-brand-700 active:scale-[0.98] sm:mt-0 sm:w-auto">
-              Buscar ahora <Icon name="arrow-right" size={17} />
+              Buscar en Las Flores <Icon name="arrow-right" size={17} />
             </button>
           </form>
 
@@ -91,9 +97,9 @@ const schema = [
           </div>
         </div>
 
-        <div class="relative mx-auto w-full max-w-[31rem] lg:mx-0" data-reveal>
+        <div class="relative mx-auto w-full max-w-[31rem] lg:mx-0">
           <div class="absolute -inset-5 rounded-[2.5rem] bg-brand-400/15 blur-3xl" aria-hidden="true" />
-          <div class="relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/[0.08] p-3 shadow-2xl backdrop-blur-xl">
+          <div class="relative overflow-hidden rounded-[2rem] border border-white/20 bg-white/[0.08] p-3 shadow-2xl backdrop-blur-xl float-soft">
             <div class="relative min-h-[25rem] overflow-hidden rounded-[1.5rem] bg-[#dcecff] p-4 text-ink-900 sm:min-h-[29rem]">
               <div class="absolute inset-0 opacity-60" aria-hidden="true">
                 <div class="absolute left-[12%] top-[18%] h-px w-[84%] rotate-[18deg] bg-brand-600/25" />
@@ -104,23 +110,23 @@ const schema = [
               </div>
               <div class="relative flex items-center justify-between">
                 <span class="rounded-full bg-white/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-brand-700 shadow-sm">Mapa local</span>
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-950 px-3 py-1.5 text-[11px] font-bold text-white"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400" /> En vivo</span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-ink-950 px-3 py-1.5 text-[11px] font-bold text-white"><span class="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Las Flores</span>
               </div>
-              <div class="absolute left-[19%] top-[31%] grid h-9 w-9 place-items-center rounded-full border-4 border-white bg-brand-600 text-white shadow-lg shadow-brand-900/30"><Icon name="pin" size={16} /></div>
-              <div class="absolute right-[18%] top-[22%] grid h-8 w-8 place-items-center rounded-full border-4 border-white bg-amber-400 text-sm font-bold text-ink-950 shadow-lg" aria-label="Negocio destacado">★</div>
-              <div class="absolute right-[25%] bottom-[28%] grid h-9 w-9 place-items-center rounded-full border-4 border-white bg-emerald-500 text-white shadow-lg"><Icon name="whatsapp" size={15} /></div>
+              <div class="absolute left-[19%] top-[31%] grid h-9 w-9 place-items-center rounded-full border-4 border-white bg-brand-600 text-white shadow-lg shadow-brand-900/30 float-soft" aria-hidden="true"><Icon name="pin" size={16} /></div>
+              <div class="absolute right-[18%] top-[22%] grid h-8 w-8 place-items-center rounded-full border-4 border-white bg-amber-400 text-sm font-bold text-ink-950 shadow-lg float-soft-delayed" aria-label="Negocio destacado">★</div>
+              <div class="absolute right-[25%] bottom-[28%] grid h-9 w-9 place-items-center rounded-full border-4 border-white bg-emerald-500 text-white shadow-lg float-soft" aria-hidden="true"><Icon name="whatsapp" size={15} /></div>
               <div class="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/80 bg-white/90 p-4 shadow-xl backdrop-blur">
                 <div class="flex items-start justify-between gap-3">
                   <div>
-                    <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-brand-600">Recomendado cerca tuyo</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-brand-600">Recomendado cerca de vos</p>
                     <h2 class="mt-1 font-display text-lg font-bold leading-tight">{destacados[0]?.name ?? 'Tu próximo contacto'}</h2>
-                    <p class="mt-1 text-xs text-slate-500">{destacados[0]?.shortDescription ?? 'Negocios y servicios locales verificados'}</p>
+                    <p class="mt-1 text-xs text-slate-500">{destacados[0]?.shortDescription ?? 'Negocios y servicios de Las Flores'}</p>
                   </div>
                   <span class="rounded-lg bg-amber-100 px-2 py-1 text-xs font-bold text-amber-700">★ Destacado</span>
                 </div>
                 <div class="mt-3 flex items-center justify-between border-t border-ink-100 pt-3 text-xs font-semibold text-slate-600">
                   <span>Las Flores · Buenos Aires</span>
-                  <span class="text-emerald-600">Disponible hoy</span>
+                  <span class="text-emerald-600">Contacto directo</span>
                 </div>
               </div>
             </div>
@@ -138,11 +144,11 @@ const schema = [
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-12" aria-label="Confianza de la comunidad">
     <dl class="grid grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto text-center">
       <div class="bg-white rounded-2xl border border-ink-100 px-3 py-4 shadow-sm">
-        <dd class="font-display font-extrabold text-2xl text-ink-900">{businesses.length}</dd>
+        <dd class="font-display font-extrabold text-2xl text-ink-900 tabular-nums"><CountUp value={businesses.length} duration={1200} enhance fontSize="inherit" textColor="inherit" fontFamily="inherit" /></dd>
         <dt class="text-xs text-slate-500 mt-1">{businesses.length === 1 ? 'negocio publicado' : 'negocios publicados'}</dt>
       </div>
       <div class="bg-white rounded-2xl border border-ink-100 px-3 py-4 shadow-sm">
-        <dd class="font-display font-extrabold text-2xl text-ink-900">{categories.length}</dd>
+        <dd class="font-display font-extrabold text-2xl text-ink-900 tabular-nums"><CountUp value={categories.length} duration={1400} enhance fontSize="inherit" textColor="inherit" fontFamily="inherit" /></dd>
         <dt class="text-xs text-slate-500 mt-1">categorías</dt>
       </div>
       <div class="bg-white rounded-2xl border border-ink-100 px-3 py-4 shadow-sm">
@@ -161,12 +167,61 @@ const schema = [
     </dl>
   </section>
 
+  {/* HISTORIA — storytelling de comunidad: enredo → idea → tu parte */}
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-16" aria-label="Nuestra historia">
+    <div class="relative overflow-hidden rounded-[2rem] border border-brand-100 bg-gradient-to-b from-brand-50/70 to-white p-8 sm:p-12">
+      <div class="max-w-3xl mx-auto text-center" data-reveal>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-600 mb-3">🎉 Nuestra historia</p>
+        <h2 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tight text-balance">
+          De un chat desbordado al directorio de todos
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed text-pretty">
+          Todo empezó con un problema bien nuestro: necesitar un plomero era revolver grupos,
+          reenviar flyers viejos y rogar que alguien conteste. Dijimos basta — Las Flores
+          merece su propio lugar en internet, ordenado, confiable y gratis para empezar.
+        </p>
+      </div>
+
+      <ol class="mt-10 grid md:grid-cols-3 gap-4 max-w-5xl mx-auto" data-reveal-group>
+        <li class="bg-white rounded-2xl border border-ink-100 p-6 shadow-sm">
+          <p class="font-display font-extrabold text-3xl text-brand-200" aria-hidden="true">01</p>
+          <h3 class="mt-2 font-display font-bold text-lg">El enredo</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
+            La info comercial vivía dispersa en chats y redes: lenta de encontrar,
+            imposible de verificar, un caldo de cultivo para estafas.
+          </p>
+        </li>
+        <li class="bg-white rounded-2xl border border-ink-100 p-6 shadow-sm">
+          <p class="font-display font-extrabold text-3xl text-brand-200" aria-hidden="true">02</p>
+          <h3 class="mt-2 font-display font-bold text-lg">La idea</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
+            Un solo lugar ordenado por rubro, con contacto directo a WhatsApp
+            y perfiles verificados. Simple como tiene que ser.
+          </p>
+        </li>
+        <li class="bg-white rounded-2xl border-2 border-brand-300 p-6 shadow-md">
+          <p class="font-display font-extrabold text-3xl text-brand-600" aria-hidden="true">03</p>
+          <h3 class="mt-2 font-display font-bold text-lg">Tu parte 🙌</h3>
+          <p class="mt-1.5 text-sm text-slate-600 leading-relaxed">
+            Cada comercio que se suma lo hace más útil para todos. Publicá el tuyo
+            gratis y formá parte desde el primer día.
+          </p>
+        </li>
+      </ol>
+
+      <div class="mt-8 flex flex-col sm:flex-row justify-center gap-3" data-reveal>
+        <a href="/publicar" data-event="cta_historia" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-brand-600 text-white font-bold hover:bg-brand-700 active:scale-[0.98] transition btn-sheen">Sumar mi comercio <Icon name="arrow-right" size={16} /></a>
+        <a href="/nosotros" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border-2 border-ink-200 font-bold hover:border-ink-900 transition">Conocé nuestra historia</a>
+      </div>
+    </div>
+  </section>
+
   {/* CATEGORÍAS */}
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-14">
     <SectionHeading
       eyebrow="Explorá"
       title="Buscá por categoría"
-      description="Gastronomía, oficios, inmuebles, vehículos, empleo y más — todo de vecinos verificados."
+      description="Gastronomía, oficios, inmuebles, vehículos, empleo y más — en un solo lugar."
     />
     <div class="mt-8" data-reveal><CategoryGrid /></div>
   </section>
@@ -178,16 +233,16 @@ const schema = [
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-16">
     <div class="flex items-end justify-between gap-4 mb-7">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-600 mb-2">★ Alianza Oro</p>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-600 mb-2">★ Vidriera Digital</p>
         <h2 class="font-display font-bold text-3xl tracking-tight">Comercios destacados</h2>
       </div>
       <a href="/directorio" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline slide-arrow">Ver directorio <Icon name="arrow-right" size={15} /></a>
     </div>
     <div class="grid items-stretch grid-cols-1 sm:grid-cols-3 gap-5">
       {destacados.map((b) => <BusinessCard business={b} />)}
-      <SlotPublicitario variante="oro" plan="oro" titulo="Tu marca acá" texto="Espacio Oro: home, borde dorado y difusión en redes." />
-      <SlotPublicitario variante="oro" plan="oro" titulo="Tu marca acá" texto="El segundo destacado semanal sigue libre." />
-      <SlotPublicitario variante="oro" plan="oro" titulo="Tu marca acá" texto="Tercer lugar premium: rotación en home incluida." />
+      <SlotPublicitario variante="oro" plan="oro" titulo="Tu marca acá" texto="Aparecé en el inicio con borde dorado y difusión en nuestras redes." />
+      <SlotPublicitario variante="oro" plan="oro" titulo="Tu logo acá" texto="Lugar de lanzamiento: gratis por 30 días." />
+      <SlotPublicitario variante="oro" plan="oro" titulo="Tu rubro acá" texto="Visible en el inicio toda la semana." />
     </div>
   </section>
 
@@ -197,21 +252,21 @@ const schema = [
       <div class="absolute inset-0 dot-grid" aria-hidden="true" />
       <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-amber-500/15 blur-3xl float-soft" aria-hidden="true" />
       <div class="relative max-w-xl" data-reveal>
-        <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Espacio sponsor · Tu marca acá</p>
-        <h2 class="mt-2 font-display font-extrabold text-2xl sm:text-4xl tracking-tight text-balance">Llegá a los vecinos cada semana</h2>
-        <p class="mt-3 text-slate-300">Banner rotativo y destacados de 7 o 15 días para eventos, instituciones y marcas de la zona.</p>
-        <a href="/contacto" data-event="cta_publicidad" class="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-ink-950 font-bold text-sm hover:brightness-105 active:scale-[0.98] transition btn-sheen slide-arrow">Quiero publicitar <Icon name="arrow-right" size={15} /></a>
+        <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Espacio publicitario · Tu marca acá</p>
+        <h2 class="mt-2 font-display font-extrabold text-2xl sm:text-4xl tracking-tight text-balance">Un lugar bien visible del directorio</h2>
+        <p class="mt-3 text-slate-300">Banner y destacados para eventos, instituciones y marcas de la zona.</p>
+        <a href="/contacto" data-event="cta_publicidad" class="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-ink-950 font-bold text-sm hover:brightness-105 active:scale-[0.98] transition btn-sheen slide-arrow">Quiero anunciar acá <Icon name="arrow-right" size={15} /></a>
       </div>
     </div>
   </section>
 
   {/* RECIENTES */}
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-16">
-    <SectionHeading eyebrow="Novedades" title="Últimos agregados" description="Los perfiles más nuevos de la comunidad." />
+    <SectionHeading eyebrow="Novedades" title="Recién llegados" description="Los negocios más nuevos de Las Flores." />
     <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5" data-reveal-group>
       {recientes.map((b) => <BusinessCard business={b} />)}
       <SlotPublicitario titulo="Tu negocio acá" texto="Publicá gratis y aparecé junto a los destacados." />
-      <SlotPublicitario titulo="Tu negocio acá" texto="Sin tarjeta, en 2 minutos, directo a tu WhatsApp." />
+      <SlotPublicitario titulo="Tu negocio acá" texto="Sin tarjeta, en pocos pasos, directo a tu WhatsApp." />
     </div>
     <div class="text-center mt-8">
       <a href="/directorio" class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:underline slide-arrow">Ver todo el directorio <Icon name="arrow-right" size={15} /></a>
@@ -239,7 +294,7 @@ const schema = [
             <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Paso 1</span>
           </div>
           <h3 class="mt-4 font-display font-bold text-xl">Buscá</h3>
-          <p class="mt-1.5 text-sm text-slate-400 leading-relaxed">Filtrá por categoría o escribí lo que necesitás. Los destacados van primero.</p>
+          <p class="mt-1.5 text-sm text-slate-400 leading-relaxed">Filtrá por categoría o escribí lo que necesitás. Los destacados pagos van primero.</p>
           <div class="mt-5 rounded-xl bg-white/10 border border-white/10 p-2 flex items-center gap-2" aria-hidden="true">
             <span class="flex-1 text-xs text-slate-400 px-2">plomero urgente…</span>
             <span class="w-9 h-9 rounded-lg bg-brand-500 grid place-items-center"><Icon name="search" size={15} class="text-white" /></span>
@@ -253,7 +308,7 @@ const schema = [
             <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Paso 2</span>
           </div>
           <h3 class="mt-4 font-display font-bold text-xl">Verificá</h3>
-          <p class="mt-1.5 text-sm text-slate-400 leading-relaxed">Priorizamos perfiles con identidad confirmada para cuidarte de estafas.</p>
+          <p class="mt-1.5 text-sm text-slate-400 leading-relaxed">Priorizamos perfiles con identidad confirmada para que no caigas en estafas.</p>
           <div class="mt-5 rounded-xl bg-white/10 border border-white/10 p-3 flex items-center gap-2.5" aria-hidden="true">
             <span class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-300 to-orange-500 shrink-0"></span>
             <span class="flex-1"><span class="block h-2 rounded-full bg-white/30 w-2/3"></span><span class="block h-2 rounded-full bg-white/15 w-1/3 mt-1.5"></span></span>
@@ -268,16 +323,16 @@ const schema = [
             <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Paso 3</span>
           </div>
           <h3 class="mt-4 font-display font-bold text-xl">Contactá</h3>
-          <p class="mt-1.5 text-sm text-slate-400 leading-relaxed">Un botón con el mensaje ya redactado. Directo con el comercio, sin intermediarios.</p>
+          <p class="mt-1.5 text-sm text-slate-400 leading-relaxed">Tocás un botón con el mensaje ya redactado y hablás directo con el comercio, sin intermediarios.</p>
           <div class="mt-5 space-y-2" aria-hidden="true">
-            <p class="bg-white text-ink-900 text-xs rounded-2xl rounded-bl-md px-3 py-2.5 w-fit max-w-full">Hola, vi tu local en Clasificados…</p>
+            <p class="bg-white text-ink-900 text-xs rounded-2xl rounded-bl-md px-3 py-2.5 w-fit max-w-full">Hola, vi tu publicación en Clasificados…</p>
             <p class="rounded-xl bg-[#25D366] text-white text-sm font-bold px-4 py-2.5 flex items-center gap-2 w-fit"><Icon name="whatsapp" size={16} class="text-white" /> Enviar</p>
           </div>
         </li>
       </ol>
 
       <div class="relative mt-10 flex flex-col sm:flex-row gap-3" data-reveal>
-        <a href="/directorio" data-event="cta_directorio" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-ink-900 font-bold hover:bg-brand-50 active:scale-[0.98] transition btn-sheen slide-arrow">Explorar el directorio <Icon name="arrow-right" size={17} /></a>
+        <a href="/directorio" data-event="cta_directorio" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-ink-900 font-bold hover:bg-brand-50 active:scale-[0.98] transition btn-sheen slide-arrow">Buscar lo que necesito <Icon name="arrow-right" size={17} /></a>
         <a href="/publicar" data-event="cta_publicar" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-white/30 font-bold hover:bg-white/10 active:scale-[0.98] transition">Publicar mi negocio</a>
       </div>
     </div>
@@ -285,9 +340,15 @@ const schema = [
 
   {/* PLANES */}
   <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-16" id="planes">
-    <SectionHeading eyebrow="Para negocios" title="Planes que hacen crecer tu visibilidad" description="Empezá gratis y escalá cuando necesites más clientes. Sin desarrollos costosos." />
-    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5" data-reveal-group>
+    <SectionHeading eyebrow="Para negocios" title="Planes para que te encuentren más fácil" description="Empezá gratis y escalá cuando necesites más clientes. Sin permanencia." />
+    {PROMO_LANZAMIENTO.activa && (
+      <p role="status" class="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800">
+        <span aria-hidden="true">🚀</span> <span><strong>Lanzamiento:</strong> Vidriera Digital completa gratis por 30 días.</span>
+      </p>
+    )}
+    <div class:list={['mt-10 grid gap-5 sm:grid-cols-2', plans.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-3 max-w-5xl mx-auto']} data-reveal-group>
       {plans.map((p) => <PlanCard plan={p} />)}
+      <VentasCard />
     </div>
   </section>
 
@@ -297,13 +358,13 @@ const schema = [
   {/* CTA FINAL */}
   <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
     <div class="rounded-3xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white p-10 sm:p-14 text-center">
-      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-balance">¿Tenés un comercio en Las Flores?</h2>
-      <p class="mt-3 text-brand-100 max-w-xl mx-auto">Publicá gratis en 2 minutos y empezá a recibir consultas directas a tu WhatsApp.</p>
+      <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-balance">¿Tenés un negocio en Las Flores?</h2>
+      <p class="mt-3 text-brand-100 max-w-xl mx-auto">Publicá gratis en pocos minutos y empezá a recibir consultas directas a tu WhatsApp.</p>
       <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
         <a href="/publicar" data-event="cta_publicar" class="px-7 py-3.5 rounded-xl bg-white text-brand-700 font-bold hover:bg-brand-50 active:scale-[0.98] transition">Publicar mi negocio gratis</a>
         <a href="/planes" class="px-7 py-3.5 rounded-xl border border-white/40 font-bold hover:bg-white/10">Ver planes</a>
       </div>
-      <p class="mt-4 text-sm text-brand-100">✓ Gratis · ✓ Sin tarjeta · ✓ Listo en 2 minutos</p>
+      <p class="mt-4 text-sm text-brand-100">✓ Gratis · ✓ Sin tarjeta · ✓ En pocos pasos</p>
     </div>
   </section>
 </BaseLayout>

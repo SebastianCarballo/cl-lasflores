@@ -15,14 +15,14 @@ test.describe('directorio', () => {
     await expect(page.locator('#resultados [data-business-card]')).toHaveCount(1);
   });
 
-  test('modelos de muestra: uno por plan con sus features reales', async ({ page }) => {
+  test('modelos de muestra: uno por plan visible con sus features reales (lanzamiento: 2)', async ({ page }) => {
     await page.goto('/directorio');
     const modelos = page.locator('[data-modelo-plan]');
-    await expect(modelos).toHaveCount(4);
-    await expect(page.locator('[data-modelo-plan="oro"]')).toContainText(/Difusión en redes/);
+    await expect(modelos).toHaveCount(2);
+    await expect(page.locator('[data-modelo-plan="oro"]')).toContainText(/compartimos en nuestras redes/);
     await expect(page.locator('[data-modelo-plan="gratis"]')).toContainText(/Sin botón directo/);
-    await page.locator('[data-modelo-plan="bronce"] a').click();
-    await expect(page).toHaveURL(/\/publicar\?plan=bronce/);
+    await page.locator('[data-modelo-plan="oro"] a').click();
+    await expect(page).toHaveURL(/\/publicar\?plan=oro/);
   });
 
   test('filtros rápidos por categoría con aria-current', async ({ page }) => {

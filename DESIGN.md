@@ -104,7 +104,7 @@ The visual language combines editorial confidence with practical utility. Sora g
 
 - **Primary:** Clasificados blue is used for links, primary actions and active states.
 - **Secondary:** Deep ink anchors the header, hero sections and high-contrast content blocks.
-- **Accent:** Amber signals featured Oro listings, highlights and important promotional emphasis.
+- **Accent:** Amber signals featured Vidriera Digital listings, highlights and important promotional emphasis.
 - **Surface:** White surfaces sit on the soft slate background. Borders use the same cool neutral family and remain subtle.
 - **Text:** Use deep ink for content and muted slate for supporting information. Do not use light gray text on white for essential content.
 
@@ -135,7 +135,7 @@ Use rounded corners consistently: `sm` for controls, `md` for compact panels and
 - **Business card:** White surface, subtle border, clear plan hierarchy, image with stable aspect ratio and a direct WhatsApp action when available.
 - **Search:** A labeled input paired with a category control and a visible submit action. It must work with a normal GET request without JavaScript.
 - **Navigation:** Desktop links expose the current page. Mobile navigation uses a native disclosure and closes on Escape or outside click.
-- **Featured listing:** Use amber sparingly for Oro status; never rely on color alone to communicate plan or verification.
+- **Featured listing:** Use amber sparingly for Vidriera Digital status; never rely on color alone to communicate plan or verification.
 
 ## Do's and Don'ts
 

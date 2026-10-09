@@ -48,9 +48,9 @@ const businesses = defineCollection({
       .optional(),
     latitude: z.number().min(-90).max(90).optional(),
     longitude: z.number().min(-180).max(180).optional(),
-    instagram: z.string().url().optional(),
-    facebook: z.string().url().optional(),
-    website: z.string().url().optional(),
+    instagram: z.string().url().regex(/^https:\/\//, 'Solo URLs https').optional(),
+    facebook: z.string().url().regex(/^https:\/\//, 'Solo URLs https').optional(),
+    website: z.string().url().regex(/^https:\/\//, 'Solo URLs https').optional(),
     createdAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato YYYY-MM-DD'),
   }),
 });

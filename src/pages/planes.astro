@@ -1,48 +1,71 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PlanCard from '@/components/PlanCard.astro';
+import VentasCard from '@/components/VentasCard.astro';
 import { listPlans } from '@/data/plans';
-import { faqPageSchema } from '@/utils/site';
+import { faqPageSchema, planesVisibles, PROMO_LANZAMIENTO } from '@/utils/site';
 
-const plans = await listPlans();
+const plans = planesVisibles(await listPlans());
 
 // AEO: respuestas directas y cortas, misma fuente para el HTML visible y el schema.
 const faqs = [
   { q: '¿Puedo cambiar de plan?', a: 'Sí, subís o bajás cuando quieras. El cambio aplica al siguiente ciclo, sin permanencia.' },
-  { q: '¿Cómo consigo el badge Verificado?', a: 'Desde el plan Plata verificamos identidad, dirección y redes. Tarda de 24 a 48 horas.' },
-  { q: '¿Mi negocio aparece en Google?', a: 'Sí. Cada ficha usa datos estructurados LocalBusiness y SEO local para Las Flores.' },
-  { q: '¿Cuánto cuesta publicar?', a: 'El plan Gratis cuesta $0. Bronce $5.000, Plata $12.000 y Oro $25.000 por mes.' },
+  { q: '¿Cómo consigo el badge Verificado?', a: 'Con la Vidriera Digital verificamos identidad, dirección y redes. Tarda de 24 a 48 horas.' },
+  { q: '¿Mi negocio aparece en Google?', a: 'Sí. Tu negocio aparece en Google cuando un vecino busca tu rubro en Las Flores.' },
+  { q: '¿Cuánto cuesta publicar?', a: 'El plan Gratis cuesta $0 para siempre. La Vidriera Digital cuesta $25.000 por mes, gratis los primeros 30 días por lanzamiento.' },
 ];
 const schema = faqPageSchema(faqs);
 ---
 
 <BaseLayout
   title="Planes y precios para comercios"
-  description="Planes Gratis, Bronce, Plata y Oro para comercios y oficios de Las Flores. Visibilidad en Google, botón de WhatsApp y destacados."
+  description="Planes Gratis, Contacto Directo, Comercio Verificado y Vidriera Digital para comercios y oficios de Las Flores. Visibilidad en Google, botón de WhatsApp y destacados."
   schema={schema}
 >
   <section class="bg-ink-950 text-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-14 text-center">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Suscripción mensual · Sin permanencia</p>
-      <h1 class="mt-3 font-display font-extrabold text-4xl sm:text-5xl">Un plan para cada etapa de tu negocio</h1>
-      <p class="mt-4 text-slate-300">Presencia profesional sin pagar un desarrollo web. Escalá de Gratis a Oro cuando quieras.</p>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Suscripción mensual · Sin permanencia · Precios de lanzamiento</p>
+      <h1 class="mt-3 font-display font-extrabold text-4xl sm:text-5xl">Empezá gratis y subí a Vidriera cuando quieras</h1>
+      <p class="mt-4 text-slate-300">Tené tu ficha profesional sin pagar una página web. Sin tarjeta.</p>
+      {PROMO_LANZAMIENTO.activa && (
+        <p role="status" class="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-400/15 border border-emerald-300/40 text-sm font-bold text-emerald-200">
+          <span aria-hidden="true">🚀</span> {PROMO_LANZAMIENTO.titular}: {PROMO_LANZAMIENTO.texto}
+        </p>
+      )}
     </div>
   </section>
 
   <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class:list={['mt-2 grid gap-5 sm:grid-cols-2', plans.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-3 max-w-5xl mx-auto']}>
       {plans.map((p) => <PlanCard plan={p} />)}
+      <VentasCard />
+    </div>
+
+    {/* VENTA GUIADA: el que duda entre planes se decide acá */}
+    <div class="mt-12 bg-white rounded-3xl border border-ink-100 p-7" aria-label="Guía para elegir plan">
+      <h2 class="font-display font-bold text-xl">¿Cuál me conviene?</h2>
+      <ul class="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
+        <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Recién arrancás?</strong> Gratis: probá si te sirve, sin pagar. <a href="/publicar" class="text-brand-700 font-bold underline">Empezá gratis</a></li>
+        {!PROMO_LANZAMIENTO.activa && (
+          <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Vivís del contacto directo?</strong> (plomero, flete, gasista) Contacto Directo con WhatsApp. <a href="/publicar?plan=bronce" class="text-brand-700 font-bold underline">Elegir Contacto Directo</a></li>
+        )}
+        {!PROMO_LANZAMIENTO.activa && (
+          <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Tenés local y querés reputación?</strong> Comercio Verificado con badge y catálogo. <a href="/publicar?plan=plata" class="text-brand-700 font-bold underline">Elegir Comercio Verificado</a></li>
+        )}
+        <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Querés liderar tu rubro?</strong> Vidriera Digital en el inicio, gratis por 30 días por lanzamiento. <a href="/publicar?plan=oro" class="text-brand-700 font-bold underline">Quiero mi Vidriera</a></li>
+      </ul>
+      <p class="mt-4 text-sm text-slate-600">¿Todavía no te decidís? <a href="/guia-whatsapp" class="text-brand-700 font-bold underline">Llevate gratis el checklist de WhatsApp</a> y después publicá con todo listo.</p>
     </div>
 
     <div class="mt-12 grid md:grid-cols-2 gap-6">
       <div class="bg-white rounded-3xl border border-ink-100 p-7">
-        <h2 class="font-display font-bold text-xl">Ingresos extra: destacados temporales</h2>
+        <h2 class="font-display font-bold text-xl">Impulsos puntuales: más visibilidad cuando lo necesites</h2>
         <ul class="mt-4 space-y-2 text-sm text-slate-600">
-          <li>🚀 <strong>Push 7 días:</strong> cima de tu categoría + insignia “Destacado”.</li>
-          <li>🔥 <strong>Push 15 días:</strong> incluye difusión en Instagram y Facebook.</li>
+          <li>🚀 <strong>Push 7 días:</strong> quedás primero en tu categoría con sello Destacado. Precio a confirmar por WhatsApp.</li>
+          <li>🔥 <strong>Push 15 días:</strong> además lo compartimos en nuestro Instagram y Facebook.</li>
           <li>🖼️ <strong>Banner rotativo:</strong> para eventos, instituciones y marcas regionales.</li>
         </ul>
-        <a href="/contacto" class="mt-5 inline-flex px-5 py-3 rounded-xl bg-ink-900 text-white text-sm font-bold">Consultar impulsos</a>
+        <a href="/contacto" class="mt-5 inline-flex px-5 py-3 rounded-xl bg-ink-900 text-white text-sm font-bold">Preguntar por WhatsApp cuánto sale impulsar</a>
       </div>
       <div class="bg-white rounded-3xl border border-ink-100 p-7 faq">
         <h2 class="font-display font-bold text-xl">Preguntas frecuentes</h2>

@@ -6,7 +6,7 @@ test.describe('home', () => {
     page.on('pageerror', (e) => errores.push(String(e)));
     await page.goto('/');
     await expect(page).toHaveTitle(/Clasificados Las Flores/);
-    await expect(page.getByRole('heading', { name: /Todo Las Flores/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Lo que necesitás/ })).toBeVisible();
     await expect(page.getByRole('search')).toBeVisible();
     await expect(page.locator('#conteo, dl').first()).toBeVisible();
     expect(errores).toEqual([]);
@@ -22,9 +22,10 @@ test.describe('home', () => {
 
   test('stats únicas + secciones pobladas al hacer scroll', async ({ page }) => {
     await page.goto('/');
-    // Una sola banda de números (no duplicada en hero)
-    await expect(page.locator('text=/negocios? publicados?/')).toHaveCount(1);
-    for (const titulo of ['Buscá por categoría', 'Comercios destacados', 'Últimos agregados']) {
+    // Una sola banda de números (no duplicada en hero): la de Confianza
+    const banda = page.locator('section[aria-label="Confianza de la comunidad"]');
+    await expect(banda).toContainText(/negocio publicado/);
+    for (const titulo of ['Buscá por categoría', 'Comercios destacados', 'Recién llegados']) {
       await expect(page.getByRole('heading', { name: titulo })).toBeVisible();
     }
     // Las cards aparecen al scrollear (reveals) + slots "publicitá aquí" poblando la grilla

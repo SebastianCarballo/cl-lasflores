@@ -22,11 +22,22 @@ async function loadCollection(dir) {
   return entries;
 }
 
+// Caché en memoria con TTL: evita re-leer todo el FS en cada invocación.
+const CACHE_TTL_MS = 60_000;
+const cache = new Map();
+async function cachedCollection(dir) {
+  const hit = cache.get(dir);
+  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.data;
+  const data = await loadCollection(dir);
+  cache.set(dir, { at: Date.now(), data });
+  return data;
+}
+
 const norm = (s) =>
   String(s ?? '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '');
+    .replace(/[\u0300-\u036f]/g, '');
 
 const PLAN_ORDER = { oro: 0, plata: 1, bronce: 2, gratis: 3 };
 const rank = (list) =>
@@ -42,17 +53,18 @@ server.registerTool(
   {
     title: 'Buscar negocios en el directorio',
     description:
-      'Busca comercios, oficios y servicios de Las Flores por texto libre y/o categoría. Devuelve ordenados por plan (Oro primero).',
+      'Busca comercios, oficios y servicios de Las Flores por texto libre y/o categoría. Devuelve ordenados por plan (Vidriera Digital primero).',
     inputSchema: {
-      consulta: z.string().describe('Texto libre: ej "plomero", "pizza", "alquiler"').optional(),
+      consulta: z.string().max(200).describe('Texto libre: ej "plomero", "pizza", "alquiler"').optional(),
       categoria: z
         .enum(['gastronomia', 'servicios', 'comercios', 'inmuebles', 'vehiculos', 'empleo', 'salud', 'educacion'])
         .describe('Filtra por categoría')
         .optional(),
+      limite: z.number().int().min(1).max(50).optional().describe('Máximo de resultados (defecto 20)'),
     },
   },
-  async ({ consulta = '', categoria }) => {
-    const all = await loadCollection('businesses');
+  async ({ consulta = '', categoria, limite = 20 }) => {
+    const all = await cachedCollection('businesses');
     const q = norm(consulta.trim());
     const words = q ? q.split(/\s+/) : [];
     const out = rank(
@@ -74,7 +86,8 @@ server.registerTool(
           verificado: b.verified,
           whatsapp: b.hasWhatsAppButton ? b.whatsapp ?? null : null,
           ficha: `https://clasificadoslasflores.com.ar/comercio/${b.slug}`,
-        })),
+        }))
+        .slice(0, limite),
     );
     return { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] };
   },
@@ -85,10 +98,10 @@ server.registerTool(
   {
     title: 'Ver ficha completa de un negocio',
     description: 'Devuelve todos los datos de un negocio por su slug.',
-    inputSchema: { slug: z.string().describe('Slug del negocio, ej "ficha-gratis-muestra"') },
+    inputSchema: { slug: z.string().min(1).max(200).regex(/^[a-z0-9-]+$/).describe('Slug del negocio, ej "ficha-gratis-muestra"') },
   },
   async ({ slug }) => {
-    const all = await loadCollection('businesses');
+    const all = await cachedCollection('businesses');
     const b = all.find((x) => x.slug === slug);
     if (!b) return { content: [{ type: 'text', text: `No existe el negocio "${slug}".` }], isError: true };
     return { content: [{ type: 'text', text: JSON.stringify(b, null, 2) }] };
@@ -103,7 +116,7 @@ server.registerTool(
     inputSchema: {},
   },
   async () => {
-    const [cats, biz] = await Promise.all([loadCollection('categories'), loadCollection('businesses')]);
+    const [cats, biz] = await Promise.all([cachedCollection('categories'), cachedCollection('businesses')]);
     const out = cats.map((c) => ({
       ...c,
       publicados: biz.filter((b) => b.category === c.slug).length,
@@ -117,11 +130,11 @@ server.registerTool(
   {
     title: 'Ver planes y precios',
     description:
-      'Devuelve los 4 planes del modelo de negocio (Gratis, Bronce $5.000, Plata $12.000, Oro $25.000) con features. Úsalo cuando pregunten por publicar, precios o visibilidad.',
+      'Devuelve los 4 planes del modelo de negocio (Gratis, Contacto Directo $5.000, Comercio Verificado $12.000, Vidriera Digital $25.000) con features. Úsalo cuando pregunten por publicar, precios o visibilidad.',
     inputSchema: {},
   },
   async () => {
-    const plans = await loadCollection('plans');
+    const plans = await cachedCollection('plans');
     const order = ['gratis', 'bronce', 'plata', 'oro'];
     plans.sort((a, b) => order.indexOf(a.slug) - order.indexOf(b.slug));
     return { content: [{ type: 'text', text: JSON.stringify(plans, null, 2) }] };

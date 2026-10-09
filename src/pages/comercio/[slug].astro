@@ -72,7 +72,7 @@ const schema = [
           )}
         </div>
         <div class="mt-3 flex items-center gap-4">
-          {/* Logo: incluido desde Bronce en adelante (Gratis no tiene) */}
+          {/* Logo: incluido desde Contacto Directo en adelante (Gratis no tiene) */}
           {business.plan !== 'gratis' && (
             <span
               class="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-brand-600 to-indigo-600 text-white grid place-items-center font-display font-extrabold text-2xl"
@@ -95,7 +95,7 @@ const schema = [
       <div class="mt-6 relative rounded-3xl overflow-hidden border border-ink-100 shadow-sm bg-ink-100">
         <Foto src={business.image} alt={business.name} widths={[800, 1200]} sizes="(max-width: 1024px) 100vw, 66vw" class="w-full aspect-[16/9] object-cover" loading="eager" decoding="async" />
         <div class="absolute top-4 left-4 flex gap-2">
-          {business.plan === 'oro' && <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-500">★ PLAN ORO</span>}
+          {business.plan === 'oro' && <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-500">★ VIDRIERA DIGITAL</span>}
           {business.verified && (business.plan === 'plata' || business.plan === 'oro') && (
             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-ink-950/85 text-white">✓ Comercio Verificado</span>
           )}
@@ -110,7 +110,7 @@ const schema = [
         </div>
       )}
 
-      {/* Catálogo: solo Plata y Oro con items cargados */}
+      {/* Catálogo: solo Comercio Verificado y Vidriera Digital con items cargados */}
       {(business.plan === 'plata' || business.plan === 'oro') && business.catalogo && business.catalogo.length > 0 && (
         <section class="mt-6 bg-white rounded-3xl border border-ink-100 p-6 sm:p-8" aria-label={`Catálogo de ${business.name}`}>
           <h2 class="font-display font-bold text-xl">Catálogo</h2>
@@ -122,20 +122,20 @@ const schema = [
               </li>
             ))}
           </ul>
-          <p class="mt-3 text-xs text-slate-500">Precios de referencia — confirmalos por WhatsApp.</p>
+          <p class="mt-3 text-xs text-slate-500">Precios de referencia — confirmálos por WhatsApp.</p>
         </section>
       )}
 
       {related.length > 0 ? (
         <section class="mt-8" aria-label="Relacionados">
-          <h2 class="font-display font-bold text-xl mb-4">También te puede interesar</h2>
+          <h2 class="font-display font-bold text-xl mb-4">Seguí explorando tu rubro</h2>
           <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {related.map((b) => <BusinessCard business={b} />)}
           </div>
         </section>
       ) : (
         <section class="mt-8" aria-label="Tu negocio acá">
-          <SlotPublicitario titulo="Tu negocio junto a los mejores" texto="Aparecé al lado de las fichas de tu rubro." plan="plata" />
+          <SlotPublicitario titulo="Tu ficha en este rubro" texto="Aparecé en las fichas de tu rubro." plan="oro" />
         </section>
       )}
     </div>
@@ -147,20 +147,20 @@ const schema = [
         {business.demo ? (
           <>
             <a href={business.plan === 'oro' ? '/publicar?plan=oro' : '/publicar'} data-event="slot_publicar" data-props={JSON.stringify({ slug: business.slug, origen: 'ficha-demo' })} class="mt-4 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-ink-950 text-white font-bold hover:bg-ink-800 active:scale-[0.99] transition btn-sheen">
-              {business.plan === 'oro' ? '🥇 Quiero este primer lugar' : 'Empezar gratis con la mía'}
+              {business.plan === 'oro' ? '🥇 Quiero mi Vidriera acá' : 'Empezar gratis con la mía'}
             </a>
-            <p class="mt-3 text-xs text-slate-500 text-center">Modelo de muestra con fines demostrativos — no es un comercio real.</p>
+            <p class="mt-3 text-xs text-slate-500 text-center">Ficha de muestra — no es un comercio real.</p>
           </>
         ) : wa ? (
           <>
             <a href={wa} target="_blank" rel="noopener noreferrer" data-event="whatsapp_click" data-props={JSON.stringify({ slug: business.slug, plan: business.plan, origen: 'ficha' })} class="mt-4 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-[#25D366] text-white font-bold hover:brightness-95 active:scale-[0.99] transition btn-sheen">
-              <Icon name="whatsapp" size={20} /> Hablar por WhatsApp
+              <Icon name="whatsapp" size={20} /> Consultar por WhatsApp
             </a>
             <a href={`tel:+${business.phone}`} class="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-ink-900 text-ink-900 font-bold text-sm hover:bg-ink-900 hover:text-white transition">
               <Icon name="phone" size={16} /> Llamar
             </a>
             {/* HMW1: certeza antes del clic — contacto directo, sin intermediarios */}
-            <p class="mt-3 text-xs text-slate-500 text-center">Hablás directo con el negocio · El mensaje ya va redactado</p>
+            <p class="mt-3 text-xs text-slate-500 text-center">Hablás directo con el negocio, sin intermediarios.</p>
           </>
         ) : (
           <a href={`tel:+${business.phone}`} class="mt-4 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl bg-ink-900 text-white font-bold">
@@ -221,7 +221,7 @@ const schema = [
         </script>
       </div>
 
-      {/* Mapa interactivo: solo Plata y Oro con coordenadas */}
+      {/* Mapa interactivo: solo Comercio Verificado y Vidriera Digital con coordenadas */}
       {(business.plan === 'plata' || business.plan === 'oro') &&
         business.latitude !== undefined &&
         business.longitude !== undefined && (
@@ -242,7 +242,7 @@ const schema = [
             target="_blank"
             rel="noopener noreferrer"
             class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:underline slide-arrow">
-            Abrir en OpenStreetMap <Icon name="arrow-right" size={14} />
+            Cómo llegar <Icon name="arrow-right" size={14} />
           </a>
           <link
             rel="stylesheet"
@@ -269,7 +269,7 @@ const schema = [
                 maxZoom: 19,
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
               }).addTo(map);
-              L.marker([lat, lng]).addTo(map).bindPopup(el.dataset.name ?? 'Aquí estamos');
+              L.marker([lat, lng]).addTo(map).bindPopup(el.dataset.name ?? 'Acá estamos');
               el.addEventListener('focus', () => map.scrollWheelZoom.enable(), { once: true });
             };
             if (document.readyState === 'loading') {
@@ -284,8 +284,8 @@ const schema = [
 
       <div class="rounded-3xl bg-ink-950 text-white p-6">
         <p class="text-xs uppercase tracking-wider text-slate-400 font-bold">¿Es tu negocio?</p>
-        <p class="mt-1 text-sm text-slate-300">Reclamalo y subí a Plata u Oro para más clientes.</p>
-        <a href="/planes" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-ink-900 text-sm font-bold hover:bg-brand-50 transition slide-arrow">Mejorar mi plan <Icon name="arrow-right" size={15} /></a>
+        <p class="mt-1 text-sm text-slate-300">Reclamalo y pasate a Comercio Verificado o Vidriera Digital para que te encuentren más fácil.</p>
+        <a href="/planes" class="mt-3 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white text-ink-900 text-sm font-bold hover:bg-brand-50 transition slide-arrow">Ver planes <Icon name="arrow-right" size={15} /></a>
       </div>
     </aside>
   </article>
@@ -294,7 +294,7 @@ const schema = [
   <div class="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur border-t border-ink-100 p-3" style="padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));">
     {business.demo ? (
       <a href={business.plan === 'oro' ? '/publicar?plan=oro' : '/publicar'} data-event="slot_publicar" data-props={JSON.stringify({ slug: business.slug, origen: 'sticky-demo' })} class="flex items-center justify-center gap-2 w-full px-4 py-3.5 rounded-xl bg-ink-950 text-white font-bold active:scale-[0.99] transition">
-        {business.plan === 'oro' ? '🥇 Quiero este primer lugar' : 'Empezar gratis con la mía'}
+        {business.plan === 'oro' ? '🥇 Quiero mi Vidriera acá' : 'Empezar gratis con la mía'}
       </a>
     ) : wa ? (
       <a href={wa} target="_blank" rel="noopener noreferrer" data-event="whatsapp_click" data-props={JSON.stringify({ slug: business.slug, plan: business.plan, origen: 'sticky' })} class="flex items-center justify-center gap-2 w-full px-4 py-3.5 rounded-xl bg-[#25D366] text-white font-bold active:scale-[0.99] transition btn-sheen">

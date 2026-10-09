@@ -30,8 +30,17 @@ for (const f of files) {
         await readFile(dest);
         console.log(`=  ${file} (ya existe)`);
       } catch {
-        const res = await fetch(hd(url));
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 30_000);
+        let res;
+        try {
+          res = await fetch(hd(url), { signal: ctrl.signal, redirect: 'follow' });
+        } finally {
+          clearTimeout(timer);
+        }
         if (!res.ok) throw new Error(`HTTP ${res.status} en ${url}`);
+        const contentType = res.headers.get('content-type') ?? '';
+        if (!contentType.startsWith('image/')) throw new Error(`Tipo inesperado ${contentType} en ${url}`);
         await writeFile(dest, Buffer.from(await res.arrayBuffer()));
         descargadas++;
         console.log(`↓  ${file} (${(await readFile(dest)).length} bytes)`);

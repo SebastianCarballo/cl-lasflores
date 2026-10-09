@@ -1,8 +1,9 @@
 export function whatsappLink(phone: string, businessName: string): string {
+  const tel = phone.replace(/\D/g, '');
   const text = encodeURIComponent(
     `Hola ${businessName}, vi tu perfil en Clasificados Las Flores y quiero consultar por…`,
   );
-  return `https://wa.me/${phone}?text=${text}`;
+  return `https://wa.me/${tel}?text=${text}`;
 }
 
 export function formatPrice(value: number): string {
@@ -37,7 +38,26 @@ export const SITE = {
   url: 'https://clasificadoslasflores.com.ar',
   locale: 'es_AR',
   defaultImage: '/og-cover.svg',
+  // Canal comercial público del portal (ventas/soporte). No es secreto.
+  whatsapp: '5492224000000',
+  email: 'hola@clasificadoslasflores.com.ar',
 };
+
+// Promo lanzamiento: solo Gratis + Vidriera Digital visibles hasta traccionar
+// oferta. Para terminarla: `activa: false` y vuelven los 4 planes en /planes,
+// home, directorio y el select de /publicar (los slugs y ?plan= nunca cambian).
+export const PROMO_LANZAMIENTO = {
+  activa: true,
+  planesVisibles: ['gratis', 'oro'] as const,
+  titular: '🚀 Lanzamiento en Las Flores',
+  texto: 'Vidriera Digital completa gratis por 30 días.',
+};
+
+export function planesVisibles<T extends { tier: string }>(planes: T[]): T[] {
+  if (!PROMO_LANZAMIENTO.activa) return planes;
+  const visibles = new Set<string>([...PROMO_LANZAMIENTO.planesVisibles]);
+  return planes.filter((p) => visibles.has(p.tier));
+}
 
 // Socio estratégico: agencia de marketing digital que trabaja a la par.
 // Fuente única para footer, sección de socios y schemas.
@@ -128,7 +148,7 @@ export function organizationSchema() {
     '@type': 'Organization',
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/favicon.svg`,
+    logo: `${SITE.url}/clasificados-las-flores.jpg`,
     description: SITE.tagline,
     address: {
       '@type': 'PostalAddress',

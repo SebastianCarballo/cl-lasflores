@@ -39,7 +39,7 @@ const isOro = b.plan === 'oro';
     <div class="absolute inset-x-0 top-0 h-18 bg-gradient-to-b from-slate-950/35 to-transparent" aria-hidden="true" />
     <div class="absolute left-3 top-3 flex flex-wrap gap-1.5">
       {b.plan === 'oro' && (
-        <span class="rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2.5 py-1 text-[11px] font-bold text-ink-950 shadow">★ ORO</span>
+        <span class="rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2.5 py-1 text-[11px] font-bold text-ink-950 shadow">★ VIDRIERA</span>
       )}
       {b.demo && (
         <span class="rounded-full bg-brand-600 px-2.5 py-1 text-[11px] font-bold text-white shadow">MUESTRA</span>
@@ -75,7 +75,7 @@ const isOro = b.plan === 'oro';
           data-event="slot_publicar"
           data-props={JSON.stringify({ slug: b.slug, origen: 'card-demo' })}
           class="flex-1 rounded-xl bg-brand-600 px-3 py-2.5 text-center text-sm font-bold text-white transition hover:bg-brand-700 active:scale-[0.98] btn-sheen">
-          {b.plan === 'oro' ? 'Quiero este lugar' : 'Empezar gratis'}
+          {b.plan === 'oro' ? 'Quiero mi Vidriera' : 'Empezar gratis'}
         </a>
       ) : b.hasWhatsAppButton && b.whatsapp && b.plan !== 'gratis' ? (
         <a
@@ -85,13 +85,13 @@ const isOro = b.plan === 'oro';
           data-event="whatsapp_click"
           data-props={JSON.stringify({ slug: b.slug, plan: b.plan, origen: 'card' })}
           class="flex-1 rounded-xl bg-[#25D366] px-3 py-2.5 text-center text-sm font-semibold text-white transition hover:brightness-95 active:scale-[0.98] btn-sheen">
-          <span class="inline-flex items-center justify-center gap-1.5"><Icon name="whatsapp" size={17} /> WhatsApp</span>
+          <span class="inline-flex items-center justify-center gap-1.5"><Icon name="whatsapp" size={17} /> Consultar</span>
         </a>
       ) : (
         <a
           href={`/comercio/${b.slug}`}
           class="flex-1 rounded-xl bg-ink-100 px-3 py-2.5 text-center text-sm font-semibold text-ink-900 transition hover:bg-ink-200">
-          Ver perfil
+          Ver ficha
         </a>
       )}
       <a

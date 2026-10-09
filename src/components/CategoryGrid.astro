@@ -20,7 +20,7 @@ const counts = await countByCategory();
           </span>
           <span class="block font-display font-bold">{c.name}</span>
           <span class="block text-xs text-slate-500 mt-1">
-            {count} {count === 1 ? 'publicación' : 'publicaciones'}
+            {count === 0 ? 'Sé el primero' : `${count} ${count === 1 ? 'negocio' : 'negocios'}`}
           </span>
         </a>
       );

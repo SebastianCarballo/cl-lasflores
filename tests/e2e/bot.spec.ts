@@ -15,12 +15,12 @@ test.describe('Flor, asistente virtual', () => {
     await expect(page.locator('#asistente-msgs').getByRole('link', { name: 'Ver perfil' })).toBeVisible();
   });
 
-  test('explica planes con precios y CTA', async ({ page }) => {
+  test('explica planes con precios y CTA (lanzamiento)', async ({ page }) => {
     await page.locator('#asistente-input').fill('cuánto cuesta publicar');
     await page.locator('#asistente-form button[type="submit"]').click();
     const msgs = page.locator('#asistente-msgs');
-    await expect(msgs).toContainText(/\$5\.000/);
-    await expect(msgs.getByRole('link', { name: /Publicar ahora/ })).toBeVisible();
+    await expect(msgs).toContainText(/los primeros 30 días/);
+    await expect(msgs.getByRole('link', { name: /Quiero mi Vidriera/ })).toBeVisible();
   });
 
   test('respuestas rápidas y cierre con Escape', async ({ page }) => {

@@ -2,8 +2,8 @@
   "name": "Gratis",
   "price": 0,
   "priceLabel": "$0 / mes",
-  "description": "Ideal para empezar y validar tu presencia digital.",
-  "features": ["1 foto básica", "Datos esenciales y horarios", "Visibilidad estándar"],
+  "description": "Ideal para probar si te sirve, sin pagar un peso.",
+  "features": ["1 foto básica", "Tu dirección, horarios y contacto", "Aparecés en el directorio"],
   "limitations": ["Sin botón directo a WhatsApp", "Posición inferior en búsquedas"],
   "cta": "Empezar gratis",
   "highlighted": false

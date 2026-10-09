@@ -1,5 +1,5 @@
 {
-  "name": "Plata",
+  "name": "Comercio Verificado",
   "price": 12000,
   "priceLabel": "$12.000 / mes",
   "description": "Para comercios que quieren reputación y catálogo.",
@@ -10,7 +10,7 @@
     "Badge “Comercio Verificado”",
     "Soporte por email"
   ],
-  "cta": "Elegir Plata",
+  "cta": "Elegir Comercio Verificado",
   "highlighted": true,
   "badge": "Más popular"
 }

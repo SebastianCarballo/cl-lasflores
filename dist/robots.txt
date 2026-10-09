@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://clasificadoslasflores.com.ar/sitemap.xml

@@ -16,7 +16,7 @@ for (const ruta of ['/', '/directorio', '/comercio/ficha-gratis-muestra/']) {
 
 test('formularios con labels asociados', async ({ page }) => {
   await page.goto('/publicar');
-  for (const id of ['nombre', 'categoria', 'whatsapp', 'plan', 'desc']) {
+  for (const id of ['nombre', 'categoria', 'whatsapp', 'plan', 'impulso', 'desc']) {
     await expect(page.locator(`label[for="${id}"]`)).toHaveCount(1);
   }
 });

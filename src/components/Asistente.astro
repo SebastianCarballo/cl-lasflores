@@ -25,10 +25,10 @@ import Icon from '@/components/Icon.astro';
     hidden
     class="fixed z-[60] inset-x-4 bottom-40 lg:inset-x-auto lg:right-6 lg:bottom-24 lg:w-[380px] bg-white rounded-3xl border border-ink-100 shadow-2xl overflow-hidden flex flex-col max-h-[62vh]">
     <div class="bg-ink-950 text-white px-5 py-4 flex items-center gap-3">
-      <span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-500 grid place-items-center font-display font-bold shrink-0" aria-hidden="true">LF</span>
+      <span class="w-10 h-10 rounded-2xl bg-white grid place-items-center shrink-0" aria-hidden="true"><img src="/logo-flores.png" alt="" width="112" height="112" class="h-9 w-9 rounded-xl object-contain" /></span>
       <div class="flex-1 leading-tight">
         <p class="font-display font-bold text-[15px]">Flor 🌸 · Asistente virtual</p>
-        <p class="text-xs text-emerald-300">● En línea · responde al instante</p>
+        <p class="text-xs text-emerald-300">● En línea · te respondo al toque</p>
       </div>
       <button type="button" id="asistente-cerrar" aria-label="Cerrar asistente" class="w-9 h-9 rounded-full hover:bg-white/10 grid place-items-center text-xl leading-none">×</button>
     </div>
@@ -36,9 +36,9 @@ import Icon from '@/components/Icon.astro';
     <div id="asistente-msgs" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm" aria-live="polite"></div>
 
     <div class="px-4 pb-2 flex flex-wrap gap-2" id="asistente-rapidos">
-      <button type="button" data-rapido="oro" class="px-3 py-2 rounded-full bg-ink-100 text-xs font-semibold hover:bg-ink-200 transition">🥇 Espacio Oro</button>
+      <button type="button" data-rapido="oro" class="px-3 py-2 rounded-full bg-ink-100 text-xs font-semibold hover:bg-ink-200 transition">🥇 Vidriera Digital</button>
       <button type="button" data-rapido="cuánto cuesta publicar" class="px-3 py-2 rounded-full bg-ink-100 text-xs font-semibold hover:bg-ink-200 transition">💰 Planes y precios</button>
-      <button type="button" data-rapido="quiero publicar mi negocio" class="px-3 py-2 rounded-full bg-ink-100 text-xs font-semibold hover:bg-ink-200 transition">📢 Publicar</button>
+      <button type="button" data-rapido="quiero publicar mi negocio" class="px-3 py-2 rounded-full bg-ink-100 text-xs font-semibold hover:bg-ink-200 transition">📢 Quiero publicar</button>
     </div>
 
     <form id="asistente-form" class="p-3 border-t border-ink-100 flex gap-2">
@@ -89,7 +89,7 @@ import Icon from '@/components/Icon.astro';
       return cargando;
     }
     const PLAN_ORDEN: Record<string, number> = { oro: 0, plata: 1, bronce: 2, gratis: 3 };
-    const norm = (s: string): string => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const norm = (s: string): string => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     const STOP = new Set('de la el en y a los las un una para con por qué que busco buscar necesito quiero hay tiene tienen algún alguna donde como cuál cuáles cuándo mi'.split(' '));
 
     // El índice vive en /bot-index.json (generado en build) y se pide solo al abrir.
@@ -101,10 +101,11 @@ import Icon from '@/components/Icon.astro';
     let saludado = false;
 
     const waLink = (tel: string, texto: string): string =>
-      `https://wa.me/${tel}?text=${encodeURIComponent(texto)}`;
+      `https://wa.me/${tel.replace(/\D/g, '')}?text=${encodeURIComponent(texto)}`;
 
+    // Escape para interpolar datos en HTML (texto y atributos entre comillas dobles).
     const esc = (s: string): string =>
-      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     function burbuja(de: 'bot' | 'yo', html: string): void {
       if (!msgs) return;
@@ -119,15 +120,15 @@ import Icon from '@/components/Icon.astro';
     }
 
     function tarjeta(n: Negocio): string {
-      const ficha = `/comercio/${n.slug}`;
+      const ficha = `/comercio/${esc(n.slug)}`;
       const contacto = n.wa
         ? `<a href="${waLink(n.wa, `Hola ${n.nombre}, vi tu perfil en Clasificados Las Flores y quiero consultar por…`)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 mt-2 px-3 py-2 rounded-lg bg-[#25D366] text-white text-xs font-bold">WhatsApp directo</a>`
         : `<a href="${ficha}" class="inline-flex items-center mt-2 px-3 py-2 rounded-lg bg-ink-900 text-white text-xs font-bold">Ver perfil</a>`;
       return `<div class="mt-2 rounded-xl bg-white border border-ink-100 p-3">
-        <p class="font-bold"><a href="${ficha}" class="hover:underline">${n.nombre}</a>
+        <p class="font-bold"><a href="${ficha}" class="hover:underline">${esc(n.nombre)}</a>
         ${n.verificado ? ' <span class="text-[10px] font-bold bg-ink-900 text-white px-1.5 py-0.5 rounded-full align-middle">✓</span>' : ''}</p>
-        <p class="text-xs text-slate-600 mt-0.5">${n.resumen}</p>
-        <p class="text-xs text-slate-500 mt-1">${n.categoria} · ${n.direccion}</p>
+        <p class="text-xs text-slate-600 mt-0.5">${esc(n.resumen)}</p>
+        <p class="text-xs text-slate-500 mt-1">${esc(n.categoria)} · ${esc(n.direccion)}</p>
         ${contacto}</div>`;
     }
 
@@ -195,7 +196,7 @@ import Icon from '@/components/Icon.astro';
       const t = norm(texto);
 
       if (/^(hola|buenas|hey|holis|buen[oa]s (dias|tardes|noches)|que tal|saludos)\b/.test(t)) {
-        burbuja('bot', '¡Hola! Soy <strong>Flor</strong> 🌸, la asistente de Clasificados Las Flores. Probá con algo concreto, por ejemplo:<br>· <em>"qué es el espacio oro"</em><br>· <em>"cuánto cuesta publicar"</em><br>· <em>"comida"</em>');
+        burbuja('bot', '¡Hola! Soy <strong>Flor</strong> 🌸, la asistente de Clasificados Las Flores. Probá con algo concreto, por ejemplo:<br>· <em>"cuánto sale la Vidriera"</em><br>· <em>"quiero publicar mi negocio"</em><br>· <em>"busco plomero"</em>');
         track('bot_pregunta', { intent: 'saludo' });
         return;
       }
@@ -207,35 +208,35 @@ import Icon from '@/components/Icon.astro';
       if (/publicar|mi negocio|mi local|mi comercio|emprendimiento|anunciar|pauta|vender (mi|mis)|sumar (mi|un)/.test(t)) {
         burbuja(
           'bot',
-          '¡Buenísimo! Publicar es gratis y tarda 2 minutos. Los planes:<br>🆓 <strong>Gratis $0</strong> · 🥉 <strong>Bronce $5.000/mes</strong> con WhatsApp directo · 🥈 <strong>Plata $12.000/mes</strong> con badge Verificado · 🥇 <strong>Oro $25.000/mes</strong> destacado en home.<br><a href="/planes" class="font-bold text-brand-700 underline">Ver planes</a> · <a href="/publicar" class="font-bold text-brand-700 underline">Publicar ahora</a>',
+          '¡Buenísimo! Publicar te lleva pocos minutos. Estamos en lanzamiento: la <strong>Vidriera Digital ($25.000/mes) sale gratis y completa los primeros 30 días</strong>. El plan <strong>Gratis ($0)</strong> queda para siempre.<br><a href="/planes" class="font-bold text-brand-700 underline">Ver planes</a> · <a href="/publicar?plan=oro" class="font-bold text-brand-700 underline">Quiero mi Vidriera</a>',
         );
         track('bot_pregunta', { intent: 'publicar' });
         return;
       }
       // Detalle por plan mencionado (Carlos ya viene con idea: cerrar el funnel)
-      const tier = /\boro\b/.test(t) ? 'oro' : /\bplata\b/.test(t) ? 'plata' : /\bbronce\b/.test(t) ? 'bronce' : /\bgratis\b/.test(t) ? 'gratis' : null;
-      if (tier && /plan|precio|cuesta|publicar|negocio|local|comercio|conviene|diferencia/.test(t)) {
+      const tier = /\b(vidriera|oro)\b/.test(t) ? 'oro' : /\b(verificado|plata)\b/.test(t) ? 'plata' : /\b(bronce|contacto)\b/.test(t) ? 'bronce' : /\bgratis\b/.test(t) ? 'gratis' : null;
+      if (tier && /plan|precio|cuesta|publicar|negocio|local|comercio|conviene|diferencia|vidriera|verificado|contacto/.test(t)) {
         const detalle: Record<string, string> = {
-          oro: 'El <strong>Oro ($25.000/mes)</strong> es máxima visibilidad: home, borde dorado, difusión en nuestras redes y soporte prioritario. Ideal si querés liderar tu rubro.',
-          plata: 'El <strong>Plata ($12.000/mes)</strong> te da badge Verificado, mapa, catálogo y redes vinculadas. Ideal para locales que quieren reputación.',
-          bronce: 'El <strong>Bronce ($5.000/mes)</strong> te da botón directo a WhatsApp y hasta 3 fotos. Ideal para oficios que viven del contacto.',
+          oro: 'La <strong>Vidriera Digital ($25.000/mes)</strong> sale <strong>gratis por 30 días por lanzamiento</strong>: lugar destacado en el inicio, sello Verificado y difusión en nuestras redes. Ideal si querés que te vean primero en tu rubro.',
+          plata: 'El <strong>Comercio Verificado ($12.000/mes)</strong> vuelve después del lanzamiento: sello Verificado, mapa, catálogo y redes vinculadas. Hoy podés arrancar con la Vidriera gratis 30 días.',
+          bronce: 'El <strong>Contacto Directo ($5.000/mes)</strong> vuelve después del lanzamiento: botón directo a WhatsApp y hasta 3 fotos. Hoy podés arrancar con la Vidriera gratis 30 días.',
           gratis: 'El <strong>Gratis ($0)</strong> te da presencia básica con 1 foto. Ideal para probar sin compromiso.',
         };
         const tierPath = tier === 'gratis' ? '' : `?plan=${tier}`;
-        burbuja('bot', `${detalle[tier]} <a href="/publicar${tierPath}" class="font-bold text-brand-700 underline">Empezar ahora</a> · <a href="/planes" class="font-bold text-brand-700 underline">Comparar planes</a>`);
+        burbuja('bot', `${detalle[tier]} <a href="/publicar${tierPath}" class="font-bold text-brand-700 underline">Empezar ahora</a> · <a href="/planes" class="font-bold text-brand-700 underline">Compará planes</a>`);
         track('bot_pregunta', { intent: 'plan_detalle' });
         return;
       }
       if (/plan|precio|costo|cuesta|vale|tarifa/.test(t)) {
         burbuja(
           'bot',
-          'Tenemos 4 planes: <strong>Gratis $0</strong>, <strong>Bronce $5.000/mes</strong> (WhatsApp directo, ideal oficios), <strong>Plata $12.000/mes</strong> (verificado + mapa + catálogo) y <strong>Oro $25.000/mes</strong> (máxima visibilidad). <a href="/planes" class="font-bold text-brand-700 underline">Compararlos acá</a>',
+          'Estamos en lanzamiento: <strong>Vidriera Digital gratis 30 días</strong> (después $25.000/mes, sin permanencia) y <strong>Gratis $0</strong> para siempre. <a href="/planes" class="font-bold text-brand-700 underline">Comparalos acá</a>',
         );
         track('bot_pregunta', { intent: 'planes' });
         return;
       }
       if (/categor/.test(t)) {
-        const listaCats = (datos?.categorias ?? []).map((c) => `<a href="/categoria/${c.slug}" class="font-semibold text-brand-700 underline">${c.nombre}</a>`).join(' · ');
+        const listaCats = (datos?.categorias ?? []).map((c) => `<a href="/categoria/${esc(c.slug)}" class="font-semibold text-brand-700 underline">${esc(c.nombre)}</a>`).join(' · ');
         burbuja('bot', `Trabajamos estas categorías: ${listaCats || '…cargando'}. ¿Cuál te interesa?`);
         track('bot_pregunta', { intent: 'categorias' });
         return;
@@ -243,12 +244,12 @@ import Icon from '@/components/Icon.astro';
 
       const m = mencionar(texto);
       if (m && /horario|hora|abre|cierra|atiende/.test(t)) {
-        burbuja('bot', `<strong>${m.nombre}</strong> atiende: ${m.horarios}. 📍 ${m.direccion}`);
+        burbuja('bot', `<strong>${esc(m.nombre)}</strong> atiende: ${esc(m.horarios)}. 📍 ${esc(m.direccion)}`);
         track('bot_pregunta', { intent: 'horarios' });
         return;
       }
       if (m && /direcci|donde queda|ubicaci|como llego/.test(t)) {
-        burbuja('bot', `<strong>${m.nombre}</strong> está en ${m.direccion}. <a href="/comercio/${m.slug}" class="font-bold text-brand-700 underline">Ver ficha y mapa</a>`);
+        burbuja('bot', `<strong>${esc(m.nombre)}</strong> está en ${esc(m.direccion)}. <a href="/comercio/${esc(m.slug)}" class="font-bold text-brand-700 underline">Ver ficha y mapa</a>`);
         track('bot_pregunta', { intent: 'direccion' });
         return;
       }
@@ -256,26 +257,26 @@ import Icon from '@/components/Icon.astro';
         burbuja(
           'bot',
           m.wa
-            ? `Hablá directo con <strong>${m.nombre}</strong>: <a href="${waLink(m.wa, `Hola ${m.nombre}, vi tu perfil en Clasificados Las Flores y quiero consultar por…`)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center mt-1 px-3 py-2 rounded-lg bg-[#25D366] text-white text-xs font-bold">WhatsApp directo</a>`
-            : `<strong>${m.nombre}</strong> no tiene WhatsApp directo. Llamalo al <a href="tel:+${m.telefono}" class="font-bold text-brand-700">+${m.telefono}</a> o <a href="/comercio/${m.slug}" class="font-bold text-brand-700 underline">mirá su ficha</a>`,
+            ? `Hablá directo con <strong>${esc(m.nombre)}</strong>: <a href="${waLink(m.wa, `Hola ${m.nombre}, vi tu perfil en Clasificados Las Flores y quiero consultar por…`)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center mt-1 px-3 py-2 rounded-lg bg-[#25D366] text-white text-xs font-bold">WhatsApp directo</a>`
+            : `<strong>${esc(m.nombre)}</strong> no tiene WhatsApp directo. Llamalo al <a href="tel:+${m.telefono.replace(/\D/g, '')}" class="font-bold text-brand-700">+${esc(m.telefono)}</a> o <a href="/comercio/${esc(m.slug)}" class="font-bold text-brand-700 underline">mirá su ficha</a>`,
         );
         track('bot_pregunta', { intent: 'contacto_negocio' });
         return;
       }
       if (m && /precio|cuesta|sale|vale|cuanto|tarifa|costo/.test(t)) {
         if (m.catalogo && m.catalogo.length) {
-          const items = m.catalogo.map((it) => `· ${it.nombre}: <strong>${it.precio}</strong>`).join('<br>');
+          const items = m.catalogo.map((it) => `· ${esc(it.nombre)}: <strong>${esc(it.precio)}</strong>`).join('<br>');
           burbuja(
             'bot',
-            `Precios de <strong>${m.nombre}</strong> (a confirmar):<br>${items}<br><a href="/comercio/${m.slug}" class="font-bold text-brand-700 underline">Ver catálogo completo</a>`,
+            `Precios de <strong>${esc(m.nombre)}</strong> (a confirmar):<br>${items}<br><a href="/comercio/${esc(m.slug)}" class="font-bold text-brand-700 underline">Ver catálogo completo</a>`,
           );
         } else {
           burbuja(
             'bot',
-            `<strong>${m.nombre}</strong> no publica precios. Te conviene consultar directo: ` +
+            `<strong>${esc(m.nombre)}</strong> no publica precios. Te conviene consultar directo: ` +
               (m.wa
                 ? `<a href="${waLink(m.wa, `Hola ${m.nombre}, vi tu perfil en Clasificados Las Flores y quiero consultar precios`)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center mt-1 px-3 py-2 rounded-lg bg-[#25D366] text-white text-xs font-bold">WhatsApp directo</a>`
-                : `<a href="/comercio/${m.slug}" class="font-bold text-brand-700 underline">Ver ficha</a>`),
+                : `<a href="/comercio/${esc(m.slug)}" class="font-bold text-brand-700 underline">Ver ficha</a>`),
           );
         }
         track('bot_pregunta', { intent: 'precios_negocio' });
@@ -308,13 +309,13 @@ import Icon from '@/components/Icon.astro';
       }
       burbuja(
         'bot',
-        `Mmm, no encontré eso en el directorio 😕 Mientras tanto, los destacados:${destacados().map(tarjeta).join('')}<p class="mt-2">O hablá con nuestro equipo: ${asesorBtn()}</p>`,
+        `No lo encontré en el directorio todavía — somos nuevos en Las Flores 😕 Te muestro lo que ya está o te paso con una persona:${destacados().map(tarjeta).join('')}<p class="mt-2">O hablá con nuestro equipo: ${asesorBtn()}</p>`,
       );
       track('bot_pregunta', { intent: 'buscar_vacio' });
     }
 
     function asesorBtn(): string {
-      return `<a href="${waLink(ASESOR, 'Hola, vengo del asistente virtual y necesito ayuda')}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center mt-1 px-3 py-2 rounded-lg bg-[#25D366] text-white text-xs font-bold">WhatsApp del equipo</a>`;
+      return `<a href="${waLink(ASESOR, 'Hola, vengo del asistente virtual y necesito ayuda')}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center mt-1 px-3 py-2 rounded-lg bg-[#25D366] text-white text-xs font-bold">Hablar con una persona por WhatsApp</a>`;
     }
 
     function abrir(): void {

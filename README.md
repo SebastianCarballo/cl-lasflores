@@ -2,9 +2,22 @@
 
 Directorio local de Las Flores (Buenos Aires). Astro 5 + Tailwind 4 + TypeScript strict.
 
-La app usa salida server con `@astrojs/node` para validar el formulario de contacto en
-`POST /api/contact`. El despliegue debe ejecutar `node ./dist/server/entry.mjs` (o el
-comando equivalente del proveedor); ya no alcanza con servir `dist/` como archivos estáticos.
+La app es 100% estática (`output: 'static'`): los formularios de contacto y
+publicación se validan en el cliente y derivan a WhatsApp (`wa.me`), sin
+backend ni base de datos. Se despliega como sitio estático sirviendo `dist/`.
+
+## Deploy en Vercel
+
+Proyecto listo para Vercel como sitio estático (sin adapter):
+
+- Framework preset: `Astro`
+- Build command: `pnpm build`
+- Output directory: `dist`
+- Install command: `pnpm install`
+
+Los headers de seguridad están declarados en `vercel.json` (Vercel los aplica
+al servir). `public/_headers` es el equivalente para Netlify/Cloudflare Pages
+y se ignora en Vercel.
 
 ## Arquitectura
 
@@ -22,7 +35,7 @@ src/
   components/           # Header, Footer, CategoryGrid, BusinessCard (<Image>), PlanCard, SectionHeading
   pages/
     api/contact.ts        # Validación server-side, honeypot y rate limit del contacto
-    index.astro         # Home: hero + buscador, categorías, Oro, recientes, planes
+    index.astro         # Home: hero + buscador, categorías, Vidriera Digital, recientes, planes
     directorio.astro    # Búsqueda 100% cliente con índice + normalización de acentos
     comercio/[slug].astro   # Ficha SEO con LocalBusiness+geo+BreadcrumbList, mapa OSM, WhatsApp
     categoria/[slug].astro
@@ -43,7 +56,7 @@ public/robots.txt, favicon.svg, og-cover.svg
   (voseo, ranking por plan, derivación a WhatsApp). Requiere reiniciar opencode.
 - **Bot web:** `src/components/Asistente.astro` (en todas las páginas vía `BaseLayout`).
   Sin IA externa ni costo: busca en `/bot-index.json` (generado en build, se pide
-  solo al abrir), explica planes con precios, recomienda Oro primero y deriva a
+  solo al abrir), explica planes con precios, recomienda Vidriera Digital primero y deriva a
   WhatsApp con mensaje prediseñado. Eventos: `bot_open`, `bot_pregunta`.
 ```
 
@@ -52,7 +65,7 @@ public/robots.txt, favicon.svg, og-cover.svg
 - **Rendimiento:** SSG 100%, 0 JS por defecto, 1 script inline <1KB solo en directorio, imágenes lazy + async decode.
 - **SEO local:** canonical, OG/Twitter, sitemap, robots, breadcrumb, JSON-LD `LocalBusiness` por ficha y `WebSite+SearchAction` en home.
 - **Accesibilidad:** skip-link, landmarks, labels, `aria-current`, focos visibles, contraste.
-- **Mobile-first + responsive**, cards con jerarquía Oro > Plata > Bronce > Gratis.
+- **Mobile-first + responsive**, cards con jerarquía Vidriera Digital > Comercio Verificado > Contacto Directo > Gratis.
 - **CRO WhatsApp:** mensaje prediseñado `wa.me` en cada ficha con plan habilitado.
 - **Contacto:** validación compartida en cliente y servidor, límites de longitud, honeypot,
   comprobación de origen y rate limit básico antes de abrir WhatsApp.

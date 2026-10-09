@@ -27,8 +27,9 @@ export async function GET() {
   });
   return new Response(body, {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'public, max-age=3600',
+      'X-Content-Type-Options': 'nosniff',
     },
   });
 }

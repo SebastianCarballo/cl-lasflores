@@ -1,5 +1,5 @@
 {
-  "name": "Bronce",
+  "name": "Contacto Directo",
   "price": 5000,
   "priceLabel": "$5.000 / mes",
   "description": "Para oficios e independientes que necesitan llamadas directas.",
@@ -9,7 +9,7 @@
     "Logo y horarios comercializables",
     "Posición prioritaria sobre Gratis"
   ],
-  "cta": "Elegir Bronce",
+  "cta": "Elegir Contacto Directo",
   "highlighted": false,
   "badge": "Emprendedor"
 }

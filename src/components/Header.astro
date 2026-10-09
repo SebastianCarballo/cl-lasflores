@@ -13,17 +13,14 @@ const pathname = Astro.url.pathname;
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="flex items-center justify-between h-16">
       <a href="/" class="flex items-center gap-2.5" aria-label="Clasificados Las Flores - inicio">
-        <span
-          class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-600 text-white grid place-items-center font-display font-bold text-lg"
-          aria-hidden="true">LF</span
-        >
+        <img src="/logo-flores.png" alt="" width="36" height="36" class="h-9 w-9 object-contain" />
         <span class="leading-tight">
           <span class="block font-display font-bold text-[15px]">Clasificados Las Flores</span>
-          <span class="block text-xs text-slate-500">Directorio local · Bs. As.</span>
+          <span class="block text-xs text-slate-500">Las Flores · Buenos Aires</span>
         </span>
       </a>
 
-      <nav class="hidden md:flex items-center gap-1" aria-label="Navegación principal">
+      <nav class="hidden lg:flex items-center gap-1" aria-label="Navegación principal">
         {
           links.map((l) => (
             <a
@@ -41,7 +38,7 @@ const pathname = Astro.url.pathname;
         }
       </nav>
 
-      <div class="hidden md:flex items-center gap-2">
+      <div class="hidden lg:flex items-center gap-2">
         <a
           href="/publicar"
           class="px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 active:scale-[0.98] transition shadow-sm">
@@ -49,7 +46,7 @@ const pathname = Astro.url.pathname;
         </a>
       </div>
 
-      <details class="md:hidden relative" id="menu-movil">
+      <details class="lg:hidden relative" id="menu-movil">
         <summary
           class="list-none cursor-pointer inline-flex items-center min-h-11 px-4 rounded-lg border border-ink-200 text-sm font-semibold"
           aria-label="Abrir menú"

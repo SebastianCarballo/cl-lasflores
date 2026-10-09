@@ -1,16 +1,16 @@
 {
-  "name": "Oro",
+  "name": "Vidriera Digital",
   "price": 25000,
-  "priceLabel": "$25.000 / mes",
-  "description": "Máxima visibilidad para marcas líderes de la ciudad.",
+  "priceLabel": "Gratis por 30 días, luego $25.000 / mes",
+  "description": "Para que te vean primero en tu rubro. Lanzamiento: gratis los primeros 30 días.",
   "features": [
-    "Todo lo de Plata",
-    "Destacado en Home (Hero / Banners)",
-    "Borde dorado distintivo",
-    "Difusión en redes de Clasificados",
-    "Soporte prioritario"
+    "Galería, catálogo, mapa, redes y sello Verificado",
+    "Lugar destacado en el inicio",
+    "Distintivo dorado para que te ubiquen al toque",
+    "Lo compartimos en nuestras redes",
+    "Atención prioritaria por WhatsApp"
   ],
-  "cta": "Quiero ser Oro",
-  "highlighted": false,
-  "badge": "Alianza Premium"
+  "cta": "Quiero mi Vidriera",
+  "highlighted": true,
+  "badge": "🚀 30 días gratis"
 }

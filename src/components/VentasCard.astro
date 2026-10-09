@@ -1,0 +1,44 @@
+---
+import Icon from '@/components/Icon.astro';
+
+// Tercera tarjeta junto a los planes: captura al que necesita algo a medida
+// (banners, eventos, alianzas) y lo deriva a ventas (/contacto).
+// No es un plan: no lleva data-modelo-plan ni tier, para no romper conteos.
+---
+
+<article
+  class="relative rounded-3xl border-2 border-dashed border-ink-200 p-7 pt-8 flex flex-col bg-ink-50/60 transition hover:-translate-y-1 hover:shadow-xl hover:border-brand-400">
+  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">A medida</p>
+  <h3 class="mt-1 font-display font-bold text-xl">¿Tenés evento, promo u otra necesidad?</h3>
+  <div class="mt-3 flex items-center gap-2.5 min-h-[2.75rem]">
+    <span
+      class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-base font-bold bg-brand-100 text-brand-700"
+      aria-hidden="true">
+      ✉
+    </span>
+    <p class="font-display font-extrabold leading-tight text-ink-900 text-lg">Hablá con nosotros</p>
+  </div>
+  <p class="mt-2 text-sm text-slate-600">Publicidad y acciones para lo que no entra en una ficha común.</p>
+  <ul class="mt-5 space-y-2.5 text-sm flex-1 border-t border-ink-200/70 pt-5">
+    <li class="flex gap-2">
+      <span class="text-brand-600 font-bold" aria-hidden="true">✓</span>
+      <span>Publicidad y carteles a medida</span>
+    </li>
+    <li class="flex gap-2">
+      <span class="text-brand-600 font-bold" aria-hidden="true">✓</span>
+      <span>Eventos e instituciones locales</span>
+    </li>
+    <li class="flex gap-2">
+      <span class="text-brand-600 font-bold" aria-hidden="true">✓</span>
+      <span>Te pasamos precio sin compromiso</span>
+    </li>
+  </ul>
+  <a
+    href="/contacto"
+    data-event="contacto_ventas"
+    data-props={JSON.stringify({ origen: 'card-ventas' })}
+    class="mt-6 flex w-full items-center justify-center gap-1.5 px-4 py-3.5 rounded-xl text-sm font-bold transition active:scale-[0.98] bg-brand-600 text-white hover:bg-brand-700 shadow-lg shadow-brand-600/25">
+    Escribinos <Icon name="arrow-right" size={15} />
+  </a>
+  <p class="mt-2.5 text-xs text-slate-500 text-center">Respondemos en el día · Las Flores</p>
+</article>

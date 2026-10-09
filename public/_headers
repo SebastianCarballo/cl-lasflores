@@ -1,0 +1,18 @@
+# Headers de seguridad para hosting estático (Netlify / Cloudflare Pages / Vercel con
+# adaptación). El build es 100% estático (`output: 'static'`), así que Astro no
+# puede emitir estos headers: los aplica el host/CDN.
+#
+# Nota CSP: el sitio usa scripts inline (`is:inline`, dispatcher de eventos,
+# Asistente, mapa Leaflet), por eso `script-src` incluye 'unsafe-inline' como
+# medida interina. El paso siguiente es externalizar esos scripts con
+# nonce/hash y quitar 'unsafe-inline'.
+# Assets con hash de Astro/Vite: nombre único por contenido, cacheables 1 año.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://tile.openstreetmap.org https://*.tile.openstreetmap.org; font-src 'self' data:; connect-src 'self'; frame-src https://www.openstreetmap.org; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me
