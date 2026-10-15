@@ -1,16 +1,19 @@
 {
   "name": "Comercio Verificado",
+  "kicker": "Confianza",
   "price": 12000,
   "priceLabel": "$12.000 / mes",
-  "description": "Para comercios que quieren reputación y catálogo.",
+  "annualLabel": "o $120.000 al año · te ahorrás 2 meses",
+  "description": "Para ganar confianza y reputación con tu local.",
   "features": [
-    "Galería completa + catálogo",
-    "Mapa interactivo",
-    "Redes sociales vinculadas",
-    "Badge “Comercio Verificado”",
-    "Soporte por email"
+    "Todo lo de Contacto Directo",
+    "Galería de fotos y catálogo con precios — el cliente decide antes de escribirte",
+    "Mapa y redes sociales — te encuentran y te creen",
+    "Sello Verificado — identidad confirmada, cero desconfianza",
+    "Posición alta — arriba de los planes básicos en tu rubro",
+    "Informe mensual de consultas — cuántos te escribieron por WhatsApp y qué mantener"
   ],
   "cta": "Elegir Comercio Verificado",
-  "highlighted": true,
+  "highlighted": false,
   "badge": "Más popular"
 }

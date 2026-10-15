@@ -25,12 +25,12 @@ import Icon from '@/components/Icon.astro';
     hidden
     class="fixed z-[60] inset-x-4 bottom-40 lg:inset-x-auto lg:right-6 lg:bottom-24 lg:w-[380px] bg-white rounded-3xl border border-ink-100 shadow-2xl overflow-hidden flex flex-col max-h-[62vh]">
     <div class="bg-ink-950 text-white px-5 py-4 flex items-center gap-3">
-      <span class="w-10 h-10 rounded-2xl bg-white grid place-items-center shrink-0" aria-hidden="true"><img src="/logo-flores.png" alt="" width="112" height="112" class="h-9 w-9 rounded-xl object-contain" /></span>
+      <span class="w-10 h-10 rounded-2xl bg-white grid place-items-center shrink-0" aria-hidden="true"><img src="/logo-flores.webp" alt="" width="112" height="112" loading="lazy" decoding="async" class="h-9 w-9 rounded-xl object-contain" /></span>
       <div class="flex-1 leading-tight">
         <p class="font-display font-bold text-[15px]">Flor 🌸 · Asistente virtual</p>
         <p class="text-xs text-emerald-300">● En línea · te respondo al toque</p>
       </div>
-      <button type="button" id="asistente-cerrar" aria-label="Cerrar asistente" class="w-9 h-9 rounded-full hover:bg-white/10 grid place-items-center text-xl leading-none">×</button>
+      <button type="button" id="asistente-cerrar" aria-label="Cerrar asistente" class="w-9 h-9 rounded-full hover:bg-white/10 grid place-items-center text-xl leading-none"><span aria-hidden="true">×</span></button>
     </div>
 
     <div id="asistente-msgs" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm" aria-live="polite"></div>
@@ -208,7 +208,7 @@ import Icon from '@/components/Icon.astro';
       if (/publicar|mi negocio|mi local|mi comercio|emprendimiento|anunciar|pauta|vender (mi|mis)|sumar (mi|un)/.test(t)) {
         burbuja(
           'bot',
-          '¡Buenísimo! Publicar te lleva pocos minutos. Estamos en lanzamiento: la <strong>Vidriera Digital ($25.000/mes) sale gratis y completa los primeros 30 días</strong>. El plan <strong>Gratis ($0)</strong> queda para siempre.<br><a href="/planes" class="font-bold text-brand-700 underline">Ver planes</a> · <a href="/publicar?plan=oro" class="font-bold text-brand-700 underline">Quiero mi Vidriera</a>',
+          '¡Buenísimo! Publicar te lleva pocos minutos. Tenés 4 planes: <strong>Gratis ($0)</strong> para probar, <strong>Contacto Directo ($5.000/mes)</strong> con botón a WhatsApp, <strong>Comercio Verificado ($12.000/mes)</strong> con sello y catálogo, y <strong>Vidriera Digital ($20.000/mes)</strong> con lugar destacado en el inicio.<br><a href="/planes" class="font-bold text-brand-700 underline">Ver planes</a> · <a href="/publicar" class="font-bold text-brand-700 underline">Empezar gratis</a>',
         );
         track('bot_pregunta', { intent: 'publicar' });
         return;
@@ -217,9 +217,9 @@ import Icon from '@/components/Icon.astro';
       const tier = /\b(vidriera|oro)\b/.test(t) ? 'oro' : /\b(verificado|plata)\b/.test(t) ? 'plata' : /\b(bronce|contacto)\b/.test(t) ? 'bronce' : /\bgratis\b/.test(t) ? 'gratis' : null;
       if (tier && /plan|precio|cuesta|publicar|negocio|local|comercio|conviene|diferencia|vidriera|verificado|contacto/.test(t)) {
         const detalle: Record<string, string> = {
-          oro: 'La <strong>Vidriera Digital ($25.000/mes)</strong> sale <strong>gratis por 30 días por lanzamiento</strong>: lugar destacado en el inicio, sello Verificado y difusión en nuestras redes. Ideal si querés que te vean primero en tu rubro.',
-          plata: 'El <strong>Comercio Verificado ($12.000/mes)</strong> vuelve después del lanzamiento: sello Verificado, mapa, catálogo y redes vinculadas. Hoy podés arrancar con la Vidriera gratis 30 días.',
-          bronce: 'El <strong>Contacto Directo ($5.000/mes)</strong> vuelve después del lanzamiento: botón directo a WhatsApp y hasta 3 fotos. Hoy podés arrancar con la Vidriera gratis 30 días.',
+          oro: 'La <strong>Vidriera Digital ($20.000/mes)</strong> te pone primero en tu rubro: lugar destacado en el inicio, distintivo dorado, sello Verificado y difusión en nuestras redes. Cupos limitados por rubro.',
+          plata: 'El <strong>Comercio Verificado ($12.000/mes)</strong> te da sello Verificado, galería, catálogo, mapa, redes vinculadas e informe mensual de consultas. Ideal si tenés local y querés reputación.',
+          bronce: 'El <strong>Contacto Directo ($5.000/mes)</strong> te da botón directo a WhatsApp con mensaje ya redactado y hasta 3 fotos. Ideal para oficios que viven del contacto.',
           gratis: 'El <strong>Gratis ($0)</strong> te da presencia básica con 1 foto. Ideal para probar sin compromiso.',
         };
         const tierPath = tier === 'gratis' ? '' : `?plan=${tier}`;
@@ -230,7 +230,7 @@ import Icon from '@/components/Icon.astro';
       if (/plan|precio|costo|cuesta|vale|tarifa/.test(t)) {
         burbuja(
           'bot',
-          'Estamos en lanzamiento: <strong>Vidriera Digital gratis 30 días</strong> (después $25.000/mes, sin permanencia) y <strong>Gratis $0</strong> para siempre. <a href="/planes" class="font-bold text-brand-700 underline">Comparalos acá</a>',
+          'Los planes son: <strong>Gratis $0</strong> para siempre, <strong>Contacto Directo $5.000/mes</strong>, <strong>Comercio Verificado $12.000/mes</strong> y <strong>Vidriera Digital $20.000/mes</strong> (los pagos tienen opción anual con 2 meses gratis, sin permanencia). <a href="/planes" class="font-bold text-brand-700 underline">Comparalos acá</a>',
         );
         track('bot_pregunta', { intent: 'planes' });
         return;

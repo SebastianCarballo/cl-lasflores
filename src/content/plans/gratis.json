@@ -1,9 +1,10 @@
 {
   "name": "Gratis",
+  "kicker": "Presencia",
   "price": 0,
   "priceLabel": "$0 / mes",
-  "description": "Ideal para probar si te sirve, sin pagar un peso.",
-  "features": ["1 foto básica", "Tu dirección, horarios y contacto", "Aparecés en el directorio"],
+  "description": "Probá si te sirve, sin pagar un peso. Gratis para siempre.",
+  "features": ["1 foto básica", "Dirección, horarios y contacto", "Aparecés en el directorio"],
   "limitations": ["Sin botón directo a WhatsApp", "Posición inferior en búsquedas"],
   "cta": "Empezar gratis",
   "highlighted": false

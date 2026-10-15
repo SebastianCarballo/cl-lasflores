@@ -44,4 +44,18 @@ test.describe('home', () => {
     await page.goto('/');
     await expect(page.locator('footer')).toContainText('MembyStudio');
   });
+
+  test('banner Publicite aquí después de Destacados con CTA a ventas', async ({ page }) => {
+    await page.goto('/');
+    const banner = page.locator('[aria-label="Publicite aquí"]');
+    await expect(banner).toBeVisible();
+    await expect(banner).toContainText(/Tu marca donde todo el barrio mira/);
+    // La estrategia es posicional: va justo después de ver a la competencia destacada.
+    const orden = await page.locator('main section').evaluateAll((secs) =>
+      secs.map((s) => s.getAttribute('aria-label') ?? s.querySelector('h2')?.textContent?.trim() ?? ''),
+    );
+    expect(orden.indexOf('Publicite aquí')).toBeGreaterThan(orden.findIndex((t) => /destacado/i.test(t)));
+    // El CTA lleva a ventas, no a publicar (es pauta, no ficha).
+    await expect(banner.getByRole('link', { name: /Quiero publicitar/ })).toHaveAttribute('href', '/contacto');
+  });
 });

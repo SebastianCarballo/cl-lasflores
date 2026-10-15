@@ -4,7 +4,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Asistente from '@/components/Asistente.astro';
 import type { SeoProps } from '@/utils/site';
-import { SITE } from '@/utils/site';
+import { SITE, ogImageMeta } from '@/utils/site';
 // Preload de los únicos subsets que usa el copy en español (verificado: 0
 // caracteres latin-ext en src/). Acelera el LCP tipográfico sin peso extra.
 import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
@@ -16,14 +16,20 @@ const {
   title,
   description,
   canonical,
-  image = SITE.defaultImage,
+  image,
+  imageAlt,
   type = 'website',
+  publishedTime,
   schema,
 } = Astro.props as Props;
 
 const fullTitle = title.includes(SITE.name) ? title : `${title} | ${SITE.name}`;
 const canonicalUrl = canonical ?? `${SITE.url}${Astro.url.pathname}`;
-const imageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
+// Open Graph: resuelve la imagen a un formato que las redes sepan renderizar
+// (nunca SVG) y con sus dimensiones reales, no 1200x630 inventadas.
+const og = ogImageMeta(image);
+const imageUrl = og.src.startsWith('http') ? og.src : `${SITE.url}${og.src}`;
+const ogAlt = imageAlt ?? fullTitle;
 ---
 
 <!doctype html>
@@ -42,13 +48,18 @@ const imageUrl = image.startsWith('http') ? image : `${SITE.url}${image}`;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    {og.width && <meta property="og:image:width" content={String(og.width)} />}
+    {og.height && <meta property="og:image:height" content={String(og.height)} />}
+    <meta property="og:image:type" content={`image/${og.ext}`} />
+    <meta property="og:image:alt" content={ogAlt} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={ogAlt} />
 
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#1c72ef" />
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={soraLatin} as="font" type="font/woff2" crossorigin />

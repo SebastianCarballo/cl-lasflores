@@ -6,7 +6,14 @@ import { spawn } from 'node:child_process';
 
 const PORT = 4333;
 const BASE = `http://127.0.0.1:${PORT}`;
-const BUDGETS = { homeHtmlBytes: 90_000, cssBytes: 70_000 };
+// homeHtmlBytes cubre el HTML completo prerenderizado de la home (~96 KB reales).
+// Subió a 100.000 con el formulario de newsletter en el footer (+1,5 KB), a
+// 105.000 con el fin del lanzamiento (4 planes en vez de 2), 108.000 con
+// los beneficios explicados + línea anual en cada card, 112.000 con el banner
+// Publicite aquí reconstruido y 118.000 con los teléfonos útiles completos
+// (4 servicios, 11 números tocables, antes solo 3). Todo subas de copy
+// real, no bloat. El presupuesto sigue estando para cazar regresiones.
+const BUDGETS = { homeHtmlBytes: 118_000, cssBytes: 70_000 };
 const packageManager = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 let failures = 0;
@@ -66,8 +73,18 @@ try {
   check('home 200', home.status === 200, String(home.status));
   check('home tiene 1 h1', (home.text.match(/<h1/g) ?? []).length === 1);
   check('home canonical', home.text.includes('rel="canonical"'));
-  check('home OG propia', home.text.includes('/og-cover.svg'));
-  check('home prueba social real', home.text.includes('publicado') && home.text.includes('verificados') && !home.text.includes('reseñas'));
+  check('home OG propia', home.text.includes('/og-cover.png'));
+  // La banda de confianza muestra datos reales: el tercer stat alterna entre
+  // "perfiles verificados" y "empezar es gratis" según cuántos haya verificados,
+  // así que el check acepta cualquiera de los dos en vez de exigir uno solo.
+  check(
+    'home prueba social real',
+    home.text.includes('Confianza de la comunidad') &&
+      (home.text.includes('negocio publicado') || home.text.includes('negocios publicados')) &&
+      home.text.includes('categorías') &&
+      (home.text.includes('perfiles verificados') || home.text.includes('empezar es gratis')) &&
+      !home.text.includes('reseñas'),
+  );
   check('home motion system', home.text.includes('data-reveal-group') && home.text.includes('float-soft'));
   check('home iconos SVG marca', home.text.includes('icon-whatsapp') || home.text.includes('icon-search'));
   check('asistente virtual presente', home.text.includes('id="asistente-panel"') && home.text.includes('data-rapido'));
@@ -76,7 +93,16 @@ try {
   check('home microcopy anti-riesgo', home.text.includes('Sin tarjeta'));
   check('home copy honesto', home.text.includes('Comercios destacados') && !home.text.includes('de la semana'));
   check('home socios + carrusel', home.text.includes('Socios estrat') && home.text.includes('MembyStudio') && home.text.includes('marquee-track'));
-  check('home historia con arco narrativo', home.text.includes('Nuestra historia') && home.text.includes('De un chat desbordado') && home.text.includes('Sumar mi comercio'));
+  // El relato va después de "cómo funciona": primero se entiende qué resuelve
+  // el directorio, después se pide confianza.
+  check(
+    'home historia con arco narrativo',
+    home.text.includes('Por qué existe') &&
+      home.text.includes('WhatsApp no puede ordenar') &&
+      home.text.includes('Sumar mi comercio') &&
+      home.text.indexOf('De la búsqueda al WhatsApp') < home.text.indexOf('Por qué existe'),
+    'la historia va después de cómo funciona',
+  );
   check('home cómo funciona rediseñado', home.text.includes('De la búsqueda al WhatsApp') && home.text.includes('steps-line'));
   check('home Organization NAP', home.text.includes('"Organization"') && home.text.includes('areaServed'));
   check('home geo-metas', home.text.includes('geo.region') && home.text.includes('AR-B'));
@@ -97,7 +123,7 @@ try {
   check('directorio 200', dir.status === 200);
   check('directorio índice búsqueda', dir.text.includes('id="businesses-index"'));
   check('directorio 1 ficha real + slots', (dir.text.match(/data-business-card/g) ?? []).length >= 1 && dir.text.includes('Tu negocio acá'));
-  check('directorio modelos por plan (lanzamiento: 2)', (dir.text.match(/data-modelo-plan/g) ?? []).length === 2);
+  check('directorio modelos por plan (4 planes del PDF)', (dir.text.match(/data-modelo-plan/g) ?? []).length === 4);
   check('directorio leyenda de insignias (HMW1)', dir.text.includes('Qué significan las insignias'));
   check('directorio anuncia resultados (aria-live)', dir.text.includes('aria-live="polite"'));
   check('directorio conteo singular honesto', dir.text.includes('>resultado<'));
@@ -110,6 +136,7 @@ try {
   check('ficha compartir + reportar', ficha.text.includes('btn-compartir') && ficha.text.includes('Datos incorrectos'));
   check('ficha demo deriva a publicar gratis (sin WA comercial)', ficha.text.includes('Empezar gratis con la mía') && ficha.text.includes('slot_publicar') && !ficha.text.includes('whatsapp_click'));
   check('demo gratis vende empezar (MUESTRA + CTA, sin extras pagos)', ficha.text.includes('MUESTRA') && ficha.text.includes('Empezar gratis con la mía') && !ficha.text.includes('Catálogo') && !ficha.text.includes('id="mapa-negocio"'));
+  check('ficha muestra fecha y autoría (E-E-A-T)', ficha.text.includes('Ficha publicada el') && ficha.text.includes('por Clasificados Las Flores'));
 
   const salud = await get('/categoria/salud/');
   check('categoría vacía invita a publicar', salud.status === 200 && salud.text.includes('Sé el primero en'));
@@ -137,12 +164,23 @@ try {
   }
   const planesPage = await get('/planes/');
   check('planes FAQPage AEO', planesPage.text.includes('"FAQPage"') && planesPage.text.includes('¿Cuánto cuesta publicar?'));
+  const nos = await get('/nosotros/');
+  check('nosotros autoría + metodología (E-E-A-T)', nos.text.includes('Quiénes hacemos esto') && nos.text.includes('Cómo verificamos'));
+  check('home FAQ AEO (long-tail)', home.text.includes('"FAQPage"') && home.text.includes('¿Es de Las Flores, Buenos Aires o del barrio de Flores?'));
+  check('home GEO desambiguado', home.text.includes('provincia de Buenos Aires'));
+  const llms = await get('/llms.txt');
+  check('llms.txt 200 para LLMs', llms.status === 200 && llms.text.includes('Clasificados Las Flores') && llms.text.includes('/directorio'));
 
   const sm = await get('/sitemap.xml');
   check('sitemap 200 + fichas + lastmod', sm.status === 200 && sm.text.includes('/comercio/') && sm.text.includes('<lastmod>'));
+  check('sitemap incluye legales', sm.text.includes('/privacidad') && sm.text.includes('/terminos'));
+  for (const p of ['/privacidad/', '/terminos/']) {
+    const r = await get(p);
+    check(`${p} 200`, r.status === 200, String(r.status));
+  }
   const robots = await get('/robots.txt');
   check('robots 200', robots.status === 200);
-  const og = await get('/og-cover.svg');
+  const og = await get('/og-cover.png');
   check('og-cover 200', og.status === 200);
 
   const notFound = await get('/comercio/no-existe-xyz/');

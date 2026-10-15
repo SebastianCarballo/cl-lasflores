@@ -130,7 +130,7 @@ server.registerTool(
   {
     title: 'Ver planes y precios',
     description:
-      'Devuelve los 4 planes del modelo de negocio (Gratis, Contacto Directo $5.000, Comercio Verificado $12.000, Vidriera Digital $25.000) con features. Úsalo cuando pregunten por publicar, precios o visibilidad.',
+      'Devuelve los 4 planes del modelo de negocio (Gratis $0, Contacto Directo $5.000, Comercio Verificado $12.000, Vidriera Digital $20.000) con features. Úsalo cuando pregunten por publicar, precios o visibilidad.',
     inputSchema: {},
   },
   async () => {

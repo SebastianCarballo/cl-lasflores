@@ -3,15 +3,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/Icon.astro';
 import { listCategories } from '@/data/categories';
 import { listPlans } from '@/data/plans';
-import { planesVisibles, PROMO_LANZAMIENTO } from '@/utils/site';
+import { planesVisibles } from '@/utils/site';
 
 const categories = await listCategories();
 const plans = planesVisibles(await listPlans());
 
 // El funnel de planes trae ?plan=bronce|plata|oro para preseleccionar (CRO).
-// En lanzamiento el alta cae por defecto en Vidriera Digital (gratis 30 días).
+// Sin ?plan válido, el alta cae en Gratis.
 const planParam = Astro.url.searchParams.get('plan') ?? '';
-const planInicial = plans.some((p) => p.tier === planParam) ? planParam : (PROMO_LANZAMIENTO.activa ? 'oro' : 'gratis');
+const planInicial = plans.some((p) => p.tier === planParam) ? planParam : 'gratis';
 const planElegido = plans.find((p) => p.tier === planInicial);
 ---
 
@@ -23,11 +23,6 @@ const planElegido = plans.find((p) => p.tier === planInicial);
     <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">Alta en 2 minutos</p>
     <h1 class="mt-2 font-display font-extrabold text-4xl tracking-tight">Publicá tu negocio</h1>
     <p class="mt-3 text-slate-600">Completá el formulario, revisás tu mensaje en WhatsApp y tocás enviar. Sin tarjeta, sin compromiso. ¿No estás seguro? <a href="/guia-whatsapp" class="text-brand-700 font-bold underline">Mirá la guía gratis primero</a>.</p>
-    {PROMO_LANZAMIENTO.activa && (
-      <p role="status" class="mt-4 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800">
-        <span aria-hidden="true">🚀</span> <span><strong>Lanzamiento:</strong> Vidriera Digital completa gratis por 30 días.</span>
-      </p>
-    )}
     {/* NUTRICIÓN: continuidad del viaje guía → alta */}
     <p data-ref-banner hidden class="mt-4 items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-sm font-semibold text-emerald-800" role="status">
       <span aria-hidden="true">👍</span> <span data-ref-texto>Buena decisión: ya tenés la guía, ahora publicá.</span>
@@ -136,7 +131,7 @@ const planElegido = plans.find((p) => p.tier === planInicial);
       <div id="form-exito" hidden role="status" class="rounded-2xl bg-emerald-50 border border-emerald-200 p-5 text-sm">
         <p class="font-bold text-emerald-800">✓ ¡Lista tu solicitud! Ahora tocá enviar en la ventana de WhatsApp que se abrió.</p>
         <p class="mt-1 text-emerald-700">Te contactamos en menos de 24 hs para activar tu ficha. Podés cerrar esta página cuando quieras.</p>
-        <p class="mt-3 pt-3 border-t border-emerald-200 text-emerald-800">¿Querés liderar tu rubro? <a href="/planes" class="font-bold underline">La Vidriera Digital sale gratis por 30 días</a> por lanzamiento.</p>
+        <p class="mt-3 pt-3 border-t border-emerald-200 text-emerald-800">¿Querés liderar tu rubro? <a href="/planes" class="font-bold underline">Conocé la Vidriera Digital</a>: destacado en el inicio y difusión en redes.</p>
       </div>
       <p id="form-error" role="alert" tabindex="-1" hidden class="text-sm font-semibold text-red-600 rounded-xl"></p>
       <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#25D366] text-white font-bold hover:brightness-95 active:scale-[0.99] transition btn-sheen">

@@ -1,3 +1,5 @@
+import type { ImageMetadata } from 'astro';
+
 export function whatsappLink(phone: string, businessName: string): string {
   const tel = phone.replace(/\D/g, '');
   const text = encodeURIComponent(
@@ -27,8 +29,13 @@ export interface SeoProps {
   title: string;
   description: string;
   canonical?: string;
-  image?: string;
+  /** Imagen de la ficha o portada. Acepta ruta pública o asset local. */
+  image?: string | ImageMetadata;
+  /** Texto alternativo de la imagen OG. Default: el título de la página. */
+  imageAlt?: string;
   type?: 'website' | 'article';
+  /** Para type="article": fecha ISO (Google la usa para mostrar la ficha). */
+  publishedTime?: string;
   schema?: Record<string, unknown> | Record<string, unknown>[];
 }
 
@@ -37,17 +44,68 @@ export const SITE = {
   tagline: 'El directorio local de Las Flores, Buenos Aires',
   url: 'https://clasificadoslasflores.com.ar',
   locale: 'es_AR',
-  defaultImage: '/og-cover.svg',
+  // Cover de portada para Open Graph. Las dimensiones son las reales del
+  // archivo (ver tests/e2e/og.spec.ts). Si se reemplaza public/og-cover.png,
+  // hay que actualizarlas acá o las redes recortarán mal la vista previa.
+  ogCover: {
+    src: '/og-cover.png',
+    width: 1200,
+    height: 630,
+  },
   // Canal comercial público del portal (ventas/soporte). No es secreto.
   whatsapp: '5492224000000',
   email: 'hola@clasificadoslasflores.com.ar',
 };
 
-// Promo lanzamiento: solo Gratis + Vidriera Digital visibles hasta traccionar
-// oferta. Para terminarla: `activa: false` y vuelven los 4 planes en /planes,
-// home, directorio y el select de /publicar (los slugs y ?plan= nunca cambian).
+// Formatos que las redes aceptan como og:image. WhatsApp, Facebook, X y LinkedIn
+// NO renderizan SVG: un link compartido con una imagen .svg sale sin vista
+// previa. Por eso la ficha de muestra (cuyo placeholder es .svg) cae al cover
+// del portal en vez de mostrar un cuadro roto.
+const OG_RASTER = /\.(png|jpe?g|webp)$/i;
+
+export interface OgImageMeta {
+  /** Ruta pública o URL absoluta, lista para usar en og:image. */
+  src: string;
+  /** Extensión real, para og:image:type. */
+  ext: 'png' | 'jpeg' | 'webp';
+  /** Dimensiones reales si se conocen. Jamás se inventan. */
+  width?: number;
+  height?: number;
+}
+
+/**
+ * Resuelve la imagen de Open Graph de una página.
+ *
+ * Reglas: siempre raster (nunca SVG) y con dimensiones reales cuando se
+ * conocen. Declarar 1200x630 fijo hacía que las redes recortaran mal la vista
+ * previa de las fichas con foto 4:3 o vertical.
+ */
+export function ogImageMeta(image?: string | ImageMetadata): OgImageMeta {
+  if (image === undefined) return { ...SITE.ogCover, ext: 'png' };
+
+  const src = typeof image === 'string' ? image : image.src;
+
+  // Sin SVG: los crawlers de redes no lo renderizan.
+  if (!OG_RASTER.test(src)) return { ...SITE.ogCover, ext: 'png' };
+
+  const ext = /\.jpe?g$/i.test(src) ? 'jpeg' : /\.webp$/i.test(src) ? 'webp' : 'png';
+  // Un asset local trae sus dimensiones reales; de una ruta pública no se
+  // pueden saber, así que se omiten en vez de declarar un tamaño falso.
+  const size =
+    typeof image !== 'string' && image.width && image.height
+      ? { width: image.width, height: image.height }
+      : {};
+
+  return { src, ext, ...size };
+}
+
+// Promo lanzamiento (finalizada): mostraba solo Gratis + Vidriera Digital con
+// 30 días gratis para traccionar oferta. Con `activa: false` se ven los 4
+// planes del PDF en /planes, home, directorio y el select de /publicar
+// (los slugs y ?plan= nunca cambian). Se conserva el objeto para no romper
+// los condicionales que lo leen; el copy de la oferta se retiró de cada vista.
 export const PROMO_LANZAMIENTO = {
-  activa: true,
+  activa: false,
   planesVisibles: ['gratis', 'oro'] as const,
   titular: '🚀 Lanzamiento en Las Flores',
   texto: 'Vidriera Digital completa gratis por 30 días.',
@@ -74,8 +132,6 @@ export function normalizeText(value: string): string {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 }
-
-import type { ImageMetadata } from 'astro';
 
 export function localBusinessSchema(b: {
   slug?: string;
@@ -148,8 +204,22 @@ export function organizationSchema() {
     '@type': 'Organization',
     name: SITE.name,
     url: SITE.url,
-    logo: `${SITE.url}/clasificados-las-flores.jpg`,
+    logo: `${SITE.url}/logo-flores.webp`,
     description: SITE.tagline,
+    slogan: 'Lo que necesitás, más cerca.',
+    // GEO/LLM: temas que cubre el portal (coinciden con las 8 categorías).
+    knowsAbout: [
+      'Directorio comercial de Las Flores Buenos Aires',
+      'Clasificados de Las Flores provincia de Buenos Aires',
+      'Gastronomía en Las Flores',
+      'Servicios y oficios en Las Flores',
+      'Comercios en Las Flores',
+      'Inmuebles y alquileres en Las Flores',
+      'Vehículos en Las Flores',
+      'Empleo en Las Flores',
+      'Salud en Las Flores',
+      'Educación en Las Flores',
+    ],
     address: {
       '@type': 'PostalAddress',
       addressLocality: 'Las Flores',

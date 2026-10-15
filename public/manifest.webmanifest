@@ -1,0 +1,46 @@
+{
+  "name": "Clasificados Las Flores",
+  "short_name": "Clasificados",
+  "description": "Directorio local de Las Flores, Buenos Aires: comercios, oficios, gastronomía, inmuebles y empleo con contacto directo por WhatsApp.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fafc",
+  "theme_color": "#1c72ef",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "categories": ["business", "shopping", "travel"],
+  "icons": [
+    {
+      "src": "/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo-flores.webp",
+      "sizes": "any",
+      "type": "image/webp",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar en el directorio",
+      "short_name": "Directorio",
+      "url": "/directorio"
+    },
+    {
+      "name": "Publicar mi negocio",
+      "short_name": "Publicar",
+      "url": "/publicar"
+    }
+  ]
+}

@@ -1,20 +1,43 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PlanCard from '@/components/PlanCard.astro';
+import VidrieraDestacada from '@/components/VidrieraDestacada.astro';
 import VentasCard from '@/components/VentasCard.astro';
+import Icon from '@/components/Icon.astro';
 import { listPlans } from '@/data/plans';
-import { faqPageSchema, planesVisibles, PROMO_LANZAMIENTO } from '@/utils/site';
+import { RUBROS, TIER_LABEL } from '@/data/rubros';
+import { faqPageSchema, planesVisibles } from '@/utils/site';
 
 const plans = planesVisibles(await listPlans());
+// Distribución: 3 planes base en grilla, Vidriera a todo el ancho, contacto al final.
+const planesBase = plans.filter((p) => p.tier !== 'oro');
+const vidriera = plans.find((p) => p.tier === 'oro');
 
 // AEO: respuestas directas y cortas, misma fuente para el HTML visible y el schema.
 const faqs = [
   { q: '¿Puedo cambiar de plan?', a: 'Sí, subís o bajás cuando quieras. El cambio aplica al siguiente ciclo, sin permanencia.' },
   { q: '¿Cómo consigo el badge Verificado?', a: 'Con la Vidriera Digital verificamos identidad, dirección y redes. Tarda de 24 a 48 horas.' },
   { q: '¿Mi negocio aparece en Google?', a: 'Sí. Tu negocio aparece en Google cuando un vecino busca tu rubro en Las Flores.' },
-  { q: '¿Cuánto cuesta publicar?', a: 'El plan Gratis cuesta $0 para siempre. La Vidriera Digital cuesta $25.000 por mes, gratis los primeros 30 días por lanzamiento.' },
+  { q: '¿Cuánto cuesta publicar?', a: 'El plan Gratis cuesta $0 para siempre. Contacto Directo cuesta $5.000 por mes, Comercio Verificado $12.000 y Vidriera Digital $20.000. Los tres tienen opción anual con 2 meses gratis.' },
 ];
-const schema = faqPageSchema(faqs);
+
+// Recomendación por rubro: misma data para el texto visible y el schema, para
+// que un asistente de voz responda igual que la página.
+const rubros = RUBROS.map((r) => ({
+  ...r,
+  plan: TIER_LABEL[r.tier],
+  href: r.tier === 'gratis' ? '/publicar' : `/publicar?plan=${r.tier}`,
+}));
+const schemaRubros = rubros.map((r) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Question',
+  name: `¿Qué plan me conviene si tengo ${r.rubro.toLowerCase()} en Las Flores?`,
+  acceptedAnswer: {
+    '@type': 'Answer',
+    text: `Te conviene ${r.plan}. ${r.porque} ${r.gancho}`,
+  },
+}));
+const schema = [faqPageSchema(faqs), ...schemaRubros];
 ---
 
 <BaseLayout
@@ -24,20 +47,21 @@ const schema = faqPageSchema(faqs);
 >
   <section class="bg-ink-950 text-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-14 text-center">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Suscripción mensual · Sin permanencia · Precios de lanzamiento</p>
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-300">Suscripción mensual · Sin permanencia · Sin comisiones</p>
       <h1 class="mt-3 font-display font-extrabold text-4xl sm:text-5xl">Empezá gratis y subí a Vidriera cuando quieras</h1>
       <p class="mt-4 text-slate-300">Tené tu ficha profesional sin pagar una página web. Sin tarjeta.</p>
-      {PROMO_LANZAMIENTO.activa && (
-        <p role="status" class="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-400/15 border border-emerald-300/40 text-sm font-bold text-emerald-200">
-          <span aria-hidden="true">🚀</span> {PROMO_LANZAMIENTO.titular}: {PROMO_LANZAMIENTO.texto}
-        </p>
-      )}
     </div>
   </section>
 
   <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-    <div class:list={['mt-2 grid gap-5 sm:grid-cols-2', plans.length > 2 ? 'lg:grid-cols-4' : 'lg:grid-cols-3 max-w-5xl mx-auto']}>
-      {plans.map((p) => <PlanCard plan={p} />)}
+    {/* h2 antes de la grilla: las cards titulan con h3 y sin esto la jerarquía salta de h1 a h3 */}
+    <h2 class="sr-only">Planes y precios</h2>
+    {/* Escalera de planes: 3 cards arriba, Vidriera a todo el ancho, contacto al final */}
+    <div class="mt-2 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" data-reveal-group>
+      {planesBase.map((p) => <PlanCard plan={p} />)}
+    </div>
+    {vidriera && <VidrieraDestacada plan={vidriera} />}
+    <div class="mt-6 max-w-2xl mx-auto">
       <VentasCard />
     </div>
 
@@ -46,15 +70,36 @@ const schema = faqPageSchema(faqs);
       <h2 class="font-display font-bold text-xl">¿Cuál me conviene?</h2>
       <ul class="mt-4 grid sm:grid-cols-2 gap-3 text-sm">
         <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Recién arrancás?</strong> Gratis: probá si te sirve, sin pagar. <a href="/publicar" class="text-brand-700 font-bold underline">Empezá gratis</a></li>
-        {!PROMO_LANZAMIENTO.activa && (
-          <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Vivís del contacto directo?</strong> (plomero, flete, gasista) Contacto Directo con WhatsApp. <a href="/publicar?plan=bronce" class="text-brand-700 font-bold underline">Elegir Contacto Directo</a></li>
-        )}
-        {!PROMO_LANZAMIENTO.activa && (
-          <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Tenés local y querés reputación?</strong> Comercio Verificado con badge y catálogo. <a href="/publicar?plan=plata" class="text-brand-700 font-bold underline">Elegir Comercio Verificado</a></li>
-        )}
-        <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Querés liderar tu rubro?</strong> Vidriera Digital en el inicio, gratis por 30 días por lanzamiento. <a href="/publicar?plan=oro" class="text-brand-700 font-bold underline">Quiero mi Vidriera</a></li>
+        <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Vivís del contacto directo?</strong> (plomero, flete, gasista) Contacto Directo con WhatsApp. <a href="/publicar?plan=bronce" class="text-brand-700 font-bold underline">Elegir Contacto Directo</a></li>
+        <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Tenés local y querés reputación?</strong> Comercio Verificado con badge y catálogo. <a href="/publicar?plan=plata" class="text-brand-700 font-bold underline">Elegir Comercio Verificado</a></li>
+        <li class="rounded-2xl bg-ink-50 p-4"><strong>¿Querés liderar tu rubro?</strong> Vidriera Digital en el inicio, con difusión en nuestras redes. <a href="/publicar?plan=oro" class="text-brand-700 font-bold underline">Quiero mi Vidriera</a></li>
       </ul>
       <p class="mt-4 text-sm text-slate-600">¿Todavía no te decidís? <a href="/guia-whatsapp" class="text-brand-700 font-bold underline">Llevate gratis el checklist de WhatsApp</a> y después publicá con todo listo.</p>
+    </div>
+
+    {/* PLAN POR RUBRO: qué necesita de verdad cada oficio, sin adivinar */}
+    <div class="mt-12" aria-label="Plan recomendado según tu rubro">
+      <h2 class="font-display font-bold text-2xl">Según tu rubro, este es el plan</h2>
+      <p class="mt-2 text-sm text-slate-600">No todos los negocios venden igual. Esto es lo que recomendamos para cada uno, y por qué.</p>
+      <ul class="mt-5 grid md:grid-cols-2 gap-4">
+        {rubros.map((r) => (
+          <li class="flex gap-4 rounded-2xl bg-white border border-ink-100 p-5">
+            <span class="text-2xl leading-none shrink-0" aria-hidden="true">{r.icono}</span>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="font-display font-bold text-base text-ink-900">{r.rubro}</h3>
+                <span class="rounded-full bg-brand-100 px-2.5 py-0.5 text-[11px] font-bold text-brand-700">{r.plan}</span>
+              </div>
+              <p class="mt-1.5 text-sm text-slate-600">{r.porque}</p>
+              <p class="mt-1 text-sm font-semibold text-ink-800">{r.gancho}</p>
+              <a href={r.href} class="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 hover:underline">
+                Publicar mi {r.rubro.toLowerCase()}
+                <Icon name="arrow-right" size={14} />
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
 
     <div class="mt-12 grid md:grid-cols-2 gap-6">

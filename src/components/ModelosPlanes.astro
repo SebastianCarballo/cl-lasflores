@@ -5,7 +5,6 @@ import { planesVisibles } from '@/utils/site';
 
 // Vidriera de planes: un modelo de muestra por tier, con las features REALES
 // de cada plan (misma fuente que /planes). No finge negocios: todo rotulado MUESTRA.
-// En lanzamiento solo Gratis + Vidriera Digital (ver PROMO_LANZAMIENTO en site.ts).
 const planes = planesVisibles(await listPlans());
 
 const ESTILO: Record<string, { header: string; pill: string; inicial: string }> = {
@@ -23,7 +22,9 @@ const ESTILO: Record<string, { header: string; pill: string; inicial: string }> 
     <p class="mt-2 text-slate-600">Un ejemplo tal cual es cada plan, sin letra chica.</p>
   </div>
 
-  <div class:list={['mt-6 grid gap-5 sm:grid-cols-2', planes.length > 2 ? 'lg:grid-cols-4' : 'max-w-3xl mx-auto']} data-reveal-group>
+  {/* 4 columnas solo en xl: entre lg y xl (1024-1280) las pills del header
+      (COMERCIO VERIFICADO + MUESTRA) colisionaban. En 2 columnas hay aire de sobra. */}
+  <div class:list={['mt-6 grid gap-5 sm:grid-cols-2', planes.length > 2 ? 'xl:grid-cols-4' : 'max-w-3xl mx-auto']} data-reveal-group>
     {
       planes.map((p) => {
         const e = ESTILO[p.tier] ?? ESTILO.gratis;
@@ -31,16 +32,18 @@ const ESTILO: Record<string, { header: string; pill: string; inicial: string }> 
         return (
           <article data-modelo-plan={p.tier} class="card-hover bg-white rounded-2xl border border-ink-100 shadow-sm hover:shadow-lg overflow-hidden flex flex-col">
             <div class={`bg-gradient-to-br ${e.header} p-5 text-white`}>
-              <div class="flex items-center justify-between">
-                <span class={`px-2.5 py-1 rounded-full text-[11px] font-bold ${e.pill}`}>{p.name.toUpperCase()}</span>
-                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white text-ink-950">MUESTRA</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class={`px-2 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${e.pill}`}>{p.name.toUpperCase()}</span>
+                <span class="px-2 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-white text-ink-950">MUESTRA</span>
               </div>
               <div class="mt-4 flex items-center gap-3">
-                <span class="w-11 h-11 rounded-xl bg-white/20 grid place-items-center font-display font-extrabold text-xl" aria-hidden="true">
+                <span class="w-11 h-11 shrink-0 rounded-xl bg-white/20 grid place-items-center font-display font-extrabold text-xl" aria-hidden="true">
                   {e.inicial}
                 </span>
-                <div>
-                  <p class="font-display font-bold leading-tight">Modelo {p.name}</p>
+                <div class="min-w-0">
+                  {/* min-h de 2 líneas: "Comercio Verificado" ocupa 2 y el resto 1;
+                      sin esto los precios no quedan alineados entre cards. */}
+                  <p class="font-display font-bold leading-snug min-h-[2.6em] flex items-center">Modelo {p.name}</p>
                   <p class="text-xs opacity-80">{p.priceLabel}</p>
                 </div>
               </div>

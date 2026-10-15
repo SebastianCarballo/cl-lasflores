@@ -27,7 +27,7 @@ import { STUDIO } from '@/utils/site';
         <p class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-ink-950 mb-4">
           SOCIO FUNDADOR
         </p>
-        <img src="/memby-studio.jpg" alt="MembyStudio" width="482" height="112" class="h-12 max-w-full w-auto" />
+        <img src="/memby-studio.webp" alt="MembyStudio" width="482" height="112" loading="lazy" decoding="async" class="h-12 max-w-full w-auto" />
         <p class="mt-2 text-xs text-slate-400">{STUDIO.tagline}</p>
         <p class="mt-4 text-sm text-slate-300 leading-relaxed">{STUDIO.rol}</p>
         <ul class="mt-4 space-y-2 text-sm text-slate-300">
@@ -84,19 +84,19 @@ import { STUDIO } from '@/utils/site';
               rel="noopener noreferrer"
               aria-label={`${STUDIO.name}, socio fundador — ${STUDIO.tagline}`}
               class="flex items-center gap-3 px-5 py-3 rounded-2xl bg-ink-950 text-white shrink-0 hover:scale-[1.03] transition-transform">
-              <img src="/memby-studio.jpg" alt="" width="482" height="112" class="h-8 w-auto" />
+              <img src="/memby-studio.webp" alt="" width="482" height="112" loading="lazy" decoding="async" class="h-8 w-auto" />
             </a>
             <a
               href="/"
               aria-label="Clasificados Las Flores"
               class="flex items-center px-5 py-3 rounded-2xl border border-ink-100 bg-white shrink-0 hover:scale-[1.03] transition-transform">
-              <img src="/clasificados-las-flores.jpg" alt="" width="894" height="166" class="h-8 w-auto" />
+              <img src="/clasificados-las-flores.webp" alt="" width="360" height="97" loading="lazy" decoding="async" class="h-8 w-auto" />
             </a>
             {
               [1, 2, 3].map(() => (
                 <a
                   href="/contacto"
-                  aria-label="Sumate como socio"
+                  aria-label="Tu logo acá — Sumate como socio"
                   class="flex items-center gap-3 px-7 py-3 rounded-2xl border-2 border-dashed border-ink-200 text-slate-500 shrink-0 hover:border-brand-400 hover:text-brand-700 transition-colors">
                   <span class="w-9 h-9 rounded-xl bg-ink-100 grid place-items-center font-display font-bold" aria-hidden="true">+</span>
                   <span class="leading-tight text-left">

@@ -1,16 +1,19 @@
 {
   "name": "Vidriera Digital",
-  "price": 25000,
-  "priceLabel": "Gratis por 30 días, luego $25.000 / mes",
-  "description": "Para que te vean primero en tu rubro. Lanzamiento: gratis los primeros 30 días.",
+  "kicker": "Visibilidad",
+  "price": 20000,
+  "priceLabel": "$20.000 / mes",
+  "annualLabel": "o $200.000 al año · te ahorrás 2 meses",
+  "description": "Para que te vean primero en tu rubro, todos los días.",
   "features": [
-    "Galería, catálogo, mapa, redes y sello Verificado",
-    "Lugar destacado en el inicio",
+    "Todo lo de Comercio Verificado",
+    "Lugar destacado en el inicio — la vidriera que mira todo el barrio",
     "Distintivo dorado para que te ubiquen al toque",
-    "Lo compartimos en nuestras redes",
-    "Atención prioritaria por WhatsApp"
+    "Lo compartimos en nuestras redes — te promocionamos nosotros",
+    "Atención prioritaria por WhatsApp — tu consulta salta la fila",
+    "Cupos limitados por rubro — tu competencia puede quedarse afuera"
   ],
   "cta": "Quiero mi Vidriera",
   "highlighted": true,
-  "badge": "🚀 30 días gratis"
+  "badge": "Máxima visibilidad"
 }

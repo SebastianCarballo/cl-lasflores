@@ -18,6 +18,8 @@ const isOro = b.plan === 'oro';
   data-business-card
   data-slug={b.slug}
   data-category={b.category}
+  data-nombre={b.name}
+  data-wa={b.hasWhatsAppButton && b.whatsapp && b.plan !== 'gratis' ? '1' : '0'}
   class:list={[
     'card-hover group flex flex-col overflow-hidden rounded-2xl border transition-all duration-300',
     b.demo

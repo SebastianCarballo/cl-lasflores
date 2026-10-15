@@ -69,8 +69,12 @@ const plans = defineCollection({
   type: 'data',
   schema: z.object({
     name: z.string().min(2),
+    // Escalón del PDF (PRESENCIA, CONTACTO, CONFIANZA, VISIBILIDAD): eyebrow de la card.
+    kicker: z.string().min(2),
     price: z.number().int().min(0),
     priceLabel: z.string().min(2),
+    // Línea anual con ahorro ("o $50.000 al año · te ahorrás 2 meses"). Opcional.
+    annualLabel: z.string().min(2).optional(),
     description: z.string().min(10),
     features: z.array(z.string()).min(1),
     limitations: z.array(z.string()).optional(),

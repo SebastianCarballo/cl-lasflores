@@ -52,8 +52,12 @@ export interface Category {
 export interface Plan {
   tier: PlanTier;
   name: string;
+  /** Escalón del PDF (PRESENCIA, CONTACTO, CONFIANZA, VISIBILIDAD). */
+  kicker: string;
   price: number;
   priceLabel: string;
+  /** Línea anual con ahorro. Solo planes pagos. */
+  annualLabel?: string;
   description: string;
   features: string[];
   limitations?: string[];

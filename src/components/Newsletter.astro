@@ -1,0 +1,109 @@
+---
+import Icon from '@/components/Icon.astro';
+
+// Newsletter: captura de email en un sitio 100% estático.
+//
+// El build no tiene backend (`output: 'static'`), así que el destino del email
+// tiene que ser explícito:
+//
+// 1. Con PUBLIC_NEWSLETTER_ENDPOINT en .env → POST a ese servicio
+//    (Formspree, Buttondown, un endpoint propio, etc.).
+// 2. Sin esa variable → Netlify Forms captura el envío si el deploy es
+//    Netlify (data-netlify). Si el POST falla porque el host no lo soporta,
+//    NO se pierde el email: cae a WhatsApp con el mensaje ya armado.
+//
+// Nunca se promete una suscripción que después no existe.
+
+const endpoint = import.meta.env.PUBLIC_NEWSLETTER_ENDPOINT ?? '';
+const netlify = endpoint ? undefined : true;
+---
+
+<form
+  id="form-newsletter"
+  name="newsletter"
+  method="POST"
+  action={endpoint || '/'}
+  data-netlify={netlify}
+  data-newsletter
+  novalidate
+  class="mt-4"
+>
+  <input type="hidden" name="form-name" value="newsletter" />
+  <label for="newsletter-email" class="sr-only">Tu email</label>
+  <div class="flex gap-2">
+    <input
+      id="newsletter-email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      inputmode="email"
+      enterkeyhint="send"
+      placeholder="tu@email.com"
+      aria-describedby="newsletter-ayuda newsletter-estado"
+      class="min-w-0 flex-1 rounded-xl bg-white/10 border border-white/15 px-3 py-2.5 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-400/40"
+    />
+    <button
+      type="submit"
+      data-event="newsletter_suscribe"
+      class="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-700 active:scale-[0.98] transition"
+    >
+      Sumarme
+      <Icon name="arrow-right" size={14} />
+    </button>
+  </div>
+  <p id="newsletter-ayuda" class="mt-2 text-xs text-slate-400">
+    Lo que se publica en Las Flores, una vez por semana. Sin spam.
+  </p>
+  <p id="newsletter-estado" role="status" aria-live="polite" class="mt-2 text-xs font-semibold" hidden></p>
+</form>
+
+<script>
+  const form = document.getElementById('form-newsletter') as HTMLFormElement | null;
+  const estado = document.getElementById('newsletter-estado');
+
+  function decir(mensaje: string, ok: boolean) {
+    if (!estado) return;
+    estado.hidden = false;
+    estado.textContent = mensaje;
+    estado.className = `mt-2 text-xs font-semibold ${ok ? 'text-emerald-300' : 'text-amber-300'}`;
+  }
+
+  form?.addEventListener('submit', async (e: Event) => {
+    e.preventDefault();
+    const input = form.elements.namedItem('email') as HTMLInputElement | null;
+    const email = (input?.value ?? '').trim();
+    // Mismo criterio que el type=email del navegador, sin depender de su UI.
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      decir('Revisá el email: no parece una dirección válida.', false);
+      input?.focus();
+      return;
+    }
+
+    const boton = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    if (boton) boton.disabled = true;
+    try {
+      const res = await fetch(form.action || '/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ 'form-name': 'newsletter', email }).toString(),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      decir('¡Listo! Ya estás en la lista.', true);
+      form.reset();
+    } catch {
+      // El sitio es estático: si el hosting no captura el formulario, el email
+      // se manda por WhatsApp (mismo canal de venta que usa el portal) en vez
+      // de desaparecer en silencio.
+      const texto = encodeURIComponent(`Hola, quiero sumarme al newsletter de Clasificados Las Flores. Mi email es: ${email}`);
+      decir('No pudimos guardarlo acá. Te habilitamos el botón para mandarlo por WhatsApp.', false);
+      const wa = document.createElement('a');
+      wa.href = `https://wa.me/5492224000000?text=${texto}`;
+      wa.textContent = 'Enviar por WhatsApp';
+      wa.className = 'mt-1 inline-block underline font-bold';
+      if (estado && !wa.isConnected) estado.after(wa);
+    } finally {
+      if (boton) boton.disabled = false;
+    }
+  });
+</script>

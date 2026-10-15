@@ -13,6 +13,8 @@ export async function GET() {
     '/publicar',
     '/contacto',
     '/nosotros',
+    '/privacidad',
+    '/terminos',
     ...categories.map((c) => `/categoria/${c.slug}`),
     ...businesses.map((b) => `/comercio/${b.slug}`),
   ];

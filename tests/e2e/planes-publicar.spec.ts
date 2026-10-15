@@ -1,12 +1,19 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('planes y alta', () => {
-  test('planes muestra los tiers visibles con FAQ estructurada (lanzamiento: 2)', async ({ page }) => {
+  test('planes muestra los 4 tiers con FAQ estructurada', async ({ page }) => {
     await page.goto('/planes');
-    for (const nombre of ['Gratis', 'Vidriera Digital']) {
+    for (const nombre of ['Gratis', 'Contacto Directo', 'Comercio Verificado', 'Vidriera Digital']) {
       await expect(page.getByRole('heading', { name: nombre, exact: true })).toBeVisible();
     }
-    await expect(page.getByText(/Gratis por 30 días, luego/)).toBeVisible();
+    // Precios del PDF: $0 / $5.000 / $12.000 / $20.000.
+    for (const precio of [/\$0/, /\$5\.000/, /\$12\.000/, /\$20\.000/]) {
+      await expect(page.getByText(precio).first()).toBeVisible();
+    }
+    // Cada plan tiene identidad propia: no son 4 cards iguales.
+    await expect(page.getByText('Máxima visibilidad')).toBeVisible();
+    await expect(page.getByText('Más popular')).toBeVisible();
+    await expect(page.getByText(/te ahorrás 2 meses/).first()).toBeVisible();
     await page.getByText('¿Cuánto cuesta publicar?').click();
   });
 

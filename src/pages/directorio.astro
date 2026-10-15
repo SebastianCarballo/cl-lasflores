@@ -17,7 +17,7 @@ const categories = await listCategories();
 
 <BaseLayout
   title="Directorio de comercios y servicios en Las Flores"
-  description="Buscá comercios, oficios, inmuebles, vehículos y empleo en Las Flores, Buenos Aires. Filtros por categoría y contacto directo por WhatsApp."
+  description="Buscá comercios, oficios, inmuebles, vehículos y empleo en Las Flores, provincia de Buenos Aires. Filtros por categoría y contacto directo por WhatsApp."
 >
   <section class="bg-ink-950 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -40,6 +40,19 @@ const categories = await listCategories();
         <button type="submit" class="px-6 py-3 rounded-xl bg-brand-600 font-bold hover:bg-brand-700 active:scale-[0.98] transition inline-flex items-center justify-center gap-2"><Icon name="search" size={17} /> Buscar</button>
       </form>
 
+      <div class="mt-2 flex flex-wrap items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-2.5">
+        <label class="sr-only" for="orden">Ordenar por</label>
+        <select id="orden" name="orden" class="px-4 py-2 rounded-xl text-ink-900 bg-ink-100 font-medium text-sm">
+          <option value="destacados">Destacados primero</option>
+          <option value="az">Nombre (A–Z)</option>
+        </select>
+        <label class="flex items-center gap-2 text-sm font-semibold text-white cursor-pointer select-none">
+          <input type="checkbox" id="solo-wa" name="wa" value="1" class="h-4 w-4 rounded border-white/30 accent-brand-600" />
+          Solo con WhatsApp
+        </label>
+        <p class="text-xs text-slate-400 sm:ml-auto" id="filtros-activos"></p>
+      </div>
+
       <div class="mt-3 flex flex-wrap gap-2" aria-label="Filtros rápidos" id="filtros-rapidos">
         <a href="/directorio" data-cat-link="todas" class="px-4 py-2.5 rounded-full text-xs font-semibold border bg-white text-ink-900">Todas</a>
         {
@@ -60,7 +73,7 @@ const categories = await listCategories();
     {/* HMW1/HMW4: el sistema se explica solo — nadie debería adivinar qué es "Vidriera Digital" o "Verificado" */}
     <ul class="mb-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-600" aria-label="Qué significan las insignias">
       <li><span class="font-bold text-ink-900">✓ Verificado</span> — identidad y dirección confirmadas</li>
-      <li><span class="font-bold text-amber-600">★ Vidriera Digital</span> — espacio destacado pago</li>
+      <li><span class="font-bold text-amber-700">★ Vidriera Digital</span> — espacio destacado pago</li>
     </ul>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="resultados">
       {businesses.map((b) => <BusinessCard business={b} />)}
@@ -109,10 +122,14 @@ const categories = await listCategories();
       const todas: Element[] = grid ? Array.from(grid.querySelectorAll('[data-business-card]')) : [];
       if (grid) autoAnimate(grid);
 
-      function apply(cat: string, qRaw: string, { push = false }: { push?: boolean } = {}) {
+      function apply(
+        cat: string,
+        qRaw: string,
+        { push = false, orden = 'destacados', soloWa = false }: { push?: boolean; orden?: string; soloWa?: boolean } = {},
+      ) {
         const q = norm((qRaw ?? '').trim());
         const words = q ? q.split(/\s+/).filter((w) => w.length > 0) : [];
-        const visibles: Element[] = [];
+        let visibles: Element[] = [];
         todas.forEach((card) => {
           const el = card as HTMLElement;
           const slug = el.getAttribute('data-slug') ?? '';
@@ -120,8 +137,14 @@ const categories = await listCategories();
           const okCat = !cat || cat === 'todas' || entry?.category === cat;
           const hay = norm(entry?.haystack ?? el.textContent ?? '');
           const okQ = words.length === 0 || words.every((w: string) => hay.includes(w));
-          if (okCat && okQ) visibles.push(card);
+          const okWa = !soloWa || el.getAttribute('data-wa') === '1';
+          if (okCat && okQ && okWa) visibles.push(card);
         });
+        if (orden === 'az') {
+          visibles = [...visibles].sort((a, b) =>
+            (a.getAttribute('data-nombre') ?? '').localeCompare(b.getAttribute('data-nombre') ?? '', 'es'),
+          );
+        }
         // Reinsertar solo visibles: mutación de childList → auto-animate hace FLIP
         if (grid) grid.replaceChildren(...visibles);
         const visible = visibles.length;
@@ -139,10 +162,21 @@ const categories = await listCategories();
           if (on) a.setAttribute('aria-current', 'true');
           else a.removeAttribute('aria-current');
         });
+        // Resumen de filtros activos: el sistema se explica solo.
+        const chips: string[] = [];
+        if ((cat || 'todas') !== 'todas') chips.push('categoría: ' + cat);
+        if ((qRaw ?? '').trim()) chips.push('texto: ' + (qRaw ?? '').trim());
+        if (soloWa) chips.push('solo con WhatsApp');
+        if (orden === 'az') chips.push('orden A–Z');
+        const resumen = document.getElementById('filtros-activos');
+        if (resumen) resumen.textContent = chips.length ? 'Filtrando por ' + chips.join(' · ') : 'Sin filtros';
+
         if (push) {
           const next = new URLSearchParams();
           if (qRaw) next.set('q', qRaw);
           if (cat && cat !== 'todas') next.set('cat', cat);
+          if (orden !== 'destacados') next.set('orden', orden);
+          if (soloWa) next.set('wa', '1');
           history.replaceState(null, '', next.size ? `/directorio?${next}` : '/directorio');
         }
       }
@@ -150,44 +184,69 @@ const categories = await listCategories();
       const initialQ = params.get('q') ?? '';
       const initialCatRaw = params.get('cat') ?? 'todas';
       const initialCat = initialCatRaw === 'todas' || validCategories.has(initialCatRaw) ? initialCatRaw : 'todas';
+      const initialOrden = params.get('orden') === 'az' ? 'az' : 'destacados';
+      const initialWa = params.get('wa') === '1';
 
       function syncFromUrl() {
         const current = new URL(location.href);
         const q = current.searchParams.get('q') ?? '';
         const catRaw = current.searchParams.get('cat') ?? 'todas';
         const cat = catRaw === 'todas' || validCategories.has(catRaw) ? catRaw : 'todas';
+        const orden = current.searchParams.get('orden') === 'az' ? 'az' : 'destacados';
+        const wa = current.searchParams.get('wa') === '1';
         if (input) input.value = q;
         if (select) select.value = cat;
-        apply(cat, q);
+        if (ordenSel) ordenSel.value = orden;
+        if (waBox) waBox.checked = wa;
+        apply(cat, q, { orden, soloWa: wa });
       }
+
+      // Los controles nuevos se declaran antes de usarlos en syncFromUrl/apply.
+      const ordenSel = document.getElementById('orden') as HTMLSelectElement | null;
+      const waBox = document.getElementById('solo-wa') as HTMLInputElement | null;
+      if (ordenSel) ordenSel.value = initialOrden;
+      if (waBox) waBox.checked = initialWa;
 
       if (input) input.value = initialQ;
       if (select) select.value = initialCat;
-      apply(initialCat, initialQ);
+      apply(initialCat, initialQ, { orden: initialOrden, soloWa: initialWa });
 
       let t: ReturnType<typeof setTimeout>;
       input?.addEventListener('input', () => {
         clearTimeout(t);
-        t = setTimeout(() => apply(select?.value ?? 'todas', input.value, { push: true }), 120);
+        t = setTimeout(
+          () => apply(select?.value ?? 'todas', input.value, { push: true, orden: ordenSel?.value, soloWa: waBox?.checked }),
+          120,
+        );
       });
-      select?.addEventListener('change', () => apply(select.value, input?.value ?? '', { push: true }));
+      select?.addEventListener('change', () =>
+        apply(select.value, input?.value ?? '', { push: true, orden: ordenSel?.value, soloWa: waBox?.checked }),
+      );
       document.getElementById('form-buscar')?.addEventListener('submit', (e: Event) => {
         e.preventDefault();
-        apply(select?.value ?? 'todas', input?.value ?? '', { push: true });
+        apply(select?.value ?? 'todas', input?.value ?? '', { push: true, orden: ordenSel?.value, soloWa: waBox?.checked });
       });
+      ordenSel?.addEventListener('change', () =>
+        apply(select?.value ?? 'todas', input?.value ?? '', { push: true, orden: ordenSel.value, soloWa: waBox?.checked }),
+      );
+      waBox?.addEventListener('change', () =>
+        apply(select?.value ?? 'todas', input?.value ?? '', { push: true, orden: ordenSel?.value, soloWa: waBox.checked }),
+      );
       quickLinks.forEach((a) =>
         a.addEventListener('click', (e: Event) => {
           e.preventDefault();
           const cat = a.getAttribute('data-cat-link') ?? 'todas';
           if (select) select.value = cat;
-          apply(cat, input?.value ?? '', { push: true });
+          apply(cat, input?.value ?? '', { push: true, orden: ordenSel?.value, soloWa: waBox?.checked });
         }),
       );
       document.getElementById('limpiar')?.addEventListener('click', (e: Event) => {
         e.preventDefault();
         if (input) input.value = '';
         if (select) select.value = 'todas';
-        apply('todas', '', { push: true });
+        if (ordenSel) ordenSel.value = 'destacados';
+        if (waBox) waBox.checked = false;
+        apply('todas', '', { push: true, orden: 'destacados', soloWa: false });
       });
       window.addEventListener('popstate', syncFromUrl);
     </script>

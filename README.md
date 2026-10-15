@@ -45,7 +45,7 @@ scripts/smoke.mjs       # 30+ smoke tests + budgets (cero dependencias)
 mcp-server/             # MCP server (stdio): buscar_negocios, ver_negocio, listar_categorias, ver_planes
 .opencode/agent/asistente-clasificados.md  # Agente del negocio (usa el MCP)
 opencode.json           # Registra el MCP en opencode (reiniciar sesión para activar)
-public/robots.txt, favicon.svg, og-cover.svg
+public/robots.txt, favicon-flores.png, og-cover.png (1200×630 para redes), llms.txt
 ```
 
 ## Agente + bot + WhatsApp

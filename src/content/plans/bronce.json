@@ -1,13 +1,15 @@
 {
   "name": "Contacto Directo",
+  "kicker": "Contacto",
   "price": 5000,
   "priceLabel": "$5.000 / mes",
-  "description": "Para oficios e independientes que necesitan llamadas directas.",
+  "annualLabel": "o $50.000 al año · te ahorrás 2 meses",
+  "description": "Para que te llamen directo, sin intermediarios.",
   "features": [
-    "Hasta 3 fotos",
-    "Botón directo a WhatsApp",
-    "Logo y horarios comercializables",
-    "Posición prioritaria sobre Gratis"
+    "Todo lo del plan Gratis",
+    "Hasta 3 fotos — mostrá tu trabajo, no solo tu nombre",
+    "Botón directo a WhatsApp — te escriben con el mensaje ya redactado",
+    "Posición estándar — aparecés antes que las fichas gratis"
   ],
   "cta": "Elegir Contacto Directo",
   "highlighted": false,

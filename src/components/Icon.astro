@@ -14,6 +14,10 @@ interface Props {
     | 'clock'
     | 'globe'
     | 'mail'
+    | 'cruz'
+    | 'escudo'
+    | 'fuego'
+    | 'apoyo'
   | 'arrow-right'
   | 'arrow-left'
   | 'megafono'
@@ -39,7 +43,10 @@ import {
   ArrowRight,
   Check,
   Clock,
+  Cross,
+  Flame,
   Globe,
+  HeartHandshake,
   Mail,
   MapPin,
   Megaphone,
@@ -47,6 +54,7 @@ import {
   Search,
   Send,
   Share2,
+  Shield,
 } from '@lucide/astro';
 
 const UI_ICONS = {
@@ -59,6 +67,10 @@ const UI_ICONS = {
   clock: Clock,
   globe: Globe,
   mail: Mail,
+  cruz: Cross,
+  escudo: Shield,
+  fuego: Flame,
+  apoyo: HeartHandshake,
   'arrow-right': ArrowRight,
   'arrow-left': ArrowLeft,
   megafono: Megaphone,
