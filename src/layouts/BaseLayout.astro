@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Asistente from '@/components/Asistente.astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 import type { SeoProps } from '@/utils/site';
 import { SITE, ogImageMeta } from '@/utils/site';
 // Preload de los únicos subsets que usa el copy en español (verificado: 0
@@ -83,6 +84,10 @@ const ogAlt = imageAlt ?? fullTitle;
 
     {schema && <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')} />}
     <slot name="head" />
+
+    {/* Vercel Speed Insights — métricas de rendimiento reales (Core Web Vitals).
+         Se activa cuando PUBLIC_SPEED_INSIGHTS_ID está definido. */}
+    {import.meta.env.PUBLIC_SPEED_INSIGHTS_ID && <SpeedInsights />}
   </head>
   <body class="bg-ink-50 text-ink-900 antialiased min-h-dvh flex flex-col">
     <a href="#contenido" class="skip-link bg-brand-600 text-white px-4 py-2 rounded-lg font-semibold">
