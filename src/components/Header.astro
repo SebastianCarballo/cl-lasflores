@@ -1,4 +1,6 @@
 ---
+import Icon from '@/components/Icon.astro';
+
 const links = [
   { href: '/', label: 'Inicio' },
   { href: '/directorio', label: 'Directorio' },
@@ -6,17 +8,24 @@ const links = [
   { href: '/publicar', label: 'Publicar' },
   { href: '/contacto', label: 'Contacto' },
 ];
+
+const redes = [
+  { name: 'whatsapp', href: 'https://wa.me/5492224000000', label: 'WhatsApp' },
+  { name: 'instagram', href: 'https://instagram.com/clasificadoslasflores', label: 'Instagram' },
+  { name: 'facebook', href: 'https://facebook.com/clasificadoslasflores', label: 'Facebook' },
+];
+
 const pathname = Astro.url.pathname;
 ---
 
-<header id="site-header" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-ink-100">
+<header id="site-header" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-ink-100 transition-colors duration-300">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="flex items-center justify-between h-16">
       <a href="/" class="flex items-center gap-2.5">
         <img src="/logo-flores.webp" alt="" width="36" height="36" decoding="async" class="h-9 w-9 object-contain" />
         <span class="leading-tight">
-          <span class="block font-display font-bold text-[15px]">Clasificados Las Flores</span>
-          <span class="block text-xs text-slate-500">Las Flores · Buenos Aires</span>
+          <span class="block font-display font-bold text-[15px] text-ink-900" data-logo-title>Clasificados Las Flores</span>
+          <span class="block text-xs header-subtext text-slate-500" data-logo-sub>Las Flores · Buenos Aires</span>
         </span>
       </a>
 
@@ -25,13 +34,9 @@ const pathname = Astro.url.pathname;
           links.map((l) => (
             <a
               href={l.href}
-              aria-current={pathname === l.href ? 'page' : undefined}
-              class:list={[
-                'px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
-                pathname === l.href
-                  ? 'bg-ink-900 text-white'
-                  : 'text-slate-600 hover:text-ink-900 hover:bg-ink-100',
-              ]}>
+              class="nav-link px-3.5 py-2 rounded-full text-sm font-medium transition-colors"
+              class:list={[pathname === l.href ? 'bg-ink-900 text-white' : 'text-slate-600 hover:text-ink-900 hover:bg-ink-100']}
+              aria-current={pathname === l.href ? 'page' : undefined}>
               {l.label}
             </a>
           ))
@@ -48,34 +53,114 @@ const pathname = Astro.url.pathname;
 
       <details class="lg:hidden relative" id="menu-movil">
         <summary
-          class="list-none cursor-pointer inline-flex items-center min-h-11 px-4 rounded-lg border border-ink-200 text-sm font-semibold"
+          class="menu-summary list-none cursor-pointer inline-flex items-center min-h-11 px-4 rounded-lg border border-ink-200 text-sm font-semibold"
           aria-label="Abrir menú"
           aria-expanded="false">
           ☰ Menú
         </summary>
         <nav
-          class="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-ink-100 p-2 flex flex-col"
+          class="fixed inset-0 z-[60] bg-white/97 backdrop-blur-md p-6 flex flex-col h-full overflow-y-auto"
           aria-label="Navegación móvil">
-          {
-            links.map((l) => (
-              <a
-                href={l.href}
-                aria-current={pathname === l.href ? 'page' : undefined}
-                class="px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-ink-100">
-                {l.label}
-              </a>
-            ))
-          }
+          <div class="flex justify-between items-start mb-8">
+            <h2 class="font-display font-bold text-ink-900 text-lg">Menú</h2>
+            <button
+              class="cerrar-menu text-ink-600 hover:text-ink-900 text-2xl leading-none p-1 rounded-md hover:bg-ink-50"
+              aria-label="Cerrar menú"
+              id="cerrar-menu-movil">
+              ✕
+            </button>
+          </div>
+          <nav class="flex flex-col gap-2 mb-auto">
+            {
+              links.map((l) => (
+                <a
+                  href={l.href}
+                  aria-current={pathname === l.href ? 'page' : undefined}
+                  class="px-4 py-3 rounded-xl text-sm font-medium hover:bg-ink-100 block text-ink-900">
+                  {l.label}
+                </a>
+              ))
+            }
+          </nav>
           <a
             href="/publicar"
-            class="mt-1 px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold text-center">
+            class="mb-8 px-4 py-3 rounded-xl bg-brand-600 text-white text-sm font-semibold text-center block">
             Publicar gratis
           </a>
+          <div class="flex flex-col items-center gap-3 text-center text-slate-600">
+            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Síguenos</p>
+            <div class="flex gap-5">
+              {
+                redes.map((r) => (
+                  <a
+                    href={r.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={r.label}
+                    class="w-11 h-11 rounded-full bg-white/60 grid place-items-center hover:bg-white/80 hover:scale-105 active:scale-95 transition border border-ink-100">
+                    <Icon name={r.name as any} size={20} />
+                  </a>
+                ))
+              }
+            </div>
+          </div>
         </nav>
       </details>
     </div>
   </div>
   <script>
+    const header = document.getElementById('site-header');
+    const hero = document.getElementById('hero');
+
+    // Aplica el tema visual al header según el fondo donde está (claro u oscuro).
+    // Usa estilos inline para fiabilidad: Tailwind v4 aplica bg-white/90 con
+    // especificidad que CSS externo no siempre puede vencer.
+    function setTheme(theme: 'light' | 'dark') {
+      if (!header) return;
+      header.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        header.style.backgroundColor = 'rgba(2, 6, 23, 0.95)';
+        header.style.borderBottomColor = 'rgba(30, 41, 59, 0.6)';
+      } else {
+        header.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+        header.style.borderBottomColor = 'rgb(241, 245, 249)';
+      }
+      // Menú móvil (overlay): mismo criterio de contraste
+      const menuNav = document.querySelector('#menu-movil > nav') as HTMLElement | null;
+      if (menuNav) {
+        if (theme === 'dark') {
+          menuNav.style.backgroundColor = 'rgba(2, 6, 23, 0.97)';
+        } else {
+          menuNav.style.backgroundColor = 'rgba(255, 255, 255, 0.97)';
+        }
+      }
+    }
+
+    // Por defecto tema claro (fondos blancos del resto del sitio)
+    setTheme('light');
+
+    // Si hay hero (fondo oscuro), alternar según visibilidad del hero
+    if (hero && header) {
+      function updateTheme() {
+        if (!hero || !header) return;
+        const rect = hero.getBoundingClientRect();
+        const headerHeight = header.getBoundingClientRect().height;
+        const visible = rect.top < window.innerHeight - headerHeight && rect.bottom > headerHeight + 100;
+        setTheme(visible ? 'dark' : 'light');
+      }
+      updateTheme();
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateTheme();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+
     const details = document.getElementById('menu-movil') as HTMLDetailsElement | null;
     const summary = details?.querySelector('summary');
     const sync = () => summary?.setAttribute('aria-expanded', String(Boolean(details?.open)));
@@ -91,6 +176,11 @@ const pathname = Astro.url.pathname;
         details.removeAttribute('open');
         sync();
       }
+    });
+    const cerrar = document.getElementById('cerrar-menu-movil');
+    cerrar?.addEventListener('click', () => {
+      details?.removeAttribute('open');
+      sync();
     });
   </script>
 </header>

@@ -338,10 +338,76 @@ body {
 
 /* Header con sombra al scrollear */
 #site-header {
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 #site-header.scrolled {
   box-shadow: 0 10px 34px -14px rgb(2 6 23 / 0.25);
+}
+
+/* Tema oscuro del header cuando está sobre el hero (fondo oscuro) */
+#site-header[data-theme="dark"] {
+  background-color: rgba(2, 6, 23, 0.92) !important; /* ink-950/90 */
+  border-bottom-color: rgba(30, 41, 59, 0.6) !important; /* ink-800/60 */
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] .nav-link {
+  color: rgba(203, 213, 225, 0.9) !important; /* slate-300/90 */
+}
+#site-header[data-theme="dark"] .nav-link:hover {
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] .nav-link[aria-current="page"] {
+  color: #ffffff !important;
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+#site-header[data-theme="dark"] .header-subtext {
+  color: rgba(148, 163, 184, 0.8) !important; /* slate-400/80 */
+}
+#site-header[data-theme="dark"] span[data-logo-title] {
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] .menu-summary {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+#site-header[data-theme="dark"] .menu-summary::marker {
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] .cerrar-menu {
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] .cerrar-menu:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Menú móvil sobre fondo oscuro */
+#site-header[data-theme="dark"] #menu-movil > nav {
+  background-color: rgba(2, 6, 23, 0.96) !important; /* ink-950/97 */
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+#site-header[data-theme="dark"] #menu-movil h2 {
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] #menu-movil a {
+  color: rgba(203, 213, 225, 0.9) !important;
+}
+#site-header[data-theme="dark"] #menu-movil a:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  color: #ffffff !important;
+}
+#site-header[data-theme="dark"] #menu-movil a[aria-current="page"] {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+#site-header[data-theme="dark"] #menu-movil .text-slate-600,
+#site-header[data-theme="dark"] #menu-movil .text-slate-400 {
+  color: rgba(148, 163, 184, 0.7) !important;
+}
+#site-header[data-theme="dark"] #menu-movil .border-ink-100 {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+#site-header[data-theme="dark"] #menu-movil .bg-white/60 {
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

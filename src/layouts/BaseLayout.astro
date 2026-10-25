@@ -94,6 +94,16 @@ const ogAlt = imageAlt ?? fullTitle;
     </main>
     <Footer />
     <Asistente />
+
+    {/* Botón Volver arriba: aparece tras scroll y evita que el usuario quede atrapado en el footer */}
+    <button
+      id="volver-arriba"
+      type="button"
+      aria-label="Volver al inicio de la página"
+      class="fixed left-4 bottom-20 z-[55] w-12 h-12 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-xl opacity-0 translate-y-10 pointer-events-none transition-all duration-300 ease-out hover:bg-brand-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-600 focus:ring-offset-2">
+      <span class="text-[18px]" aria-hidden="true">↑</span>
+      <span class="sr-only">Volver arriba</span>
+    </button>
     <script>
       // Reveal on scroll: IntersectionObserver nativo + transiciones CSS.
       // A prueba de balas: si no hay IO, todo visible. Sin JS, el CSS nunca oculta.
@@ -144,6 +154,27 @@ const ogAlt = imageAlt ?? fullTitle;
         const form = e.target as HTMLFormElement;
         if (form?.dataset?.event) track(form.dataset.event, { form: form.id || 'sin-id' });
       });
+    </script>
+    <script>
+      // Botón Volver arriba: se muestra tras 300px de scroll y vuelve al inicio con scroll suave.
+      const btn = document.getElementById('volver-arriba');
+      if (btn) {
+        const toggle = () => {
+          if (window.scrollY > 300) {
+            btn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            btn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+          } else {
+            btn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            btn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+          }
+        };
+        toggle();
+        document.addEventListener('scroll', toggle, { passive: true });
+        btn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          btn.focus();
+        });
+      }
     </script>
   </body>
 </html>
