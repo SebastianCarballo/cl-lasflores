@@ -53,8 +53,8 @@ export const SITE = {
     height: 630,
   },
   // Canal comercial público del portal (ventas/soporte). No es secreto.
-  whatsapp: '5492224000000',
-  email: 'hola@clasificadoslasflores.com.ar',
+  whatsapp: '5492244428714',
+  email: 'clasificadaslasflores@gmail.com',
 };
 
 // Formatos que las redes aceptan como og:image. WhatsApp, Facebook, X y LinkedIn
@@ -232,7 +232,7 @@ export function organizationSchema() {
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+5492224000000',
+      telephone: '+5492244428714',
       contactType: 'sales',
       areaServed: 'AR',
       availableLanguage: 'es',

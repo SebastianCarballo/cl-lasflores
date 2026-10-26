@@ -35,7 +35,7 @@ test.describe('planes y alta', () => {
 
     await page.locator('#nombre').fill('Test E2E Rotisería');
     await page.locator('#categoria').selectOption('Gastronomía');
-    await page.locator('#whatsapp').fill('2224000000');
+    await page.locator('#whatsapp').fill('2244428714');
     await page.locator('#impulso').selectOption('Impulso 7 días');
     await page.locator('#desc').fill('Menú del día y empanadas todos los mediodías.');
     await expect(page.locator('#desc-count')).toContainText('✓');
