@@ -185,14 +185,16 @@ const planElegido = plans.find((p) => p.tier === planInicial);
         const exito = document.getElementById('form-exito');
         if (exito) exito.hidden = false;
         exito?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        const texto =
-          `Hola Clasificados Las Flores, quiero publicar mi negocio:%0A` +
-          `• Negocio: ${encodeURIComponent(nombre)}%0A` +
-          `• Categoría: ${encodeURIComponent(categoria)}%0A` +
-          `• Mi WhatsApp: ${encodeURIComponent(whatsapp)}%0A` +
-          `• Plan: ${encodeURIComponent(plan)}%0A` +
-          (impulso ? `• Impulso extra: ${encodeURIComponent(impulso)}%0A` : '') +
-          `• Descripción: ${encodeURIComponent(desc)}`;
+        const texto = encodeURIComponent(
+          `*Nueva solicitud de publicación*\n\n` +
+          `Negocio: ${nombre}\n` +
+          `Categoría: ${categoria}\n` +
+          `WhatsApp: ${whatsapp}\n` +
+          `Plan: ${plan}\n` +
+          (impulso ? `Impulso extra: ${impulso}\n` : '') +
+          `Descripción: ${desc}\n\n` +
+          `_Enviado desde Clasificados Las Flores_`
+        );
         // wa.me espera el texto ya codificado; los %0A son saltos de línea
         window.open(`https://wa.me/${DESTINO}?text=${texto}`, '_blank', 'noopener,noreferrer');
       });

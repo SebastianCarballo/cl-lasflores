@@ -89,12 +89,19 @@ import { CONTACT_LIMITS } from '@/utils/contact';
       }
 
       // Sitio 100% estático: sin backend, el envío se completa en WhatsApp
-      const text = `Hola, soy ${local.data?.name}.\nEmail: ${local.data?.email}\nAsunto: ${local.data?.subject}\n\n${local.data?.message}`;
+      const text = encodeURIComponent(
+        `*Nuevo mensaje de contacto*\n\n` +
+        `Nombre: ${local.data?.name}\n` +
+        `Email: ${local.data?.email}\n` +
+        `Asunto: ${local.data?.subject}\n\n` +
+        `Mensaje:\n${local.data?.message}\n\n` +
+        `_Enviado desde Clasificados Las Flores_`
+      );
       sessionStorage.setItem('contacto-ultimo', String(ahora));
       if (success) {
         success.hidden = false;
         success.focus?.();
       }
-      window.open(`https://wa.me/${DESTINO}?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+      window.open(`https://wa.me/${DESTINO}?text=${text}`, '_blank', 'noopener,noreferrer');
     });
 </script>
