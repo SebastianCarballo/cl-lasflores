@@ -24,7 +24,7 @@ function img(file: string): ImageMetadata | string {
 type BusinessRaw = Omit<Business, 'slug' | 'image' | 'gallery'> & { image: string; gallery: string[] };
 
 function toBusiness(id: string, data: BusinessRaw): Business {
-  return { ...data, slug: id, image: img(data.image), gallery: data.gallery.map(img) };
+  return { ...data, slug: id.replace(/\.json$/, ''), image: img(data.image), gallery: data.gallery.map(img) };
 }
 
 export async function listBusinesses(): Promise<Business[]> {
@@ -34,7 +34,7 @@ export async function listBusinesses(): Promise<Business[]> {
 
 export async function getBusiness(slug: string): Promise<Business | undefined> {
   const entries = await getCollection('businesses');
-  const found = entries.find((e) => e.id === slug);
+  const found = entries.find((e) => e.id.replace(/\.json$/, '') === slug);
   return found ? toBusiness(found.id, found.data as BusinessRaw) : undefined;
 }
 

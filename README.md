@@ -1,6 +1,6 @@
 # Clasificados Las Flores — Astro
 
-Directorio local de Las Flores (Buenos Aires). Astro 5 + Tailwind 4 + TypeScript strict.
+Directorio local de Las Flores (Buenos Aires). Astro 7 + Tailwind 4 + TypeScript strict.
 
 La app es 100% estática (`output: 'static'`): los formularios de contacto y
 publicación se validan en el cliente y derivan a WhatsApp (`wa.me`), sin

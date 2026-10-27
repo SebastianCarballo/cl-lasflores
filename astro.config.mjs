@@ -15,4 +15,7 @@ export default defineConfig({
     domains: ['images.unsplash.com'],
     remotePatterns: [{ protocol: 'https', hostname: 'images.unsplash.com' }],
   },
+  legacy: {
+    collectionsBackwardsCompat: true,
+  },
 });

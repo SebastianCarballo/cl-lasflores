@@ -6,7 +6,7 @@ export type CategoryWithSlug = Category & { slug: string };
 export async function listCategories(): Promise<CategoryWithSlug[]> {
   const entries = await getCollection('categories');
   return entries.map((e) => ({
-    slug: e.id,
+    slug: e.id.replace(/\.json$/, ''),
     name: e.data.name,
     description: e.data.description,
     icon: e.data.icon,
@@ -16,10 +16,10 @@ export async function listCategories(): Promise<CategoryWithSlug[]> {
 
 export async function getCategory(slug: string): Promise<CategoryWithSlug | undefined> {
   const entries = await getCollection('categories');
-  const found = entries.find((e) => e.id === slug);
+  const found = entries.find((e) => e.id.replace(/\.json$/, '') === slug);
   if (!found) return undefined;
   return {
-    slug: found.id,
+    slug: found.id.replace(/\.json$/, ''),
     name: found.data.name,
     description: found.data.description,
     icon: found.data.icon,

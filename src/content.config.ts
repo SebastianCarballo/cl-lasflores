@@ -1,4 +1,5 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 
 // Fuente única de verdad del vocabulario del dominio.
 // Agregar una categoría o plan = agregar un archivo JSON; el schema lo valida en build.
