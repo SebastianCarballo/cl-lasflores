@@ -14,6 +14,7 @@ Proyecto listo para Vercel como sitio estático (sin adapter):
 - Build command: `pnpm build`
 - Output directory: `dist`
 - Install command: `pnpm install`
+- Node.js: `22.23.4` or newer (required by Astro 7)
 
 Los headers de seguridad están declarados en `vercel.json` (Vercel los aplica
 al servir). `public/_headers` es el equivalente para Netlify/Cloudflare Pages

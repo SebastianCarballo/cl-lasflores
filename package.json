@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.0",
   "packageManager": "pnpm@12.9.1",
+  "engines": {
+    "node": ">=22.23.4"
+  },
   "description": "Directorio y portal digital local de Las Flores, Buenos Aires",
   "scripts": {
     "dev": "astro dev",
@@ -24,11 +27,11 @@
     "@formkit/auto-animate": "^0.10.0",
     "@lucide/astro": "^1.47.0",
     "@vercel/speed-insights": "^2.0.0",
-    "astro": "^7.3.3",
+    "astro": "^7.4.2",
     "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@google/design.md": "^0.4.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.1.0",
