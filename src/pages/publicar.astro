@@ -36,7 +36,7 @@ const planElegido = plans.find((p) => p.tier === planInicial);
     <p data-plan-banner-cliente hidden class="mt-4 items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-sm font-semibold text-brand-800" role="status">
       <span aria-hidden="true">🎯</span> <span>Elegiste el plan <strong data-plan-nombre></strong> — ya viene seleccionado abajo.</span>
     </p>
-    <script type="application/json" id="planes-map" set:html={JSON.stringify(plans.map(p => ({ tier: p.tier, name: `${p.name} (${p.priceLabel})`, label: p.name }))).replace(/</g, '\\u003c')} />
+    <script type="application/json" id="planes-map" set:html={JSON.stringify(plans.map(p => ({ tier: p.tier, name: p.name, label: p.name, displayName: `${p.name} (${p.priceLabel})` }))).replace(/</g, '\\u003c')} />
     <script>
       // NUTRICIÓN: si viene de la guía, mostrar continuidad (?ref=guia)
       const ref = new URLSearchParams(location.search).get('ref') ?? '';
@@ -52,16 +52,15 @@ const planElegido = plans.find((p) => p.tier === planInicial);
       }
       const qp = new URLSearchParams(location.search).get('plan') ?? '';
       if (qp && !document.querySelector('[data-plan-banner]')) {
-        const map = JSON.parse(document.getElementById('planes-map')?.textContent ?? '[]') as { tier: string; name: string; label: string }[];
+        const map = JSON.parse(document.getElementById('planes-map')?.textContent ?? '[]') as { tier: string; name: string; label: string; displayName: string }[];
         const match = map.find((p) => p.tier === qp);
         const select = document.getElementById('plan') as HTMLSelectElement | null;
         if (match && select) {
-          const opt = Array.from(select.options).find((o) => o.text.startsWith(match.label));
-          if (opt) select.value = opt.value;
+          select.value = match.tier;
           const banner = document.querySelector('[data-plan-banner-cliente]') as HTMLElement | null;
           const nombre = banner?.querySelector('[data-plan-nombre]');
           if (banner && nombre) {
-            nombre.textContent = match.name;
+            nombre.textContent = match.displayName;
             banner.hidden = false;
             banner.classList.add('inline-flex');
           }
@@ -103,7 +102,7 @@ const planElegido = plans.find((p) => p.tier === planInicial);
         <div>
           <label for="plan" class="block text-sm font-semibold mb-1.5">Elegí tu plan</label>
           <select id="plan" name="plan" class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-white">
-            {plans.map((p) => <option value={p.name} selected={p.tier === planInicial}>{p.name} — {p.priceLabel}</option>)}
+            {plans.map((p) => <option value={p.tier} selected={p.tier === planInicial}>{p.name} — {p.priceLabel}</option>)}
           </select>
         </div>
       </div>
@@ -144,6 +143,8 @@ const planElegido = plans.find((p) => p.tier === planInicial);
       const DESTINO = '5492244428714';
       const form = document.getElementById('form-publicar') as HTMLFormElement | null;
       const error = document.getElementById('form-error');
+      const planMap = JSON.parse(document.getElementById('planes-map')?.textContent ?? '[]') as { tier: string; name: string; displayName?: string }[];
+      const labelPorPlan = Object.fromEntries(planMap.map((p) => [p.tier, p.displayName ?? p.name]));
       form?.addEventListener('submit', (e: Event) => {
         e.preventDefault();
         const data = new FormData(form);
@@ -163,7 +164,8 @@ const planElegido = plans.find((p) => p.tier === planInicial);
         const nombre = String(data.get('nombre') ?? '').trim();
         const categoria = String(data.get('categoria') ?? '').trim();
         const whatsapp = String(data.get('whatsapp') ?? '').trim();
-        const plan = String(data.get('plan') ?? '').trim();
+        const planTier = String(data.get('plan') ?? 'gratis').trim();
+        const plan = labelPorPlan[planTier] ?? 'Gratis';
         const desc = String(data.get('descripcion') ?? '').trim();
         const impulso = String(data.get('impulso') ?? '').trim();
         const faltantes = [];
