@@ -1,0 +1,51 @@
+---
+interface Props {}
+---
+
+<div
+  id="dolar-widget"
+  class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-ink-100 text-xs font-semibold text-ink-900 shadow-sm"
+  aria-label="Último dato publicado de la cotización del dólar oficial"
+>
+  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Dólar oficial</span>
+  <span id="dolar-venta" class="font-mono font-bold text-ink-900">--</span>
+  <span id="dolar-fecha" class="text-[10px] text-slate-400"></span>
+</div>
+
+<script>
+  type Cotizacion = {
+    venta?: unknown;
+    fechaActualizacion?: unknown;
+  };
+
+  async function cargarDolar() {
+    try {
+      const res = await fetch('/api/dolar');
+      if (!res.ok) throw new Error('Sin respuesta');
+      const datos: unknown = await res.json();
+      if (typeof datos !== 'object' || datos === null || Array.isArray(datos)) {
+        throw new Error('Respuesta de cotizaciones inválida');
+      }
+      const oficial = (datos as Record<string, unknown>).oficial as Cotizacion | undefined;
+      if (typeof oficial?.venta !== 'number' || !Number.isFinite(oficial.venta)) {
+        throw new Error('Cotización oficial inválida');
+      }
+      const elVenta = document.getElementById('dolar-venta');
+      const elFecha = document.getElementById('dolar-fecha');
+      if (elVenta) elVenta.textContent = '$' + oficial.venta.toLocaleString('es-AR');
+      const fecha = typeof oficial.fechaActualizacion === 'string' ? Date.parse(oficial.fechaActualizacion) : NaN;
+      if (elFecha && Number.isFinite(fecha))
+        elFecha.textContent =
+          'Actualizado: ' +
+          new Date(fecha).toLocaleString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+    } catch (error) {
+      console.error('No se pudo cargar la cotización oficial:', error);
+      const elVenta = document.getElementById('dolar-venta');
+      if (elVenta) elVenta.textContent = '--';
+    }
+  }
+  cargarDolar();
+</script>

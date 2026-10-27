@@ -1,0 +1,143 @@
+---
+interface Props {}
+---
+
+<div class="dolar-panel w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 bg-white border border-ink-100 rounded-3xl shadow-sm">
+  <div class="flex flex-col lg:flex-row lg:items-start gap-6">
+    {/* Izquierda: Dólar Azul grande */}
+    <div class="flex-1 lg:w-1/3 bg-ink-50 rounded-2xl p-5 sm:p-6 border border-ink-100">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold text-ink-500 uppercase tracking-wider">Dólar Blue</h3>
+        <span id="dolar-blue-fecha" class="text-[10px] text-slate-400"></span>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase">Compra</p>
+          <p id="dolar-blue-compra" class="text-3xl font-mono font-bold text-emerald-600">--</p>
+          <p id="dolar-blue-compra-var" class="text-[10px] text-emerald-600"></p>
+        </div>
+        <div>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase">Venta</p>
+          <p id="dolar-blue-venta" class="text-3xl font-mono font-bold text-emerald-600">--</p>
+          <p id="dolar-blue-venta-var" class="text-[10px] text-emerald-600"></p>
+        </div>
+      </div>
+    </div>
+
+    {/* Derecha: Otros tipos en lista */}
+    <div class="flex-1 lg:w-2/3 space-y-3">
+      <div id="dolar-lista" class="space-y-3">
+        <!-- Se inyecta por JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  type Cotizacion = {
+    compra: number;
+    venta: number;
+    variacion?: number;
+    fechaActualizacion?: string;
+    casa?: string;
+    nombre?: string;
+  };
+
+  type DatosDolar = Record<string, Cotizacion>;
+
+  const LABELS: Record<string, string> = {
+    oficial: 'Dólar Oficial',
+    blue: 'Dólar Blue',
+    mep: 'Dólar MEP',
+    bolsa: 'Dólar Digital (USDc)',
+    contadoconliqui: 'Contado con Liqui',
+    tarjeta: 'Dólar Tarjeta',
+  };
+
+  function fmt(n: number) {
+    return n.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function varColor(v: number) {
+    return v >= 0 ? 'text-emerald-600' : 'text-rose-600';
+  }
+
+  function varArrow(v: number) {
+    return v >= 0 ? '▲' : '▼';
+  }
+
+  async function cargarTodo() {
+    try {
+      const r = await fetch('/api/dolar', { cache: 'no-store' });
+      if (!r.ok) throw new Error('Error del servidor');
+      const datos: DatosDolar = await r.json();
+
+      // --- Dólar Azul grande (izquierda) ---
+      const blue = datos.blue;
+      const elCompra = document.getElementById('dolar-blue-compra') as HTMLParagraphElement | null;
+      const elVenta = document.getElementById('dolar-blue-venta') as HTMLParagraphElement | null;
+      const elCompraVar = document.getElementById('dolar-blue-compra-var') as HTMLElement | null;
+      const elVentaVar = document.getElementById('dolar-blue-venta-var') as HTMLElement | null;
+      const elFecha = document.getElementById('dolar-blue-fecha') as HTMLElement | null;
+
+      if (blue) {
+        const compra = Number.isFinite(blue.compra) ? blue.compra : null;
+        const venta = Number.isFinite(blue.venta) ? blue.venta : null;
+        if (elCompra && compra !== null) elCompra.textContent = '$' + fmt(compra);
+        if (elVenta && venta !== null) elVenta.textContent = '$' + fmt(venta);
+      }
+      const vBlue = typeof blue?.variacion === 'number' && Number.isFinite(blue.variacion) ? blue.variacion : 0;
+      if (elCompraVar) elCompraVar.textContent = `${varArrow(vBlue)} ${Math.abs(vBlue).toFixed(2)}%`;
+      if (elVentaVar) elVentaVar.textContent = `${varArrow(vBlue)} ${Math.abs(vBlue).toFixed(2)}%`;
+      if (elCompraVar) elCompraVar.className = `text-[10px] ${varColor(vBlue)}`;
+      if (elVentaVar) elVentaVar.className = `text-[10px] ${varColor(vBlue)}`;
+      if (elFecha && blue?.fechaActualizacion) {
+        elFecha.textContent =
+          'Actualizado: ' +
+          new Date(blue.fechaActualizacion).toLocaleString('es-AR', {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+      }
+
+      // --- Lista derecha ---
+      const lista = document.getElementById('dolar-lista') as HTMLElement | null;
+      const orden = ['oficial', 'mep', 'bolsa', 'contadoconliqui', 'tarjeta'];
+      if (lista) {
+        lista.replaceChildren();
+        orden.forEach((key) => {
+          const d = datos[key];
+          if (!d || !Number.isFinite(d.venta)) return;
+          const v = typeof d.variacion === 'number' && Number.isFinite(d.variacion) ? d.variacion : 0;
+          const row = document.createElement('div');
+          row.className = 'flex items-center justify-between bg-white rounded-xl p-3 border border-ink-100';
+          const details = document.createElement('div');
+          details.className = 'flex-1';
+          const label = document.createElement('p');
+          label.className = 'text-[11px] font-semibold text-ink-600 uppercase';
+          label.textContent = LABELS[key];
+          const source = document.createElement('p');
+          source.className = 'text-xs text-slate-500';
+          source.textContent = `Conseguido en: ${typeof d.casa === 'string' ? d.casa : '-'}`;
+          details.append(label, source);
+          const price = document.createElement('div');
+          price.className = 'text-right';
+          const sale = document.createElement('p');
+          sale.className = 'font-mono font-bold text-ink-900';
+          sale.textContent = '$' + fmt(d.venta);
+          const variation = document.createElement('p');
+          variation.className = `text-[10px] ${varColor(v)}`;
+          variation.textContent = `${varArrow(v)} ${Math.abs(v).toFixed(2)}%`;
+          price.append(sale, variation);
+          row.append(details, price);
+          lista.append(row);
+        });
+      }
+
+    } catch (e) {
+      console.error('Error cargando dólar:', e);
+    }
+  }
+
+  cargarTodo();
+</script>

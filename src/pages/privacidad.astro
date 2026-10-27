@@ -30,10 +30,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       </div>
       <div>
         <h2 class="font-display font-bold text-xl text-ink-900">Servicios de terceros</h2>
-        <p class="mt-2 text-sm">El portal no instala cookies de seguimiento ni de publicidad. Estos son los únicos servicios externos que entran en juego cuando navegás:</p>
+        <p class="mt-2 text-sm">El portal no instala cookies de seguimiento ni de publicidad. Estos son los servicios externos integrados:</p>
         <ul class="mt-3 space-y-2 text-sm">
           <li><strong>WhatsApp / Meta</strong> — los botones de contacto abren <code class="rounded bg-ink-100 px-1.5 py-0.5 text-xs">wa.me</code>. Cuando los usás, aplican los términos y la política de WhatsApp, y Meta recibe que llegaste desde este enlace.</li>
-          <li><strong>Dolarapi</strong> — la cotización del inicio se pide a su API pública desde tu navegador (nunca desde un servidor nuestro). Solo se consulta cuando abrís la portada, y no se envía ningún dato tuyo.</li>
+          <li><strong>Dolarapi y CriptoYa</strong> — durante la generación del sitio se consultan sus APIs públicas para publicar cotizaciones de referencia. Tu navegador solo recibe esos datos desde nuestro sitio; no se envían datos tuyos a esos proveedores.</li>
           <li><strong>Analítica</strong> — sin datos de contacto, solo páginas vistas y eventos anónimos, sin cookies cruzadas. Está desactivada por defecto: se enciende únicamente si configurás un dominio en el archivo de entorno.</li>
         </ul>
       </div>

@@ -6,14 +6,9 @@ import { spawn } from 'node:child_process';
 
 const PORT = 4333;
 const BASE = `http://127.0.0.1:${PORT}`;
-// homeHtmlBytes cubre el HTML completo prerenderizado de la home (~96 KB reales).
-// Subió a 100.000 con el formulario de newsletter en el footer (+1,5 KB), a
-// 105.000 con el fin del lanzamiento (4 planes en vez de 2), 108.000 con
-// los beneficios explicados + línea anual en cada card, 112.000 con el banner
-// Publicite aquí reconstruido y 118.000 con los teléfonos útiles completos
-// (4 servicios, 11 números tocables, antes solo 3). Todo subas de copy
-// real, no bloat. El presupuesto sigue estando para cazar regresiones.
-const BUDGETS = { homeHtmlBytes: 118_000, cssBytes: 70_000 };
+// El presupuesto creció con el bloque de información útil (teléfonos y
+// cotizaciones oficial, blue, MEP, digital, CCL y tarjeta), contenido real.
+const BUDGETS = { homeHtmlBytes: 126_000, cssBytes: 70_000 };
 const packageManager = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 let failures = 0;
@@ -154,6 +149,15 @@ try {
   check('embudo captación: guía con imán y CTA', guia.status === 200 && guia.text.includes('Tu WhatsApp listo para vender') && guia.text.includes('guia_descarga'));
   const altaOro = await get('/publicar?plan=oro');
   check('funnel plan preseleccionado (hook cliente)', altaOro.status === 200 && altaOro.text.includes('planes-map') && altaOro.text.includes('data-plan-banner-cliente'));
+
+  const dolar = await fetch(BASE + '/api/dolar');
+  let dolarData;
+  try {
+    dolarData = await dolar.json();
+  } catch {
+    dolarData = null;
+  }
+  check('cotizaciones servidas como JSON', dolar.status === 200 && dolarData !== null && typeof dolarData === 'object' && !Array.isArray(dolarData));
 
   const cat = await get('/categoria/servicios/');
   check('categoría ItemList schema', cat.text.includes('"ItemList"'));

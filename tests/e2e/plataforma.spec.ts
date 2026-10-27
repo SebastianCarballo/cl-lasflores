@@ -30,9 +30,10 @@ test.describe('privacidad', () => {
   test('declara los terceros que realmente entran en juego', async ({ page }) => {
     await page.goto('/privacidad');
     const texto = (await page.locator('body').innerText()).toLowerCase();
-    // WhatsApp (wa.me) y la API del dólar son los dos terceros concretos.
+    // WhatsApp se contacta al usar sus enlaces; DolarAPI y CriptoYa durante el build.
     expect(texto).toContain('whatsapp');
     expect(texto).toContain('dolarapi');
+    expect(texto).toContain('criptoya');
     expect(texto).toContain('cookies');
   });
 

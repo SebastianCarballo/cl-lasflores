@@ -9,7 +9,8 @@ import Icon from '@/components/Icon.astro';
     aria-expanded="false"
     aria-controls="asistente-panel"
     aria-label="Abrir asistente virtual"
-    class="fixed z-[60] bottom-24 right-4 lg:bottom-6 lg:right-6 w-14 h-14 rounded-full bg-ink-950 text-white grid place-items-center shadow-2xl hover:scale-105 active:scale-95 transition-transform">
+    class="fixed z-[60] bottom-24 right-4 lg:bottom-6 lg:right-6 w-14 h-14 rounded-full bg-ink-950 text-white grid place-items-center shadow-2xl hover:scale-105 active:scale-95 transition-transform"
+    data-tema="oscuro">
     <span class="absolute -top-0.5 -right-0.5 flex w-3.5 h-3.5" aria-hidden="true">
       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
       <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-white"></span>
@@ -353,6 +354,62 @@ import Icon from '@/components/Icon.astro';
         setTimeout(() => responder(q), 200);
       });
     }
+
+    // --- Adaptar color del botón al fondo debajo de él -----------------------
+    function brilloColor(rgb: string): number {
+      const m = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if (!m) return 1;
+      const r = parseInt(m[1]);
+      const g = parseInt(m[2]);
+      const b = parseInt(m[3]);
+      return (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+    }
+
+    function aplicarTemaBoton(tema: 'claro' | 'oscuro'): void {
+      if (!btn) return;
+      const base =
+        'fixed z-[60] bottom-24 right-4 lg:bottom-6 lg:right-6 w-14 h-14 rounded-full grid place-items-center shadow-2xl hover:scale-105 active:scale-95 transition-transform';
+      if (tema === 'claro') {
+        btn.className = `${base} bg-white/95 backdrop-blur-md border border-ink-200/60 text-ink-900`;
+        btn.dataset.tema = 'claro';
+      } else {
+        btn.className = `${base} bg-ink-950 text-white border border-white/10`;
+        btn.dataset.tema = 'oscuro';
+      }
+    }
+
+    function actualizarTemaBoton(): void {
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const cx = Math.round(rect.left + rect.width / 2);
+      const cy = Math.round(rect.top + rect.height / 2);
+      // Leer varios puntos alrededor del borde del botón para no leer el propio botón
+      const margen = rect.width / 2 + 12; // 12px fuera del borde del botón
+      const puntos = [
+        { x: cx, y: rect.top - margen },      // arriba del botón
+        { x: cx, y: rect.bottom + margen },   // abajo del botón
+        { x: rect.left - margen, y: cy },     // izquierda del botón
+        { x: rect.right + margen, y: cy },    // derecha del botón
+      ];
+      let brillos: number[] = [];
+      for (const p of puntos) {
+        const els = document.elementsFromPoint(p.x, p.y);
+        // Tomar el primer elemento que no sea el botón ni un hijo del botón
+        const fondo = els.find((e: Element) => e !== btn && !btn.contains(e as Node));
+        if (fondo) {
+          const bg = getComputedStyle(fondo as HTMLElement).backgroundColor;
+          brillos.push(brilloColor(bg));
+        }
+      }
+      if (brillos.length === 0) return;
+      const brilloProm = brillos.reduce((a, b) => a + b, 0) / brillos.length;
+      // Umbral: si el fondo es claro (brillo > 0.45), botón oscuro; si es oscuro, botón claro
+      aplicarTemaBoton(brilloProm > 0.45 ? 'claro' : 'oscuro');
+    }
+
+    actualizarTemaBoton();
+    window.addEventListener('scroll', actualizarTemaBoton, { passive: true });
+    window.addEventListener('resize', actualizarTemaBoton);
 
     document.querySelectorAll('#asistente-rapidos [data-rapido]').forEach((b) => {
       b.addEventListener('click', () => {
