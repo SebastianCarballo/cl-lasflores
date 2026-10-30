@@ -239,7 +239,7 @@ export function organizationSchema() {
     },
     sameAs: [
       'https://instagram.com/clasificadoslasflores',
-      'https://facebook.com/clasificadoslasflores',
+      'https://facebook.com/clasificadolasfloresok',
     ],
   };
 }
