@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { STUDIO } from '@/utils/site';
 ---
 
 <BaseLayout
@@ -22,7 +23,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 
     <div class="mt-8 bg-white rounded-3xl border border-ink-100 p-6 sm:p-8">
       <h2 class="font-display font-bold text-xl">Quiénes hacemos esto</h2>
-      <p class="mt-2 text-sm text-slate-600 leading-relaxed">Somos el equipo de <strong>Clasificados Las Flores</strong>, vecinos de la ciudad, junto a <strong>MembyStudio</strong>, agencia local de marketing digital que diseña y mantiene el portal. Publicamos con nombre, dirección y canales de contacto reales — los mismos que te pedimos a vos en cada ficha. Escribinos cuando quieras: <a href="/contacto" class="text-brand-700 font-semibold hover:underline">Contacto</a>.</p>
+      <p class="mt-2 text-sm text-slate-600 leading-relaxed">Somos el equipo de <strong>Clasificados Las Flores</strong>, vecinos de la ciudad, junto a <a href={STUDIO.url} target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-700 hover:underline">{STUDIO.name}</a>, agencia local de marketing digital que diseña y mantiene el portal. También podés encontrarlos en <a href={STUDIO.facebook} target="_blank" rel="noopener noreferrer" class="font-semibold text-brand-700 hover:underline">Facebook</a>. Publicamos con nombre, dirección y canales de contacto reales — los mismos que te pedimos a vos en cada ficha. Escribinos cuando quieras: <a href="/contacto" class="text-brand-700 font-semibold hover:underline">Contacto</a>.</p>
     </div>
 
     <div class="mt-4 bg-white rounded-3xl border border-ink-100 p-6 sm:p-8">

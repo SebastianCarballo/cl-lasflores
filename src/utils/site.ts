@@ -123,6 +123,7 @@ export const STUDIO = {
   name: 'MembyStudio',
   tagline: 'Agencia de Marketing Digital',
   url: 'https://membystudio.com',
+  facebook: 'https://www.facebook.com/people/MembyStudio/61582382042378/',
   rol: 'Socio estratégico: diseño, posicionamiento y difusión del portal.',
 };
 
