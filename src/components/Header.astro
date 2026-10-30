@@ -15,172 +15,187 @@ const redes = [
   { name: 'facebook', href: 'https://facebook.com/clasificadoslasflores', label: 'Facebook' },
 ];
 
-const pathname = Astro.url.pathname;
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-<header id="site-header" class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-ink-100 transition-colors duration-300">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="flex items-center justify-between h-16">
+<header id="site-header" class="sticky top-0 z-50 border-b border-ink-100 bg-white/90 backdrop-blur transition-colors duration-300">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <div class="flex h-16 items-center justify-between">
       <a href="/" class="flex items-center gap-2.5">
         <img src="/logo-flores.webp" alt="" width="36" height="36" decoding="async" class="h-9 w-9 object-contain" />
         <span class="leading-tight">
-          <span class="block font-display font-bold text-[15px] text-ink-900" data-logo-title>Clasificados Las Flores</span>
-          <span class="block text-xs header-subtext text-slate-500" data-logo-sub>Las Flores · Buenos Aires</span>
+          <span class="block font-display text-[15px] font-bold text-ink-900" data-logo-title>Clasificados Las Flores</span>
+          <span class="header-subtext block text-xs text-slate-500">Las Flores · Buenos Aires</span>
         </span>
       </a>
 
-      <nav class="hidden lg:flex items-center gap-1" aria-label="Navegación principal">
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Navegación principal">
         {
-          links.map((l) => (
-            <a
-              href={l.href}
-              class="nav-link px-3.5 py-2 rounded-full text-sm font-medium transition-colors"
-              class:list={[pathname === l.href ? 'bg-ink-900 text-white' : 'text-slate-600 hover:text-ink-900 hover:bg-ink-100']}
-              aria-current={pathname === l.href ? 'page' : undefined}>
-              {l.label}
-            </a>
-          ))
+          links.map((link) => {
+            const href = link.href.replace(/\/$/, '') || '/';
+            const current = pathname === href;
+            return (
+              <a
+                href={link.href}
+                class:list={[
+                  'nav-link rounded-full px-3.5 py-2 text-sm font-medium transition-colors',
+                  current ? 'bg-ink-900 text-white' : 'text-slate-600 hover:bg-ink-100 hover:text-ink-900',
+                ]}
+                aria-current={current ? 'page' : undefined}>
+                {link.label}
+              </a>
+            );
+          })
         }
       </nav>
 
-      <div class="hidden lg:flex items-center gap-2">
+      <div class="hidden items-center gap-2 lg:flex">
         <a
           href="/publicar"
-          class="px-4 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 active:scale-[0.98] transition shadow-sm">
+          class="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 active:scale-[0.98]">
           Publicar gratis
         </a>
       </div>
 
-      <details class="lg:hidden relative" id="menu-movil">
+      <details class="relative lg:hidden" id="menu-movil">
         <summary
-          class="menu-summary list-none cursor-pointer inline-flex items-center min-h-11 px-4 rounded-lg border border-ink-200 text-sm font-semibold"
+          class="menu-summary inline-flex min-h-11 list-none cursor-pointer items-center gap-2 rounded-lg border border-ink-200 bg-white px-3 text-sm font-semibold text-ink-900"
           aria-label="Abrir menú"
+          aria-controls="menu-movil-panel"
           aria-expanded="false">
-          ☰ Menú
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M3 9h12M3 5h12M3 13h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          Menú
         </summary>
-        <nav
-          class="fixed inset-0 z-[60] bg-white/97 backdrop-blur-md p-6 flex flex-col h-full overflow-y-auto"
-          aria-label="Navegación móvil">
-          <div class="flex justify-between items-start mb-8">
-            <h2 class="font-display font-bold text-ink-900 text-lg">Menú</h2>
-            <button
-              class="cerrar-menu text-ink-600 hover:text-ink-900 text-2xl leading-none p-1 rounded-md hover:bg-ink-50"
-              aria-label="Cerrar menú"
-              id="cerrar-menu-movil">
-              ✕
-            </button>
-          </div>
-          <nav class="flex flex-col gap-2 mb-auto">
-            {
-              links.map((l) => (
-                <a
-                  href={l.href}
-                  aria-current={pathname === l.href ? 'page' : undefined}
-                  class="px-4 py-3 rounded-xl text-sm font-medium hover:bg-ink-100 block text-ink-900">
-                  {l.label}
-                </a>
-              ))
-            }
-          </nav>
-          <a
-            href="/publicar"
-            class="mb-8 px-4 py-3 rounded-xl bg-brand-600 text-white text-sm font-semibold text-center block">
-            Publicar gratis
-          </a>
-          <div class="flex flex-col items-center gap-3 text-center text-slate-600">
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Síguenos</p>
-            <div class="flex gap-5">
-              {
-                redes.map((r) => (
-                  <a
-                    href={r.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={r.label}
-                    class="w-11 h-11 rounded-full bg-white/60 grid place-items-center hover:bg-white/80 hover:scale-105 active:scale-95 transition border border-ink-100">
-                    <Icon name={r.name as any} size={20} />
-                  </a>
-                ))
-              }
-            </div>
-          </div>
-        </nav>
       </details>
     </div>
   </div>
-  <script>
-    const header = document.getElementById('site-header');
-    const hero = document.getElementById('hero');
-
-    // Aplica el tema visual al header según el fondo donde está (claro u oscuro).
-    // Usa estilos inline para fiabilidad: Tailwind v4 aplica bg-white/90 con
-    // especificidad que CSS externo no siempre puede vencer.
-    function setTheme(theme: 'light' | 'dark') {
-      if (!header) return;
-      header.setAttribute('data-theme', theme);
-      if (theme === 'dark') {
-        header.style.backgroundColor = 'rgba(2, 6, 23, 0.95)';
-        header.style.borderBottomColor = 'rgba(30, 41, 59, 0.6)';
-      } else {
-        header.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-        header.style.borderBottomColor = 'rgb(241, 245, 249)';
-      }
-      // Menú móvil (overlay): mismo criterio de contraste
-      const menuNav = document.querySelector('#menu-movil > nav') as HTMLElement | null;
-      if (menuNav) {
-        if (theme === 'dark') {
-          menuNav.style.backgroundColor = 'rgba(2, 6, 23, 0.97)';
-        } else {
-          menuNav.style.backgroundColor = 'rgba(255, 255, 255, 0.97)';
-        }
-      }
-    }
-
-    // Por defecto tema claro (fondos blancos del resto del sitio)
-    setTheme('light');
-
-    // Si hay hero (fondo oscuro), alternar según visibilidad del hero
-    if (hero && header) {
-      function updateTheme() {
-        if (!hero || !header) return;
-        const rect = hero.getBoundingClientRect();
-        const headerHeight = header.getBoundingClientRect().height;
-        const visible = rect.top < window.innerHeight - headerHeight && rect.bottom > headerHeight + 100;
-        setTheme(visible ? 'dark' : 'light');
-      }
-      updateTheme();
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            updateTheme();
-            ticking = false;
-          });
-          ticking = true;
-        }
-      }, { passive: true });
-    }
-
-    const details = document.getElementById('menu-movil') as HTMLDetailsElement | null;
-    const summary = details?.querySelector('summary');
-    const sync = () => summary?.setAttribute('aria-expanded', String(Boolean(details?.open)));
-    summary?.addEventListener('click', () => requestAnimationFrame(sync));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        details?.removeAttribute('open');
-        sync();
-      }
-    });
-    document.addEventListener('click', (e) => {
-      if (details?.open && !details.contains(e.target as Node)) {
-        details.removeAttribute('open');
-        sync();
-      }
-    });
-    const cerrar = document.getElementById('cerrar-menu-movil');
-    cerrar?.addEventListener('click', () => {
-      details?.removeAttribute('open');
-      sync();
-    });
-  </script>
 </header>
+
+<nav
+  id="menu-movil-panel"
+  class="mobile-menu-panel fixed inset-0 z-[60] flex h-dvh flex-col overflow-y-auto bg-white p-6 backdrop-blur-md"
+  aria-label="Navegación móvil"
+  hidden>
+  <div class="mb-8 flex items-start justify-between">
+    <h2 class="font-display text-lg font-bold text-ink-900">Menú</h2>
+    <button
+      type="button"
+      class="cerrar-menu rounded-lg p-2 text-ink-900 transition hover:bg-ink-100"
+      aria-label="Cerrar menú">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+  <div class="mb-auto flex flex-col gap-2">
+    {
+      links.map((link) => {
+        const href = link.href.replace(/\/$/, '') || '/';
+        const current = pathname === href;
+        return (
+          <a
+            href={link.href}
+            aria-current={current ? 'page' : undefined}
+            class:list={[
+              'block rounded-xl px-4 py-3 text-sm font-medium text-ink-900 hover:bg-ink-100',
+              current && 'bg-ink-100',
+            ]}>
+            {link.label}
+          </a>
+        );
+      })
+    }
+  </div>
+  <a
+    href="/publicar"
+    class="mb-8 block rounded-xl bg-brand-600 px-4 py-3 text-center text-sm font-semibold text-white">
+    Publicar gratis
+  </a>
+  <div class="flex flex-col items-center gap-3 text-center text-slate-600">
+    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Seguinos</p>
+    <div class="flex gap-5">
+      {
+        redes.map((red) => (
+          <a
+            href={red.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={red.label}
+            class="social-link grid h-11 w-11 place-items-center rounded-full border border-ink-100 bg-white/60 transition hover:scale-105 hover:bg-white/80 active:scale-95">
+            <Icon name={red.name as 'whatsapp' | 'instagram' | 'facebook'} size={20} />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</nav>
+
+<script>
+  const header = document.getElementById('site-header');
+  const hero = document.getElementById('hero');
+  const mobileMenu = document.getElementById('menu-movil') as HTMLDetailsElement | null;
+  const summary = mobileMenu?.querySelector('summary');
+  const menuPanel = document.getElementById('menu-movil-panel');
+  const closeButton = menuPanel?.querySelector('.cerrar-menu');
+
+  function setTheme(theme: 'light' | 'dark') {
+    if (!header) return;
+    header.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      header.style.backgroundColor = 'rgba(2, 6, 23, 0.95)';
+      header.style.borderBottomColor = 'rgba(30, 41, 59, 0.6)';
+    } else {
+      header.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+      header.style.borderBottomColor = 'rgb(241, 245, 249)';
+    }
+  }
+
+  function updateTheme() {
+    if (!hero || !header) return;
+    const rect = hero.getBoundingClientRect();
+    const headerHeight = header.getBoundingClientRect().height;
+    const visible = rect.top < window.innerHeight - headerHeight && rect.bottom > headerHeight + 100;
+    setTheme(visible ? 'dark' : 'light');
+  }
+
+  setTheme('light');
+  if (hero) {
+    updateTheme();
+    let ticking = false;
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        window.requestAnimationFrame(() => {
+          updateTheme();
+          ticking = false;
+        });
+        ticking = true;
+      },
+      { passive: true },
+    );
+  }
+
+  const syncExpanded = () => {
+    const isOpen = Boolean(mobileMenu?.open);
+    summary?.setAttribute('aria-expanded', String(isOpen));
+    menuPanel?.toggleAttribute('hidden', !isOpen);
+  };
+  mobileMenu?.addEventListener('toggle', syncExpanded);
+  closeButton?.addEventListener('click', () => {
+    if (mobileMenu) mobileMenu.open = false;
+  });
+  menuPanel?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (mobileMenu) mobileMenu.open = false;
+    });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && mobileMenu?.open) {
+      mobileMenu.open = false;
+      summary?.focus();
+    }
+  });
+</script>

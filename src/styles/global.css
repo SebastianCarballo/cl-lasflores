@@ -368,6 +368,7 @@ body {
 }
 #site-header[data-theme="dark"] .menu-summary {
   color: #ffffff !important;
+  background-color: rgba(30, 41, 59, 0.9) !important;
   border-color: rgba(255, 255, 255, 0.2) !important;
 }
 #site-header[data-theme="dark"] .menu-summary::marker {
@@ -381,32 +382,36 @@ body {
 }
 
 /* Menú móvil sobre fondo oscuro */
-#site-header[data-theme="dark"] #menu-movil > nav {
+#menu-movil-panel[hidden] {
+  display: none;
+}
+#site-header[data-theme="dark"] ~ #menu-movil-panel {
   background-color: rgba(2, 6, 23, 0.96) !important; /* ink-950/97 */
   border-color: rgba(255, 255, 255, 0.1) !important;
 }
-#site-header[data-theme="dark"] #menu-movil h2 {
+#site-header[data-theme="dark"] ~ #menu-movil-panel h2,
+#site-header[data-theme="dark"] ~ #menu-movil-panel .cerrar-menu {
   color: #ffffff !important;
 }
-#site-header[data-theme="dark"] #menu-movil a {
+#site-header[data-theme="dark"] ~ #menu-movil-panel a {
   color: rgba(203, 213, 225, 0.9) !important;
 }
-#site-header[data-theme="dark"] #menu-movil a:hover {
+#site-header[data-theme="dark"] ~ #menu-movil-panel a:hover {
   background-color: rgba(255, 255, 255, 0.05) !important;
   color: #ffffff !important;
 }
-#site-header[data-theme="dark"] #menu-movil a[aria-current="page"] {
+#site-header[data-theme="dark"] ~ #menu-movil-panel a[aria-current="page"] {
   color: #ffffff !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
-#site-header[data-theme="dark"] #menu-movil .text-slate-600,
-#site-header[data-theme="dark"] #menu-movil .text-slate-400 {
+#site-header[data-theme="dark"] ~ #menu-movil-panel .text-slate-600,
+#site-header[data-theme="dark"] ~ #menu-movil-panel .text-slate-400 {
   color: rgba(148, 163, 184, 0.7) !important;
 }
-#site-header[data-theme="dark"] #menu-movil .border-ink-100 {
+#site-header[data-theme="dark"] ~ #menu-movil-panel .border-ink-100 {
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
-#site-header[data-theme="dark"] #menu-movil .bg-white/60 {
+#site-header[data-theme="dark"] ~ #menu-movil-panel .social-link {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
