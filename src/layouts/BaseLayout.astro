@@ -89,18 +89,39 @@ const ogAlt = imageAlt ?? fullTitle;
          Se activa cuando PUBLIC_SPEED_INSIGHTS_ID está definido. */}
     {import.meta.env.PUBLIC_SPEED_INSIGHTS_ID && <SpeedInsights />}
 
-    {/* Meta Pixel base: se inicializa desde el head compartido en todas las páginas. */}
-    <script>
-      import { initMetaPixel } from '@/utils/analytics';
-      initMetaPixel();
-    </script>
+    {/* Meta Pixel (código oficial de Meta, inline en el <head>):
+         el detector de Events Manager lo ve sin esperar a JS diferido/Vite.
+         El ID vive en SITE.metaPixelId (PUBLIC_META_PIXEL_ID).
+         Los eventos de conversión los emite src/utils/analytics.ts vía track(). */}
+    {SITE.metaPixelId && (
+      <>
+        <script is:inline define:vars={{ pixelId: SITE.metaPixelId }}>
+          !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+              n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = true;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = true;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s);
+          }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+          window.fbq('init', pixelId);
+          window.fbq('track', 'PageView');
+        </script>
+        <noscript>
+          <img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${SITE.metaPixelId}&ev=PageView&noscript=1`} alt="" />
+        </noscript>
+      </>
+    )}
   </head>
   <body class="bg-ink-50 text-ink-900 antialiased min-h-dvh flex flex-col">
-    {SITE.metaPixelId && (
-      <noscript>
-        <img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${SITE.metaPixelId}&ev=PageView&noscript=1`} alt="" />
-      </noscript>
-    )}
     <a href="#contenido" class="skip-link bg-brand-600 text-white px-4 py-2 rounded-lg font-semibold">
       Saltar al contenido
     </a>

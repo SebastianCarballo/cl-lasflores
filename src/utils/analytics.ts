@@ -67,6 +67,9 @@ export function track(event: string, props: Record<string, string> = {}): void {
   }
 }
 
+// El píxel se carga inline en el <head> de BaseLayout (script `is:inline` con
+// el stub oficial de Meta). Esta fn queda para HMR / SPA: no-op si el stub
+// inline o fbevents.js ya están presentes (window.fbq existe).
 export function initMetaPixel(): void {
   if (!SITE.metaPixelId || typeof window === 'undefined' || window.fbq) return;
 
