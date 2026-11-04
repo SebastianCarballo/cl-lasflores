@@ -315,3 +315,12 @@ const schema = [
   {/* Compensa la barra fija para que el footer no quede tapado en móvil */}
   <div class="h-20 lg:hidden" aria-hidden="true"></div>
 </BaseLayout>
+
+<script>
+  import { track } from '@/utils/analytics';
+
+  track('view_content', {
+    content_name: document.querySelector('h1')?.textContent?.trim() ?? 'Ficha de comercio',
+    content_category: 'Comercio',
+  });
+</script>

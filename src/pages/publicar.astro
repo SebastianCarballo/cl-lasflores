@@ -77,7 +77,6 @@ const planElegido = plans.find((p) => p.tier === planInicial);
 
     <form
       id="form-publicar"
-      data-event="alta_negocio"
       class="mt-8 bg-white rounded-3xl border border-ink-100 shadow-sm p-6 sm:p-8 space-y-5"
       novalidate>
       <div class="grid sm:grid-cols-2 gap-4">
@@ -140,6 +139,8 @@ const planElegido = plans.find((p) => p.tier === planInicial);
     </form>
 
     <script>
+      import { track } from '@/utils/analytics';
+
       const DESTINO = '5492244428714';
       const form = document.getElementById('form-publicar') as HTMLFormElement | null;
       const error = document.getElementById('form-error');
@@ -184,6 +185,11 @@ const planElegido = plans.find((p) => p.tier === planInicial);
         }
         if (error) error.hidden = true;
         sessionStorage.setItem('publicar-ultimo', String(ahora));
+        track('alta_negocio', {
+          content_name: 'Alta de negocio',
+          content_category: categoria,
+          plan: planTier,
+        });
         const exito = document.getElementById('form-exito');
         if (exito) exito.hidden = false;
         exito?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -213,3 +219,12 @@ const planElegido = plans.find((p) => p.tier === planInicial);
     </script>
   </section>
 </BaseLayout>
+
+<script>
+  import { track } from '@/utils/analytics';
+
+  track('view_content', {
+    content_name: 'Publicar un negocio',
+    content_category: 'Alta de negocio',
+  });
+</script>

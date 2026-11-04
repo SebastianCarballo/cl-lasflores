@@ -24,6 +24,43 @@ test.describe('planes y alta', () => {
     await expect(page.locator('#plan')).toHaveValue(/Vidriera/);
   });
 
+  test('Meta Pixel mide contenido y solo registra altas válidas como Lead', async ({ page }) => {
+    await page.addInitScript(() => {
+      const events: unknown[][] = [];
+      Object.defineProperty(window, '__pixelEvents', { value: events });
+      Object.defineProperty(window, 'fbq', {
+        value: (...args: unknown[]) => events.push(args),
+      });
+    });
+
+    await page.goto('/planes');
+    await expect.poll(() =>
+      page.evaluate(() =>
+        (window as Window & { __pixelEvents?: unknown[][] }).__pixelEvents?.some(
+          ([method, name]) => method === 'track' && name === 'ViewContent',
+        ),
+      ),
+    ).toBe(true);
+
+    await page.goto('/publicar');
+    await page.route('https://wa.me/**', (route) => route.abort());
+    await page.getByRole('button', { name: /activar mi ficha/ }).click();
+    const hasLead = () =>
+      page.evaluate(() =>
+        (window as Window & { __pixelEvents?: unknown[][] }).__pixelEvents?.some(
+          ([method, name]) => method === 'track' && name === 'Lead',
+        ),
+      );
+    expect(await hasLead()).toBe(false);
+
+    await page.locator('#nombre').fill('Test E2E Rotisería');
+    await page.locator('#categoria').selectOption('Gastronomía');
+    await page.locator('#whatsapp').fill('2244428714');
+    await page.locator('#desc').fill('Menú del día y empanadas todos los mediodías.');
+    await page.getByRole('button', { name: /activar mi ficha/ }).click();
+    await expect.poll(hasLead).toBe(true);
+  });
+
   test('publicar valida, enfoca el error y confirma al enviar', async ({ page }) => {
     await page.goto('/publicar');
     // Popup de WhatsApp: no dejar que abra pestañas en el test

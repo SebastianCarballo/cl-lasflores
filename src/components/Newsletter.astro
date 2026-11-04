@@ -45,7 +45,6 @@ const netlify = endpoint ? undefined : true;
     />
     <button
       type="submit"
-      data-event="newsletter_suscribe"
       class="shrink-0 inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-brand-700 active:scale-[0.98] transition"
     >
       Sumarme
@@ -59,6 +58,8 @@ const netlify = endpoint ? undefined : true;
 </form>
 
 <script>
+  import { track } from '@/utils/analytics';
+
   const form = document.getElementById('form-newsletter') as HTMLFormElement | null;
   const estado = document.getElementById('newsletter-estado');
 
@@ -89,6 +90,7 @@ const netlify = endpoint ? undefined : true;
         body: new URLSearchParams({ 'form-name': 'newsletter', email }).toString(),
       });
       if (!res.ok) throw new Error(String(res.status));
+      track('newsletter_suscribe', { form: 'newsletter' });
       decir('¡Listo! Ya estás en la lista.', true);
       form.reset();
     } catch {
@@ -99,6 +101,8 @@ const netlify = endpoint ? undefined : true;
       decir('No pudimos guardarlo acá. Te habilitamos el botón para mandarlo por WhatsApp.', false);
       const wa = document.createElement('a');
       wa.href = `https://wa.me/5492244428714?text=${texto}`;
+      wa.dataset.event = 'whatsapp_click';
+      wa.dataset.props = JSON.stringify({ origen: 'newsletter' });
       wa.textContent = 'Enviar por WhatsApp';
       wa.className = 'mt-1 inline-block underline font-bold';
       if (estado && !wa.isConnected) estado.after(wa);

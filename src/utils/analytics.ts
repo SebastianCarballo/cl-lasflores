@@ -12,6 +12,10 @@ export const EVENTOS = [
   'compartir_ficha',
   'elegir_plan',
   'alta_negocio',
+  'contacto_formulario',
+  'contacto_email',
+  'newsletter_suscribe',
+  'view_content',
   'slot_publicar',
   'cta_publicar',
   'cta_directorio',
@@ -52,10 +56,15 @@ export function track(event: string, props: Record<string, string> = {}): void {
     // Meta Pixel: eventos estándar (Contact/Lead) y custom.
     if (!window.fbq) return;
     const standard: Record<string, string> = {
+      buscar: 'Search',
+      view_content: 'ViewContent',
       whatsapp_click: 'Contact',
       contacto_ventas: 'Contact',
+      contacto_formulario: 'Contact',
+      contacto_email: 'Contact',
       alta_negocio: 'Lead',
       guia_descarga: 'Lead',
+      newsletter_suscribe: 'CompleteRegistration',
     };
     const fbEvent = standard[event] ?? event;
     window.fbq(standard[event] ? 'track' : 'trackCustom', fbEvent, {

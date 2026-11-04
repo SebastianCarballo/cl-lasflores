@@ -177,8 +177,17 @@ const ogAlt = imageAlt ?? fullTitle;
       // Los CTAs declaran data-event="nombre" y data-props='{"k":"v"}'.
       import { track } from '@/utils/analytics';
       document.addEventListener('click', (e: Event) => {
-        const el = (e.target as HTMLElement).closest?.('[data-event]') as HTMLElement | null;
-        if (!el) return;
+        const target = e.target as HTMLElement;
+        const el = target.closest?.('[data-event]') as HTMLElement | null;
+        if (el instanceof HTMLFormElement) return;
+        if (!el) {
+          if (target.closest?.('a[href^="https://wa.me/"]')) {
+            track('whatsapp_click', { origen: 'wa-link' });
+          } else if (target.closest?.('a[href^="mailto:"]')) {
+            track('contacto_email', { origen: 'mailto-link' });
+          }
+          return;
+        }
         let props: Record<string, string> = {};
         try {
           props = JSON.parse(el.dataset.props ?? '{}');

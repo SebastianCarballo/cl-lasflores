@@ -54,6 +54,7 @@ import { CONTACT_LIMITS } from '@/utils/contact';
 
 <script>
   import { validateContactInput } from '@/utils/contact';
+  import { track } from '@/utils/analytics';
 
   const form = document.getElementById('form-contacto') as HTMLFormElement | null;
   const error = document.getElementById('contacto-error');
@@ -98,6 +99,7 @@ import { CONTACT_LIMITS } from '@/utils/contact';
         `_Enviado desde Clasificados Las Flores_`
       );
       sessionStorage.setItem('contacto-ultimo', String(ahora));
+      track('contacto_formulario', { form: 'contacto' });
       if (success) {
         success.hidden = false;
         success.focus?.();

@@ -124,3 +124,12 @@ const schema = [faqPageSchema(faqs), ...schemaRubros];
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  import { track } from '@/utils/analytics';
+
+  track('view_content', {
+    content_name: 'Planes y precios',
+    content_category: 'Planes',
+  });
+</script>
