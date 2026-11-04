@@ -89,13 +89,18 @@ const ogAlt = imageAlt ?? fullTitle;
          Se activa cuando PUBLIC_SPEED_INSIGHTS_ID está definido. */}
     {import.meta.env.PUBLIC_SPEED_INSIGHTS_ID && <SpeedInsights />}
 
+    {/* Meta Pixel base: se inicializa desde el head compartido en todas las páginas. */}
+    <script>
+      import { initMetaPixel } from '@/utils/analytics';
+      initMetaPixel();
+    </script>
+  </head>
+  <body class="bg-ink-50 text-ink-900 antialiased min-h-dvh flex flex-col">
     {SITE.metaPixelId && (
       <noscript>
         <img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${SITE.metaPixelId}&ev=PageView&noscript=1`} alt="" />
       </noscript>
     )}
-  </head>
-  <body class="bg-ink-50 text-ink-900 antialiased min-h-dvh flex flex-col">
     <a href="#contenido" class="skip-link bg-brand-600 text-white px-4 py-2 rounded-lg font-semibold">
       Saltar al contenido
     </a>
@@ -149,8 +154,7 @@ const ogAlt = imageAlt ?? fullTitle;
     <script>
       // Dispatcher global de eventos de conversión (ver src/utils/analytics.ts).
       // Los CTAs declaran data-event="nombre" y data-props='{"k":"v"}'.
-      import { initMetaPixel, track } from '@/utils/analytics';
-      initMetaPixel();
+      import { track } from '@/utils/analytics';
       document.addEventListener('click', (e: Event) => {
         const el = (e.target as HTMLElement).closest?.('[data-event]') as HTMLElement | null;
         if (!el) return;
