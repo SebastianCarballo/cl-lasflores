@@ -1,9 +1,4 @@
-// Analítica liviana y privada por defecto.
-//
-// Cómo activar (sin tocar código): definí PUBLIC_ANALYTICS_DOMAIN en .env o en
-// las variables de entorno del hosting. Sin esa variable, track() es no-op: el
-// sitio no pide nada a terceros, no setea cookies y no gasta requests.
-// Compatible con Plausible: si window.plausible existe, lo usa.
+// Distribuye eventos a Plausible y Meta Pixel cuando están habilitados.
 
 import { SITE } from '@/utils/site';
 
@@ -32,9 +27,18 @@ export const EVENTOS = [
 export type Evento = (typeof EVENTOS)[number];
 
 declare global {
+  type MetaPixelFunction = ((...args: unknown[]) => void) & {
+    callMethod?: (...args: unknown[]) => void;
+    queue: unknown[][];
+    push: (...args: unknown[]) => void;
+    loaded: boolean;
+    version: string;
+  };
+
   interface Window {
     plausible?: (event: string, opts?: { props?: Record<string, string> }) => void;
-    fbq?: ((...args: unknown[]) => void) & { queue?: unknown[] };
+    fbq?: MetaPixelFunction;
+    _fbq?: MetaPixelFunction;
   }
 }
 
@@ -54,30 +58,35 @@ export function track(event: string, props: Record<string, string> = {}): void {
       guia_descarga: 'Lead',
     };
     const fbEvent = standard[event] ?? event;
-    window.fbq('track', fbEvent, { ...props, dl: window.location.pathname });
+    window.fbq(standard[event] ? 'track' : 'trackCustom', fbEvent, {
+      ...props,
+      dl: window.location.pathname,
+    });
   } catch {
     // El píxel nunca debe romper la experiencia
   }
 }
 
 export function initMetaPixel(): void {
-  if (!SITE.metaPixelId || typeof window === 'undefined') return;
+  if (!SITE.metaPixelId || typeof window === 'undefined' || window.fbq) return;
 
-  const queue: unknown[] = [];
-  const fbq = (...args: unknown[]) => {
-    queue.push(args);
+  const fbq: MetaPixelFunction = (...args) => {
+    if (fbq.callMethod) fbq.callMethod(...args);
+    else fbq.queue.push(args);
   };
-  fbq.queue = queue;
+  fbq.queue = [];
+  fbq.push = fbq;
+  fbq.loaded = true;
+  fbq.version = '2.0';
   window.fbq = fbq;
+  window._fbq ??= fbq;
   fbq('init', SITE.metaPixelId);
   fbq('track', 'PageView');
 
-  window.addEventListener('load', () => {
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = 'https://connect.facebook.net/en_US/fbevents.js';
-    document.head.appendChild(script);
-  });
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+  document.head.appendChild(script);
 }
 
 export function trackCustom(event: string, props: Record<string, string> = {}): void {
