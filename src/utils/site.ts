@@ -57,7 +57,7 @@ export const SITE = {
   email: 'clasificadaslasflores@gmail.com',
   // Meta Pixel (Ads Manager). Se puede rotar o desactivar con la variable
   // PUBLIC_META_PIXEL_ID sin tocar código; string vacío lo desactiva.
-  metaPixelId: import.meta.env.PUBLIC_META_PIXEL_ID ?? '1821821765495684',
+  metaPixelId: import.meta.env.PUBLIC_META_PIXEL_ID ?? '1637399608128534',
 };
 
 // Formatos que las redes aceptan como og:image. WhatsApp, Facebook, X y LinkedIn
