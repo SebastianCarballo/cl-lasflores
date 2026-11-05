@@ -91,6 +91,34 @@ test.describe('newsletter', () => {
     // El email tipeado viaja en el mensaje: no se pierde nada.
     await expect(wa).toHaveAttribute('href', /vecina%40ejemplo\.com/);
   });
+
+  test('Meta Pixel registra CompleteRegistration después de una suscripción aceptada', async ({ page }) => {
+    await page.addInitScript(() => {
+      const events: unknown[][] = [];
+      Object.defineProperty(window, '__pixelEvents', { value: events });
+      Object.defineProperty(window, 'fbq', {
+        value: (...args: unknown[]) => events.push(args),
+      });
+    });
+    await page.route('**/*', (route) => {
+      if (route.request().method() === 'POST') {
+        return route.fulfill({ status: 200, body: 'ok' });
+      }
+      return route.continue();
+    });
+    await page.goto('/');
+    await page.locator('#newsletter-email').fill('vecina@ejemplo.com');
+    await page.locator('#form-newsletter button[type="submit"]').click();
+
+    await expect(page.locator('#newsletter-estado')).toContainText('Ya estás en la lista');
+    await expect.poll(() =>
+      page.evaluate(() =>
+        (window as Window & { __pixelEvents?: unknown[][] }).__pixelEvents?.some(
+          ([method, name]) => method === 'track' && name === 'CompleteRegistration',
+        ),
+      ),
+    ).toBe(true);
+  });
 });
 
 test.describe('teléfonos útiles', () => {

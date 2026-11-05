@@ -60,7 +60,7 @@ export function track(event: string, props: Record<string, string> = {}): void {
       view_content: 'ViewContent',
       whatsapp_click: 'Contact',
       contacto_ventas: 'Contact',
-      contacto_formulario: 'Contact',
+      contacto_formulario: 'Lead',
       contacto_email: 'Contact',
       alta_negocio: 'Lead',
       guia_descarga: 'Lead',

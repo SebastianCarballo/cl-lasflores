@@ -1,6 +1,34 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('contacto (100% cliente, sin backend)', () => {
+  test('Meta Pixel registra como Lead solo el formulario válido', async ({ page }) => {
+    await page.addInitScript(() => {
+      const events: unknown[][] = [];
+      Object.defineProperty(window, '__pixelEvents', { value: events });
+      Object.defineProperty(window, 'fbq', {
+        value: (...args: unknown[]) => events.push(args),
+      });
+    });
+    await page.route('https://wa.me/**', (route) => route.abort());
+    await page.goto('/contacto');
+
+    await page.getByRole('button', { name: /enviar mi consulta/ }).click();
+    const hasLead = () =>
+      page.evaluate(() =>
+        (window as Window & { __pixelEvents?: unknown[][] }).__pixelEvents?.some(
+          ([method, name]) => method === 'track' && name === 'Lead',
+        ),
+      );
+    expect(await hasLead()).toBe(false);
+
+    await page.locator('#contacto-nombre').fill('Vecina Test');
+    await page.locator('#contacto-email').fill('vecina@test.com');
+    await page.locator('#contacto-asunto').fill('Quiero publicitar');
+    await page.locator('#contacto-mensaje').fill('Tengo un comercio y quiero saber más de los planes.');
+    await page.getByRole('button', { name: /enviar mi consulta/ }).click();
+    await expect.poll(hasLead).toBe(true);
+  });
+
   test('valida, enfoca el error y confirma sin llamar a ninguna API', async ({ page }) => {
     let apiLlamada = false;
     await page.route('**/api/**', (r) => {
