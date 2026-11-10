@@ -26,6 +26,7 @@ export const EVENTOS = [
   'contacto_ventas',
   'guia_descarga',
   'guia_a_publicar',
+  'home_copy_exposure',
 ] as const;
 
 export type Evento = (typeof EVENTOS)[number];

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paleta de colores — Clasificados Las Flores</title>
+<style>
+  :root{
+    --brand-600:#155DDC; --brand-700:#184EB4; --brand-500:#338FFA; --brand-50:#EEF7FF;
+    --ink-900:#0F172A; --ink-950:#020617; --ink-50:#F8FAFC; --ink-100:#F1F5F9; --ink-200:#E2E8F0;
+    --muted:#475569; --accent-500:#F59E0B; --accent-600:#D97706; --white:#FFFFFF;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--ink-50);color:var(--ink-900)}
+  header{background:var(--ink-950);color:#fff;padding:2.5rem 1.5rem}
+  header h1{font-family:Sora,Inter,sans-serif;font-size:2rem;margin:0 0 .5rem}
+  header p{color:#CBD5E1;margin:0;max-width:60ch}
+  main{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 3rem}
+  h2{font-family:Sora,Inter,sans-serif;margin:2.5rem 0 1rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+  .card{background:var(--white);border:1px solid var(--ink-200);border-radius:1.25rem;overflow:hidden}
+  .sw{height:120px;display:grid;place-items:end start;padding:.75rem}
+  .sw span{background:rgba(255,255,255,.92);color:var(--ink-900);font-weight:700;font-size:.8rem;padding:.25rem .5rem;border-radius:999px}
+  .dark .sw span{background:rgba(2,6,23,.7);color:#fff}
+  .meta{padding:1rem}
+  .meta strong{display:block;font-size:1rem}
+  .meta code{background:var(--ink-100);padding:.15rem .4rem;border-radius:.5rem;font-size:.85rem}
+  .meta small{color:var(--muted);display:block;margin-top:.5rem;line-height:1.5}
+  .usage{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  @media(max-width:700px){.usage{grid-template-columns:1fr}}
+  .box{background:var(--white);border:1px solid var(--ink-200);border-radius:1rem;padding:1rem}
+  .box h3{margin:.25rem 0 .5rem;font-family:Sora,Inter,sans-serif}
+  ul{margin:.25rem 0 0;padding-left:1.25rem;line-height:1.6}
+  .btn{display:inline-block;background:var(--brand-600);color:#fff;padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;text-decoration:none}
+  .btn:hover{background:var(--brand-700)}
+  .badge{background:var(--accent-500);color:var(--ink-900);padding:.35rem .75rem;border-radius:999px;font-weight:800}
+  footer{max-width:1100px;margin:0 auto;padding:0 1.5rem 3rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Paleta de colores — Clasificados Las Flores</h1>
+  <p>Azul Clasificados para la acción, tinta para la estructura, blanco para el contenido y ámbar solo para lo premium. Fuente: <code>DESIGN.md</code> + <code>src/styles/global.css</code>.</p>
+</header>
+<main>
+  <h2>Colores principales</h2>
+  <div class="grid">
+    <article class="card"><div class="sw" style="background:#155DDC"><span>#155DDC</span></div><div class="meta"><strong>Azul Clasificados · brand-600</strong><code>brand-600</code><small>Primario. Botones, links, CTA, estados activos. Texto sobre él: blanco.</small></div></article>
+    <article class="card"><div class="sw" style="background:#184EB4"><span>#184EB4</span></div><div class="meta"><strong>Azul Hover · brand-700</strong><code>brand-700</code><small>Hover del botón primario.</small></div></article>
+    <article class="card"><div class="sw" style="background:#338FFA"><span>#338FFA</span></div><div class="meta"><strong>Azul Foco · brand-500</strong><code>brand-500</code><small>Foco visible (:focus-visible) y detalles vivos.</small></div></article>
+    <article class="card"><div class="sw" style="background:#EEF7FF"><span>#EEF7FF</span></div><div class="meta"><strong>Azul Suave · brand-50</strong><code>brand-50</code><small>Fondos informativos y bloques suaves.</small></div></article>
+    <article class="card"><div class="sw" style="background:#0F172A"><span>#0F172A</span></div><div class="meta"><strong>Tinta · ink-900</strong><code>ink-900</code><small>Texto principal, títulos, header y bloques de alto contraste.</small></div></article>
+    <article class="card dark"><div class="sw" style="background:#020617"><span>#020617</span></div><div class="meta"><strong>Tinta Profunda · ink-950</strong><code>ink-950</code><small>Hero oscuro y footer. Texto encima: blanco.</small></div></article>
+    <article class="card"><div class="sw" style="background:#F8FAFC"><span>#F8FAFC</span></div><div class="meta"><strong>Fondo · ink-50</strong><code>ink-50</code><small>Fondo de página.</small></div></article>
+    <article class="card"><div class="sw" style="background:#F59E0B"><span>#F59E0B</span></div><div class="meta"><strong>Ámbar Vidriera · accent-500</strong><code>accent-500</code><small>Solo Vidriera Digital y destacados. Texto encima: tinta.</small></div></article>
+    <article class="card"><div class="sw" style="background:#D97706"><span>#D97706</span></div><div class="meta"><strong>Ámbar Fuerte · accent-600</strong><code>accent-600</code><small>Badge fuerte y borde dorado.</small></div></article>
+    <article class="card"><div class="sw" style="background:#475569"><span>#475569</span></div><div class="meta"><strong>Texto Secundario · muted</strong><code>text-muted</code><small>Información de apoyo. Nunca gris claro sobre blanco.</small></div></article>
+  </div>
+
+  <h2>Cómo se usa en la web</h2>
+  <div class="usage">
+    <section class="box"><h3>Acción principal</h3><a class="btn" href="#" onclick="return false">Buscar en el directorio</a><p style="color:var(--muted)">Botón azul <code>#155DDC</code> con texto blanco. Un solo primario por pantalla.</p></section>
+    <section class="box"><h3>Destacado premium</h3><span class="badge">Vidriera Digital</span><p style="color:var(--muted)">Ámbar <code>#F59E0B</code> con texto tinta. Solo para el plan Vidriera Digital.</p></section>
+    <section class="box"><h3>Sí</h3><ul><li>Azul para "tocá acá"</li><li>Tinta para títulos y precios</li><li>Blanco para tarjetas con borde <code>#E2E8F0</code></li><li>Foco azul siempre visible</li></ul></section>
+    <section class="box"><h3>No</h3><ul><li>Ámbar como botón por defecto</li><li>Púrpura o fondos que compitan</li><li>Texto gris claro sobre blanco</li><li>Depender solo del color para plan o verificado</li></ul></section>
+  </div>
+</main>
+<footer>Tokens Tailwind completos en <code>src/styles/global.css</code> (@theme). Validar con <code>pnpm design:lint</code>.</footer>
+</body>
+</html>

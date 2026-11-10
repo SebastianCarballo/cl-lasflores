@@ -6,7 +6,7 @@ test.describe('home', () => {
     page.on('pageerror', (e) => errores.push(String(e)));
     await page.goto('/');
     await expect(page).toHaveTitle(/Clasificados Las Flores/);
-    await expect(page.getByRole('heading', { name: /Lo que necesitás/ })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Clasificados Las Flores/ })).toBeVisible();
     await expect(page.getByRole('search')).toBeVisible();
     await expect(page.locator('#conteo, dl').first()).toBeVisible();
     expect(errores).toEqual([]);
@@ -15,9 +15,17 @@ test.describe('home', () => {
   test('el buscador navega al directorio con query', async ({ page }) => {
     await page.goto('/');
     await page.locator('#q').fill('gratis');
-    await page.getByRole('button', { name: 'Buscar' }).click();
+    await page.getByRole('button', { name: 'Buscar comercios' }).click();
     await expect(page).toHaveURL(/\/directorio\?q=gratis/);
     await expect(page.locator('#resultados')).toContainText(/Tu Comercio Acá/);
+  });
+
+  test('hero oficial: Clasificados Las Flores, tu vidriera digital, más cerca', async ({ page }) => {
+    await page.goto('/');
+    const h1 = page.getByRole('heading', { level: 1 });
+    await expect(h1).toContainText(/Clasificados Las Flores,/);
+    await expect(h1).toContainText(/tu vidriera digital/);
+    await expect(h1).toContainText(/más cerca/);
   });
 
   test('stats únicas + secciones pobladas al hacer scroll', async ({ page }) => {

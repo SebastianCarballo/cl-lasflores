@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paleta de colores definitiva — Clasificados Las Flores</title>
+<style>
+  :root{
+    --brand-50:#EEF7FF; --brand-100:#D9ECFF; --brand-200:#BCE0FF; --brand-300:#8ECDFF; --brand-400:#59B0FC;
+    --brand-500:#0791FE; --brand-600:#155DDC; --brand-700:#184EB4; --brand-900:#193F8D;
+    --ink-50:#F8FAFC; --ink-100:#F1F5F9; --ink-200:#E2E8F0; --ink-300:#CBD5E1; --ink-400:#94A3B8;
+    --ink-500:#64748B; --ink-600:#475569; --ink-700:#334155; --ink-800:#1E293B; --ink-900:#0F172A; --ink-950:#020617;
+    --accent-50:#FFFBEB; --accent-100:#FEF3C7; --accent-400:#FBBF24; --accent-500:#F59E0B; --accent-600:#D97706; --accent-700:#B45309;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--ink-50);color:var(--ink-900)}
+  header{background:var(--ink-950);color:#fff;padding:2.5rem 1.5rem}
+  header h1{font-family:Sora,Inter,sans-serif;font-size:2rem;margin:0 0 .5rem}
+  header p{color:#CBD5E1;margin:0;max-width:64ch;line-height:1.6}
+  main{max-width:1100px;margin:0 auto;padding:2rem 1.5rem 3rem}
+  h2{font-family:Sora,Inter,sans-serif;margin:2.5rem 0 .5rem}
+  .lead{color:var(--ink-600);margin:0 0 1rem;line-height:1.6;max-width:70ch}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+  .card{background:var(--white);border:1px solid var(--ink-200);border-radius:1.25rem;overflow:hidden}
+  .sw{height:110px;display:grid;place-items:end start;padding:.75rem}
+  .sw span{background:rgba(255,255,255,.92);color:var(--ink-900);font-weight:700;font-size:.8rem;padding:.25rem .5rem;border-radius:999px}
+  .dark .sw span{background:rgba(2,6,23,.7);color:#fff}
+  .meta{padding:1rem}
+  .meta strong{display:block;font-size:1rem}
+  .meta code{background:var(--ink-100);padding:.15rem .4rem;border-radius:.5rem;font-size:.85rem}
+  .meta small{color:var(--ink-600);display:block;margin-top:.5rem;line-height:1.5}
+  .tag{display:inline-block;font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;margin-left:.4rem;vertical-align:middle}
+  .tag.new{background:var(--accent-100);color:var(--accent-700)}
+  .scale{display:flex;border-radius:1rem;overflow:hidden;border:1px solid var(--ink-200);margin:.5rem 0 1rem}
+  .scale div{flex:1;min-height:64px;display:flex;flex-direction:column;justify-content:flex-end;padding:.4rem .5rem;font-size:.7rem;font-weight:700}
+  .scale small{font-weight:500;opacity:.85}
+  .states{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}
+  .alert{border-radius:1rem;padding:1rem;border:1px solid;line-height:1.5;font-size:.9rem}
+  .alert b{display:block;margin-bottom:.25rem}
+  .usage{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+  @media(max-width:700px){.usage{grid-template-columns:1fr}}
+  .box{background:var(--white);border:1px solid var(--ink-200);border-radius:1rem;padding:1rem}
+  .box h3{margin:.25rem 0 .5rem;font-family:Sora,Inter,sans-serif}
+  .box p{color:var(--ink-600);line-height:1.5}
+  ul{margin:.25rem 0 0;padding-left:1.25rem;line-height:1.6}
+  .btn{display:inline-block;background:var(--brand-600);color:#fff;padding:.75rem 1.5rem;border-radius:.75rem;font-weight:700;text-decoration:none}
+  .btn:hover{background:var(--brand-700)}
+  .badge{background:var(--accent-500);color:var(--ink-900);padding:.35rem .75rem;border-radius:999px;font-weight:800}
+  .logo-dot{display:inline-block;width:2.5rem;height:2.5rem;border-radius:.75rem;background:var(--brand-500);vertical-align:middle;margin-right:.5rem}
+  table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--ink-200);border-radius:1rem;overflow:hidden;font-size:.9rem}
+  th,td{text-align:left;padding:.65rem .85rem;border-bottom:1px solid var(--ink-100)}
+  th{background:var(--ink-100);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+  .ok{color:#15803D;font-weight:700}.warn{color:#B45309;font-weight:700}.bad{color:#B91C1C;font-weight:700}
+  .sample{display:inline-block;padding:.25rem .6rem;border-radius:.5rem;font-weight:700;font-size:.85rem}
+  footer{max-width:1100px;margin:0 auto;padding:0 1.5rem 3rem;color:var(--ink-600)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Paleta de colores definitiva — Clasificados Las Flores</h1>
+  <p>Azul para la acción y la identidad, tinta para la estructura, blanco para el contenido y ámbar solo para lo premium. Unifica el sistema de la web (<code>DESIGN.md</code> + <code>global.css</code>) con el azul <strong>#0791FE</strong> del logo.</p>
+</header>
+<main>
+
+  <h2>Colores principales</h2>
+  <p class="lead">Un solo cambio respecto del código: <code>brand-500</code> pasa de <code>#338FFA</code> a <code>#0791FE</code>.</p>
+  <div class="grid">
+    <article class="card"><div class="sw" style="background:#0791FE"><span>#0791FE</span></div><div class="meta"><strong>Azul Identidad · brand-500 <span class="tag new">cambia</span></strong><code>brand-500</code><small>Logo, foco visible, ilustración, detalles vivos. Con texto blanco solo si es grande (~3.2:1).</small></div></article>
+    <article class="card"><div class="sw" style="background:#155DDC"><span>#155DDC</span></div><div class="meta"><strong>Azul Acción · brand-600</strong><code>brand-600</code><small>Primario. Botones, links, CTA, estados activos. Texto blanco encima (~5.8:1).</small></div></article>
+    <article class="card"><div class="sw" style="background:#184EB4"><span>#184EB4</span></div><div class="meta"><strong>Azul Hover · brand-700</strong><code>brand-700</code><small>Hover del botón primario (~7.5:1 con blanco).</small></div></article>
+    <article class="card"><div class="sw" style="background:#EEF7FF"><span>#EEF7FF</span></div><div class="meta"><strong>Azul Suave · brand-50</strong><code>brand-50</code><small>Fondos informativos y bloques suaves.</small></div></article>
+    <article class="card"><div class="sw" style="background:#0F172A"><span>#0F172A</span></div><div class="meta"><strong>Tinta · ink-900</strong><code>ink-900</code><small>Texto principal, títulos y bloques de alto contraste (~17.8:1 sobre blanco).</small></div></article>
+    <article class="card dark"><div class="sw" style="background:#020617"><span>#020617</span></div><div class="meta"><strong>Tinta Profunda · ink-950</strong><code>ink-950</code><small>Hero oscuro y footer. Texto encima: blanco.</small></div></article>
+    <article class="card"><div class="sw" style="background:#F8FAFC"><span>#F8FAFC</span></div><div class="meta"><strong>Fondo · ink-50</strong><code>ink-50</code><small>Fondo de página. Las tarjetas son blancas con borde <code>ink-200</code>.</small></div></article>
+    <article class="card"><div class="sw" style="background:#F59E0B"><span>#F59E0B</span></div><div class="meta"><strong>Ámbar Vidriera · accent-500</strong><code>accent-500</code><small>Solo Vidriera Digital y destacados. Texto encima: tinta (~8.3:1). Nunca blanco.</small></div></article>
+    <article class="card"><div class="sw" style="background:#D97706"><span>#D97706</span></div><div class="meta"><strong>Ámbar Fuerte · accent-600</strong><code>accent-600</code><small>Badge fuerte y borde dorado <code>.oro-card</code>.</small></div></article>
+    <article class="card"><div class="sw" style="background:#475569"><span>#475569</span></div><div class="meta"><strong>Texto Secundario · ink-600</strong><code>ink-600</code><small>Información de apoyo (~7.6:1). Nunca gris claro sobre blanco.</small></div></article>
+  </div>
+
+  <h2>Escalas completas</h2>
+  <p class="lead">Cada estado de un componente (hover, pressed, fondo suave, borde) usa un tono distinto. Lo marcado con <strong>★</strong> es el color base; las etiquetas “nuevo” son tokens a agregar.</p>
+
+  <strong>Azul — brand</strong>
+  <div class="scale">
+    <div style="background:#EEF7FF;color:#184EB4">50</div>
+    <div style="background:#D9ECFF;color:#184EB4">100</div>
+    <div style="background:#BCE0FF;color:#184EB4">200</div>
+    <div style="background:#8ECDFF;color:#0F172A">300</div>
+    <div style="background:#59B0FC;color:#0F172A">400</div>
+    <div style="background:#0791FE;color:#fff">500 ★<small>identidad</small></div>
+    <div style="background:#155DDC;color:#fff">600 ★<small>acción</small></div>
+    <div style="background:#184EB4;color:#fff">700</div>
+    <div style="background:#193F8D;color:#fff">900</div>
+  </div>
+
+  <strong>Tinta — ink (slate)</strong>
+  <div class="scale">
+    <div style="background:#F8FAFC;color:#475569">50</div>
+    <div style="background:#F1F5F9;color:#475569">100</div>
+    <div style="background:#E2E8F0;color:#475569">200</div>
+    <div style="background:#CBD5E1;color:#0F172A">300<small>nuevo</small></div>
+    <div style="background:#94A3B8;color:#0F172A">400<small>nuevo</small></div>
+    <div style="background:#64748B;color:#fff">500<small>nuevo</small></div>
+    <div style="background:#475569;color:#fff">600</div>
+    <div style="background:#334155;color:#fff">700<small>nuevo</small></div>
+    <div style="background:#1E293B;color:#fff">800</div>
+    <div style="background:#0F172A;color:#fff">900 ★</div>
+    <div style="background:#020617;color:#fff">950</div>
+  </div>
+
+  <strong>Ámbar — accent</strong>
+  <div class="scale">
+    <div style="background:#FFFBEB;color:#B45309">50<small>nuevo</small></div>
+    <div style="background:#FEF3C7;color:#B45309">100<small>nuevo</small></div>
+    <div style="background:#FBBF24;color:#0F172A">400</div>
+    <div style="background:#F59E0B;color:#0F172A">500 ★</div>
+    <div style="background:#D97706;color:#0F172A">600</div>
+    <div style="background:#B45309;color:#fff">700<small>texto</small></div>
+  </div>
+
+  <h2>Estados (propuesta)</h2>
+  <p class="lead">Siempre con ícono y texto. La advertencia es naranja, no ámbar, para no confundirse con la señal premium. Se usan en formularios y paneles, no dentro de las tarjetas del listado.</p>
+  <div class="states">
+    <div class="alert" style="background:#F0FDF4;border-color:#BBF7D0;color:#15803D"><b>✓ Éxito</b>Tu comercio fue registrado. Te avisamos por WhatsApp.</div>
+    <div class="alert" style="background:#FEF2F2;border-color:#FECACA;color:#B91C1C"><b>✕ Error</b>No pudimos guardar el horario. Revisá el formato.</div>
+    <div class="alert" style="background:#FFF7ED;border-color:#FED7AA;color:#C2410C"><b>! Advertencia</b>Falta cargar la dirección para aparecer en el mapa.</div>
+    <div class="alert" style="background:#EEF7FF;border-color:#BCE0FF;color:#184EB4"><b>i Información</b>Tu perfil está en revisión.</div>
+  </div>
+
+  <h2>Cómo se usa en la web</h2>
+  <div class="usage">
+    <section class="box"><h3>Acción principal</h3><a class="btn" href="#" onclick="return false">Registrar mi comercio</a><p>Botón <code>#155DDC</code> con texto blanco. Un solo primario por pantalla; sin color propio para captar comercios.</p></section>
+    <section class="box"><h3>Identidad</h3><span class="logo-dot"></span><strong>Clasificados Las Flores</strong><p>El azul <code>#0791FE</code> es el del logo, el foco y la ilustración. No se usa como fondo de botones con texto chico.</p></section>
+    <section class="box"><h3>Destacado premium</h3><span class="badge">Vidriera Digital</span><p>Ámbar <code>#F59E0B</code> con texto tinta. Solo para el plan Vidriera Digital.</p></section>
+    <section class="box"><h3>Sí / No</h3><ul><li>Sí: azul para “tocá acá”, tinta para títulos y precios, ícono + texto en estados</li><li>No: ámbar como botón, texto blanco sobre ámbar, naranja como CTA, gris claro sobre blanco, depender solo del color</li></ul></section>
+  </div>
+
+  <h2>Contraste</h2>
+  <p class="lead">Valores aproximados (WCAG). Mínimo 4.5:1 para texto normal y 3:1 para texto grande y componentes. Confirmalo con <code>pnpm design:lint</code>.</p>
+  <table>
+    <thead><tr><th>Combinación</th><th>Muestra</th><th>Contraste</th><th>Veredicto</th></tr></thead>
+    <tbody>
+      <tr><td>Tinta sobre blanco</td><td><span class="sample" style="background:#fff;color:#0F172A;border:1px solid #E2E8F0">Aa</span></td><td>~17.8:1</td><td class="ok">✓ Cumple</td></tr>
+      <tr><td>Blanco sobre brand-600</td><td><span class="sample" style="background:#155DDC;color:#fff">Aa</span></td><td>~5.8:1</td><td class="ok">✓ Botón primario</td></tr>
+      <tr><td>Blanco sobre brand-500 (#0791FE)</td><td><span class="sample" style="background:#0791FE;color:#fff">Aa</span></td><td>~3.2:1</td><td class="warn">⚠ Solo texto grande, íconos, foco</td></tr>
+      <tr><td>Tinta sobre accent-500</td><td><span class="sample" style="background:#F59E0B;color:#0F172A">Aa</span></td><td>~8.3:1</td><td class="ok">✓ Badge Vidriera</td></tr>
+      <tr><td>Blanco sobre accent-500</td><td><span class="sample" style="background:#F59E0B;color:#fff">Aa</span></td><td>~2.2:1</td><td class="bad">✕ Nunca</td></tr>
+      <tr><td>accent-700 sobre blanco (texto ámbar)</td><td><span class="sample" style="background:#fff;color:#B45309;border:1px solid #E2E8F0">Aa</span></td><td>~5.0:1</td><td class="ok">✓ Cumple</td></tr>
+      <tr><td>ink-500 sobre blanco (placeholder)</td><td><span class="sample" style="background:#fff;color:#64748B;border:1px solid #E2E8F0">Aa</span></td><td>~4.8:1</td><td class="ok">✓ Cumple</td></tr>
+      <tr><td>ink-400 sobre blanco</td><td><span class="sample" style="background:#fff;color:#94A3B8;border:1px solid #E2E8F0">Aa</span></td><td>~2.6:1</td><td class="bad">✕ Solo decorativo</td></tr>
+    </tbody>
+  </table>
+
+</main>
+<footer>Tokens Tailwind completos en <code>src/styles/global.css</code> (@theme). Validar con <code>pnpm design:lint</code>. Detalle de decisiones en <code>BRAND-KIT-definitivo.md</code>.</footer>
+</body>
+</html>
